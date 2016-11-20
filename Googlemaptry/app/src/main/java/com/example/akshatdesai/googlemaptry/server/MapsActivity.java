@@ -41,12 +41,20 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-
+import javax.net.ssl.HandshakeCompletedListener;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -55,26 +63,36 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng start,end;
    static String s1;
    static LatLng point;
+   static int i= 0;
+    HashMap<String,LatLng> hm;
+    Polyline line;
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-        btn = (Button) findViewById(R.id.btn_submit);
-        source = (EditText) findViewById(R.id.et_source);
-        destination = (EditText) findViewById(R.id.et_destination);
 
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String s = source.getText().toString();
-                 s1 = destination.getText().toString();
-               new fetchLatLongFromService(s).execute();
-                Toast.makeText(MapsActivity.this,"After First",Toast.LENGTH_SHORT).show();
-                //start = point;
+        if(savedInstanceState==null)
+        {
+            SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.map);
+            mapFragment.getMapAsync(this);
+            btn = (Button) findViewById(R.id.btn_submit);
+            source = (EditText) findViewById(R.id.et_source);
+            destination = (EditText) findViewById(R.id.et_destination);
+
+
+
+
+
+
+
+                    // Toast.makeText(MapsActivity.this,"After First",Toast.LENGTH_SHORT).show();
+                    //start = point;
 
 
                 /*end =point;
@@ -83,10 +101,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e("Elatitude",""+((double) end.latitude));
                 Log.e("Elongitude",""+((double) end.longitude));
                 String path = makeURL(((double) start.latitude),((double)start.longitude),((double)end.latitude),((double)end.longitude));*/
-               // new connectAsyncTask(path,true).execute();
+                    // new connectAsyncTask(path,true).execute();
 
-            }
-        });
+
+
+        }
+
+
+
         /*btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -115,6 +137,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 //Intent i = new Intent(this,Mai)
             }
         });*/
+    }
+
+    public void showresult(View view)
+    {
+        hm = new HashMap<>();
+        String s = source.getText().toString();
+        s1 = destination.getText().toString();
+        new fetchLatLongFromService(s).execute();
+
+
+        new fetchLatLongFromService(s1).execute();
+
+
+
     }
 
 
@@ -173,6 +209,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng latLng = null;
         Geocoder coder = new Geocoder(this);
         List<Address> address;
+
        // GeoPoint p1 = null;
 
         try {
@@ -204,6 +241,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             AsyncTask<Void, Void, String> {
         String place;
         ProgressDialog pd;
+        String msg;
+
 
 
         public fetchLatLongFromService(String place) {
@@ -216,12 +255,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected void onCancelled() {
             // TODO Auto-generated method stub
             super.onCancelled();
-            this.cancel(true);
+            this.cancel(false);
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+           // i++;
             pd = new ProgressDialog(MapsActivity.this);
             pd.setTitle("Please Wait");
             pd.show();
@@ -231,24 +271,40 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         protected String doInBackground(Void... params) {
             // TODO Auto-generated method stub
             try {
-                HttpURLConnection conn = null;
-                String msg;
-                String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?address="
-                        + this.place + "&sensor=false&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
+                String param = "address=" + URLEncoder.encode(String.valueOf(this.place), "UTF-8");
+                String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
+                        + param + "&sensor=false&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
+
 
                 URL url = new URL(googleMapUrl);
-                conn = (HttpURLConnection) url.openConnection();
-                BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String inputLine;
-                StringBuffer responce = new StringBuffer();
-                while ((inputLine = in.readLine()) != null) {
-                    responce.append(inputLine);
+                Log.e("URL",""+url);
+                URLConnection con = url.openConnection();
+                HttpURLConnection httpURLConnection = (HttpURLConnection) con;
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestProperty("Accept", "application/json");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+
+
+
+                int rescode = httpURLConnection.getResponseCode();
+                Log.e("Responce",""+rescode);
+                if (rescode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer responce = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        responce.append(inputLine);
+                    }
+                    in.close();
+                    msg = responce.toString();
                 }
-                in.close();
-                msg = responce.toString();
-                Log.e("Responce",msg);
                 return msg;
-            } catch (Exception e) {
+            }  catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
             return null;
@@ -260,6 +316,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             // TODO Auto-generated method stub
             super.onPostExecute(result);
             pd.cancel();
+            i++;
             try {
                 JSONObject jsonObj = new JSONObject(result.toString());
                 JSONArray resultJsonArray = jsonObj.getJSONArray("results");
@@ -285,6 +342,31 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 Toast.makeText(MapsActivity.this,"Lat:"+lat+ " Long :"+lng,Toast.LENGTH_LONG ).show();
                  point = new LatLng(lat, lng);
+
+
+                if(i==1)
+                {
+                    hm.put("Start",point);
+                }
+                else if(i==2)
+                {
+                    hm.put("end",point);
+                    double Lati1 = hm.get("Start").latitude;
+                    double Lang1 = hm.get("Start").longitude;
+                    double Lati2 = hm.get("end").latitude;
+                    double Lang2 = hm.get("end").longitude;
+
+                    if(line != null)
+                    {
+                        line.remove();
+                    }
+
+
+                    String path = makeURL(Lati1,Lang1,Lati2,Lang2);
+                     new connectAsyncTask(path,true).execute();
+                    i =0;
+                }
+
 
 
             } catch (JSONException e) {
@@ -337,7 +419,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             JSONObject overviewPolylines = routes.getJSONObject("overview_polyline");
             String encodedString = overviewPolylines.getString("points");
             List<LatLng> list = decodePoly(encodedString);
-            Polyline line = mMap.addPolyline(new PolylineOptions()
+             line = mMap.addPolyline(new PolylineOptions()
                     .addAll(list)
                     .width(12)
                     .color(Color.parseColor("#05b1fb"))//Google maps blue color
