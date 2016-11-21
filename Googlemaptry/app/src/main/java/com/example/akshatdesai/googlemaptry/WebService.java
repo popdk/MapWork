@@ -65,6 +65,7 @@ public class WebService extends Service {
        // mFragment.getMapAsync(this);
         Log.w("Now","Call like this");
         return super.onStartCommand(intent, flags, startId);
+
     }
 
 

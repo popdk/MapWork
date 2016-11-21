@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "916004994587",
+    "firebase_url": "https://project--5555208704844616812.firebaseio.com",
+    "project_id": "project--5555208704844616812",
+    "storage_bucket": "project--5555208704844616812.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:916004994587:android:10857c1389b84012",
+        "android_client_info": {
+          "package_name": "com.example.akshatdesai.googlemaptry"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "916004994587-d6s0ej0ssd9adncm79l1b7knru8ag9p5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAJtTpX9fO5FqbBf4uisjAkm1qC0ucJUdA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
