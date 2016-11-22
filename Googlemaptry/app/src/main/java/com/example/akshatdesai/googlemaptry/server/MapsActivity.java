@@ -2,13 +2,17 @@ package com.example.akshatdesai.googlemaptry.server;
 
 import android.app.ProgressDialog;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.net.Uri;
 import android.nfc.Tag;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.text.Html;
@@ -19,6 +23,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.JSONParser;
+import com.example.akshatdesai.googlemaptry.Notification.QuickstartPreferences;
+import com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService;
 import com.example.akshatdesai.googlemaptry.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -66,6 +72,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
    static int i= 0;
     HashMap<String,LatLng> hm;
     Polyline line;
+    private BroadcastReceiver mRegistrationBroadcastReceiver;
 
 
 
@@ -85,9 +92,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             source = (EditText) findViewById(R.id.et_source);
             destination = (EditText) findViewById(R.id.et_destination);
 
+            Intent i = new Intent(this, RegistrationIntentService.class);
+            startService(i);
 
-
-
+            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    // mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
+                    SharedPreferences sharedPreferences =
+                            PreferenceManager.getDefaultSharedPreferences(context);
+                    boolean sentToken = sharedPreferences
+                            .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
+                    if (sentToken) {
+                        // mInformationTextView.setText(getString(R.string.gcm_send_message));
+                        Log.e("tokensent",""+sentToken);
+                    } else {
+                        //  mInformationTextView.setText(getString(R.string.token_error_message));
+                        Log.e("Nottokensent",""+sentToken);
+                    }
+                }
+            };
 
 
 

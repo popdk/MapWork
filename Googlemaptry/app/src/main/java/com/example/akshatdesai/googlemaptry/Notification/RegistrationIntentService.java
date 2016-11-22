@@ -8,7 +8,8 @@ import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import com.example.akshatdesai.assetmanagment.R;
+//import com.example.akshatdesai.assetmanagment.R;
+import com.example.akshatdesai.googlemaptry.R;
 import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.google.android.gms.iid.InstanceID;
@@ -25,7 +26,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
-import static com.example.android.assetmanagement.SessionManager.KEY_ID;
+//import static com.example.android.assetmanagement.SessionManager.KEY_ID;
 
 public class RegistrationIntentService extends IntentService {
 
@@ -41,9 +42,9 @@ public class RegistrationIntentService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SessionManager sm = new SessionManager(this);
 
-        if (sm.gettoken() == null) {
+
+       // if (sm.gettoken() == null) {
             try {
                 // [START register_for_gcm]
                 // Initially this call goes out to the network to retrieve the token, subsequent calls
@@ -64,9 +65,9 @@ public class RegistrationIntentService extends IntentService {
                 // Subscribe to topic channels
                 subscribeTopics(token);
 
-                sm.settoken(token);
+             /*   sm.settoken(token);
                 HashMap<String, String> hm = sm.getuserdetails();
-                id = hm.get(KEY_ID);
+                id = hm.get(KEY_ID);*/
                 //new Token_update().execute();
 
 
@@ -86,10 +87,10 @@ public class RegistrationIntentService extends IntentService {
             LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
             Log.e("service", "registration complete");
         }
-    }
+   // }
 
 
-    public class Token_update extends AsyncTask {
+   /* public class Token_update extends AsyncTask {
 
         @Override
         protected Object doInBackground(Object[] params) {
@@ -131,10 +132,10 @@ public class RegistrationIntentService extends IntentService {
                 //   message = temp.getString("message");
 
                 //if (status == 1) {
-                   /* uid1 = temp.getInt("id");
+                   *//* uid1 = temp.getInt("id");
                     user1 = temp.getString("name");
                     pass1 = temp.getString("Password");
-                    email1 = temp.getString("email");*/
+                    email1 = temp.getString("email");*//*
 
                 //}
             } catch (UnsupportedEncodingException e) {
@@ -150,7 +151,7 @@ public class RegistrationIntentService extends IntentService {
 
     }
 
-
+*/
 
 
 
