@@ -137,20 +137,23 @@ public class ViewTask extends AppCompatActivity {
                     edate = new String[length1];
                     assignedby= new String[length1];
                     assignedto = new String[length1];
+
+
                     if(status == 1)
 
                     {
                         for(i=0;i<length1;i++)
                         {
-                            id[i] = temp.getInt("id");
-                            name[i] = temp.getString("name");
-                            desc[i] = temp.getString("desc");
-                            sdate[i] = temp.getString("sdate");
-                            edate[i] = temp.getString("edate");
-                            assignedto[i] = temp.getString("assignedto");
-                            assignedby[i] = temp.getString("assignedby");
+                            JSONObject temp1 = array.getJSONObject(i);
+                            id[i] = temp1.getInt("id");
+                            name[i] = temp1.getString("name");
+                            desc[i] = temp1.getString("desc");
+                            sdate[i] = temp1.getString("sdate");
+                            edate[i] = temp1.getString("edate");
+                            assignedto[i] = temp1.getString("assignedto");
+                            assignedby[i] = temp1.getString("assignedby");
                         }
-                        Log.w("id",""+id.length);
+                        Log.w("id",""+id[1]);
                     }
                 }
             } catch (MalformedURLException e) {

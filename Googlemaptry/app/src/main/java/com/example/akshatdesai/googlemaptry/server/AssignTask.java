@@ -18,6 +18,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -48,8 +49,9 @@ import static java.security.AccessController.getContext;
 
 public class AssignTask extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    EditText at_taskname, at_taskdescription, at_startingdate, at_endingdate;
-    Button add, cancel;
+    EditText at_taskname, at_taskdescription, at_startingdate, at_endingdate,at_speed,at_stoppage ,at_stoppage1, at_stoppage2;
+    Button add, cancel, defineRoute;
+    ImageView floatingPlus;
     Toolbar toolbar;
     Spinner employees;
     private DatePickerDialog datePickerDialog;
@@ -68,6 +70,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
     JSONArray array;
     JSONObject temp;
     public int status, status1;
+    static int m = 0;
     public String[] empNames;
     public Integer empIds[];
     Sessionmanager sessionManager;
@@ -77,19 +80,26 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_task);
-      /*  toolbar=(Toolbar)findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);*/
-        getSupportActionBar().setTitle("Assign Task to Employee");
+      toolbar=(Toolbar)findViewById(R.id.toolbar);
+        toolbar.setTitle("Assign Task to Employee");
         //toolbar.setTitle("Assign Task to Employee");
         at_taskname = (EditText) findViewById(R.id.task_name);
         at_taskdescription = (EditText) findViewById(R.id.task_desc);
-        at_startingdate = (EditText)findViewById(R.id.task_starting_date);
+        at_startingdate = (EditText) findViewById(R.id.task_starting_date);
         at_startingdate.setInputType(InputType.TYPE_NULL);
-        at_endingdate = (EditText)findViewById(R.id.task_ending_date);
+        at_endingdate = (EditText) findViewById(R.id.task_ending_date);
         at_endingdate.setInputType(InputType.TYPE_NULL);
-        employees=(Spinner)findViewById(R.id.spinner);
-        add = (Button)findViewById(R.id.assign_task_btn_submit);
-        cancel = (Button)findViewById(R.id.assign_task_btn_cancel);
+        at_speed = (EditText) findViewById(R.id.travelling_speed);
+        at_stoppage = (EditText) findViewById(R.id.stoppage);
+        at_stoppage1 = (EditText) findViewById(R.id.stoppage_1);
+        at_stoppage1.setVisibility(View.GONE);
+        at_stoppage2 = (EditText) findViewById(R.id.stoppage_2);
+        at_stoppage2.setVisibility(View.GONE);
+        floatingPlus = (ImageView) findViewById(R.id.imageView);
+        employees = (Spinner) findViewById(R.id.spinner);
+        add = (Button) findViewById(R.id.assign_task_btn_submit);
+        cancel = (Button) findViewById(R.id.assign_task_btn_cancel);
+        defineRoute = (Button) findViewById(R.id.define_route_button);
 
         dateFormatter = new SimpleDateFormat();
         employees.setOnItemSelectedListener(this);
@@ -128,12 +138,11 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        sessionManager=new Sessionmanager(getApplicationContext());
+        sessionManager = new Sessionmanager(getApplicationContext());
 
         HashMap<String, String> user = sessionManager.getuserdetails();
         // name
-        if (sessionManager.isLoggedIn())
-        {
+        if (sessionManager.isLoggedIn()) {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
         }
 
@@ -143,26 +152,25 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
             public void onClick(View v) {
 
                 try {
-                    SimpleDateFormat format=new SimpleDateFormat("yyyy-MM-dd");
+                    SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                     sDate = at_startingdate.getText().toString();
-                    Log.w("sdate",""+sDate);
+                    Log.w("sdate", "" + sDate);
                         /*String[] y1 = sDate.split(" ");
                         String[] w1 = y1[0].split("/");
                         sDate = "20"+ w1[2] + "-" + w1[1] + "-" + w1[0];
                         Log.e("Sdate", ""+ sDate);*/
-                   // eDate = format.format(Date.parse(at_endingdate.getText().toString()));
+                    // eDate = format.format(Date.parse(at_endingdate.getText().toString()));
                     eDate = at_endingdate.getText().toString();
-                    Log.w("edate",""+eDate);
+                    Log.w("edate", "" + eDate);
                         /*String[] y2 = sDate.split(" ");
                         String[] w2 = y2[0].split("/");
                         eDate = "20"+ w2[2] + "-" + w2[1] + "-" + w2[0];
                         Log.e("Edate", "" + eDate);*/
                     tName = at_taskname.getText().toString();
                     tDesc = at_taskdescription.getText().toString();
-                    if (tName.equals("") || tDesc.equals("")  || sDate.equals("") || eDate.equals("") ) {
+                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("")) {
                         Toast.makeText(context, "Insufficient details..", Toast.LENGTH_SHORT).show();
-                    }
-                    else if (at_startingdate.length() != at_endingdate.length()) {
+                    } else if (at_startingdate.length() != at_endingdate.length()) {
                         Toast.makeText(context, "Select valid End date..", Toast.LENGTH_SHORT).show();
                         at_endingdate.setText("");
                         at_endingdate.callOnClick();
@@ -182,29 +190,39 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                 finish();
             }
         });
-    }
+
+        defineRoute.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Intent callactivity = new Intent(AssignTask.this, MapsActivity.class);
+                startActivity(callactivity);
+            }
+        });
+
+        floatingPlus.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                m++;
+                if (m == 1) {
+                    at_stoppage1.setVisibility(View.VISIBLE);
+                } else if (m == 2) {
+                    at_stoppage2.setVisibility(View.VISIBLE);
+                }
+            }
+
+        });
 
 
+           }
 
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                employeeId = empIds[i];
 
-        }
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-
-    }
-
-    public class GetEmployees extends AsyncTask{
+    class GetEmployees extends AsyncTask {
         protected void onPreExecute() {
 
         }
 
         protected Object doInBackground(Object[] params) {
             try {
-                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php" );
-                Log.e("UURL",""+url);
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php");
+                Log.e("UURL", "" + url);
                 URLConnection con = url.openConnection();
                 HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                 httpURLConnection.setRequestMethod("POST");
@@ -223,19 +241,19 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                     in.close();
                     msg = responce.toString();
                 }
-                Log.e("MSG",msg);
+                Log.e("MSG", msg);
                 array = new JSONArray(msg);
                 temp = array.getJSONObject(0);
                 status = temp.getInt("Status");
                 status1 = array.length();
                 empNames = new String[status1];
-                empIds=new Integer[status1];
-                employeeList=new ArrayList<String>();
+                empIds = new Integer[status1];
+                employeeList = new ArrayList<String>();
                 if (status == 1) {
-                    for (int j =0 ; j < status1; j++) {
+                    for (int j = 0; j < status1; j++) {
                         temp = array.getJSONObject(j);
                         empNames[j] = temp.getString("Name");
-                        empIds[j]=temp.getInt("Id");
+                        empIds[j] = temp.getInt("Id");
                         employeeList.add(empNames[j]);
                     }
                 }
@@ -258,6 +276,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
     }
 
+
     private void populateSpinner() {
         List<String> lables = new ArrayList<String>();
 
@@ -275,6 +294,16 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
         // attaching data adapter to spinner
         employees.setAdapter(spinnerAdapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        employeeId = empIds[i];
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 
     public class AddTask extends AsyncTask {
