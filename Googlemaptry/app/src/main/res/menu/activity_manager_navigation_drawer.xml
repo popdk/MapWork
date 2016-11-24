@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/assign_task"
+            android:title="Assign Task" />
+        <item
+            android:id="@+id/Add_Employee"
+            android:title="Add Employee" />
+        <item
+            android:id="@+id/view_task"
+            android:title="View Task" />
+    </group>
+
+</menu>

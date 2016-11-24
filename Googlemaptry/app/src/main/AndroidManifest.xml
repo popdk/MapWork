@@ -9,8 +9,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
 
     <application
@@ -33,28 +32,23 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".server.MapsActivity"
-            android:label="@string/title_activity_maps">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".General.Registration"
+            android:label="@string/title_activity_maps"></activity>
         <activity
             android:name=".client.MainActivity"
             android:label="@string/title_activity_main" />
 
-        <service android:name=".WebService" />
+
         <service android:name=".GPSTracker" />
         <service android:name=".client.MyService" />
 
         <activity
             android:name=".server.Tracking"
-            android:label="@string/title_activity_tracking"></activity>
-
-
-
+            android:label="@string/title_activity_tracking" />
+        <activity android:name=".server.AssignTask" />
+        <activity android:name=".server.SelectEmployee" />
+        <activity android:name=".server.ManagerNavigation" />
+        <activity android:name=".server.MapsActivity" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -71,7 +65,7 @@
 
         <!-- [START gcm_listener] -->
         <service
-            android:name="com.example.akshatdesai.googlemaptry.Notification.MyGcmListenerService"
+            android:name=".Notification.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
@@ -80,7 +74,7 @@
         <!-- [END gcm_listener] -->
         <!-- [START instanceId_listener] -->
         <service
-            android:name="com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDListenerService"
+            android:name=".Notification.MyInstanceIDListenerService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.android.gms.iid.InstanceID" />
@@ -88,8 +82,20 @@
         </service>
         <!-- [END instanceId_listener] -->
         <service
-            android:name="com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService"
-            android:exported="false"/>
+            android:name=".Notification.RegistrationIntentService"
+            android:exported="false" />
+
+        <activity
+            android:name=".General.Login_new"
+            android:label="@string/title_activity_manager_navigation">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".server.ViewTask" />
+
     </application>
 
 </manifest>
