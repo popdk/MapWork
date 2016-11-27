@@ -1,17 +1,22 @@
 package com.example.akshatdesai.googlemaptry.server;
 
 import android.os.AsyncTask;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
 import com.example.akshatdesai.googlemaptry.server.GetterSetter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -27,6 +32,9 @@ import java.net.URL;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static com.example.akshatdesai.googlemaptry.server.DefineRoute.connection;
+import static com.example.akshatdesai.googlemaptry.server.DefineRoute.snackbar;
+
 public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
 
@@ -36,45 +44,64 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     String time[];
     private String TAG ="TRACKING";
     Timer t;
+    CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
-
+        coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
-        getterSetter = new GetterSetter();
+
 
     }
 
 
     @Override
-    public void onResume(){
+    public void onResume() {
         //will be executed onResume
         super.onResume();
-       t = new Timer();
+        connection = EnablePermission.isInternetConnected(Tracking.this);
+
+        if(!connection)
+        {
+            snackbar = Snackbar
+                    .make(coordinatorLayout, "Please Enable Internet", Snackbar.LENGTH_INDEFINITE);
+            snackbar.show();
+        }
+
+
+
+      else {
+            t = new Timer();
 //Set the schedule function and rate
-        t.scheduleAtFixedRate(new TimerTask() {
+            t.scheduleAtFixedRate(new TimerTask() {
 
-                                  @Override
-                                  public void run() {
-                                      //Called each time when 1000 milliseconds (1 second) (the period parameter)
-                                      new Track().execute();
-                                  }
+                                      @Override
+                                      public void run() {
+                                          //Called each time when 1000 milliseconds (1 second) (the period parameter)
+                                          new Track().execute();
+                                      }
 
-                              },
+                                  },
 //Set how long before to start calling the TimerTask (in milliseconds)
-                0,
+                    0,
 //Set the amount of time between each execution (in milliseconds)
-                60000);
+                    60000);
+
+        }
 
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        t.cancel();
+        if(t != null)
+        {
+            t.cancel();
+        }
+
     }
 
     @Override
@@ -84,13 +111,10 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         //String tm[];
         this.googleMap = googleMap;
 
-        call();
+
 
     }
-    public void call() {
-        googleMap.addMarker(new MarkerOptions().position(new LatLng(23.013413, 72.562410)).title("Tagore Hall"));
-
-    }
+   
         public class Track extends AsyncTask {
 
         JSONArray array;
@@ -100,16 +124,32 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                double lat[] =getterSetter.getLatitude();
-                double lang[] = getterSetter.getLongitude();
-                String tm[] = getterSetter.getTime();
-                //lat = new double[la]
+                if(getterSetter != null) {
+                    if (getterSetter.getLatitude().length != 0) {
 
-                for(int j=0;j<lang.length;j++) {
-                    googleMap.addMarker(new MarkerOptions().position(new LatLng(lat[j], lang[j])).title(tm[j]));
+                        double lat[] = getterSetter.getLatitude();
+                        double lang[] = getterSetter.getLongitude();
+                        String tm[] = getterSetter.getTime();
+                        //lat = new double[la]
+
+                        for (int j = 0; j < lang.length; j++) {
+
+
+                            googleMap.addMarker(new MarkerOptions().position(new LatLng(lat[j], lang[j])).title(tm[j])
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.cir)));
+                        }
+                        LatLng latLng = new LatLng(lat[0], lang[0]);
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+
+                    }
+
                 }
 
-                googleMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(lat[0], lang[0])));
+                else{
+                    snackbar = Snackbar
+                            .make(coordinatorLayout, "No Data Found", Snackbar.LENGTH_INDEFINITE);
+                    snackbar.show();
+                }
             }
 
             @Override
@@ -142,20 +182,26 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                     }
 
                     in.close();
-                    responce = response.toString();
+                    responce = "responce"+response.toString();
+                    String[] res = responce.split("\\[");
+                    responce = "["+res[1];
                     Log.e(TAG, "" + responce);
                 }
+
 
                 array = new JSONArray(responce);
                 object = array.getJSONObject(0);
                 status = object.getInt("status");
                 Log.e(TAG,""+array.length());
-                int size=array.length();
-                latitude = new double[size];
-                longitude = new double[size];
-                time = new String[size];
+
 
                 if (status == 1) {
+                    int size=array.length();
+                    latitude = new double[size];
+                    longitude = new double[size];
+                    time = new String[size];
+
+
                     for (int j = 0; j < array.length(); j++) {
                         object = array.getJSONObject(j);
                         latitude[j] = object.getDouble("latitude");
@@ -163,7 +209,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                         time[j] = object.getString("time");
 
                     }
-
+                    getterSetter = new GetterSetter();
                     getterSetter.setLatitude(latitude);
                     getterSetter.setLongitude(longitude);
                     getterSetter.setTime(time);

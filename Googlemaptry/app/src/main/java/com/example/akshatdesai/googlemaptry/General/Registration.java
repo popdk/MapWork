@@ -192,7 +192,7 @@ public class Registration extends AppCompatActivity {
             /*} else if (status == 1) {
                 Toast.makeText(Login.this, message, Toast.LENGTH_SHORT).show();
                 sessionManager.createLoginSession(UId, UName, UEmail, UType, OrganizationId);
-                Intent i = new Intent(getApplicationContext(), MainActivity.class);
+                Intent i = new Intent(getApplicationContext(), CurrentLocation.class);
                 startActivity(i);
                 finish();
             }*/

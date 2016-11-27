@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -15,9 +14,8 @@ import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
 import com.example.akshatdesai.googlemaptry.R;
-import com.example.akshatdesai.googlemaptry.client.MainActivity;
+import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
 import com.example.akshatdesai.googlemaptry.server.ManagerNavigation;
-import com.example.akshatdesai.googlemaptry.server.SelectEmployee;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -26,14 +24,11 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.concurrent.locks.AbstractOwnableSynchronizer;
 
 import static com.example.akshatdesai.googlemaptry.General.Sessionmanager.KEY_mid;
 
@@ -66,7 +61,7 @@ boolean res;
             i = Integer.parseInt(hm.get(KEY_mid));
 
             if(i==0){
-                Intent i = new Intent(Login_new.this,MainActivity.class);
+                Intent i = new Intent(Login_new.this,CurrentLocation.class);
                 startActivity(i);
             }else if(i == 1){
                 Intent i = new Intent(Login_new.this,ManagerNavigation.class);
@@ -208,7 +203,7 @@ boolean res;
                 Toast.makeText(Login_new.this, "Successful", Toast.LENGTH_SHORT).show();
                 sessionManager.CreateLoginSession(id1,mail1,pass1,m_id1);
                 if(m_id1.equals("0")){
-                    Intent i = new Intent(Login_new.this,MainActivity.class);
+                    Intent i = new Intent(Login_new.this,CurrentLocation.class);
                     startActivity(i);
                 }else if(m_id1.equals("1")){
                     Intent i = new Intent(Login_new.this,ManagerNavigation.class);

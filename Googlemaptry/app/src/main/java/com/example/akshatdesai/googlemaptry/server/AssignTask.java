@@ -45,11 +45,9 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 
-import static java.security.AccessController.getContext;
-
 public class AssignTask extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    EditText at_taskname, at_taskdescription, at_startingdate, at_endingdate,at_speed,at_stoppage ,at_stoppage1, at_stoppage2;
+    EditText at_taskname, at_taskdescription, at_startingdate, at_endingdate,at_speed,at_stoppage ,at_stoppage1, at_stoppage2,sourcelocation,destinationlocation;
     Button add, cancel, defineRoute;
     ImageView floatingPlus;
     Toolbar toolbar;
@@ -83,6 +81,8 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
       toolbar=(Toolbar)findViewById(R.id.toolbar);
         toolbar.setTitle("Assign Task to Employee");
         //toolbar.setTitle("Assign Task to Employee");
+        sourcelocation = (EditText) findViewById(R.id.source_location);
+        destinationlocation = (EditText) findViewById(R.id.destination);
         at_taskname = (EditText) findViewById(R.id.task_name);
         at_taskdescription = (EditText) findViewById(R.id.task_desc);
         at_startingdate = (EditText) findViewById(R.id.task_starting_date);
@@ -192,9 +192,21 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         });
 
         defineRoute.setOnClickListener(new View.OnClickListener() {
+
+            String sl = sourcelocation.getText().toString();
+            String dl = destinationlocation.getText().toString();
+
             public void onClick(View v) {
-                Intent callactivity = new Intent(AssignTask.this, MapsActivity.class);
-                startActivity(callactivity);
+                if(sl == "" || dl == "" )
+                {
+                    Toast.makeText(AssignTask.this,"Please enter Source and destination",Toast.LENGTH_LONG).show();
+                }
+                else {
+                    Intent callactivity = new Intent(AssignTask.this, DefineRoute.class);
+                    callactivity.putExtra("Source",sl);
+                    callactivity.putExtra("destination",dl);
+                    startActivity(callactivity);
+                }
             }
         });
 

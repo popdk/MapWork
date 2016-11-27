@@ -5,12 +5,14 @@
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
          Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the 'MyLocation' functionality. 
+         location permissions for the 'MyLocation' functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
 
     <application
         android:allowBackup="true"
@@ -25,30 +27,29 @@
              Note that the API key is linked to the encryption key used to sign the APK.
              You need a different API key for each encryption key, including the release key that is used to
              sign the APK for publishing.
-             You can define the keys for the debug and release targets in src/debug/ and src/release/. 
+             You can define the keys for the debug and release targets in src/debug/ and src/release/.
         -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".General.Registration"
-            android:label="@string/title_activity_maps"></activity>
+            android:name="com.example.akshatdesai.googlemaptry.General.Registration"
+            android:label="@string/title_activity_maps" />
         <activity
-            android:name=".client.MainActivity"
+            android:name=".General.Login_new"
             android:label="@string/title_activity_main" />
 
-
         <service android:name=".GPSTracker" />
-        <service android:name=".client.MyService" />
+        <service android:name=".client.LocationUpdateService" />
 
         <activity
-            android:name=".server.Tracking"
+            android:name=".server.DefineRoute"
             android:label="@string/title_activity_tracking" />
         <activity android:name=".server.AssignTask" />
         <activity android:name=".server.SelectEmployee" />
         <activity android:name=".server.ManagerNavigation" />
-        <activity android:name=".server.MapsActivity" />
+        <activity android:name=".General.AlarmManger1" />
 
         <receiver
             android:name="com.google.android.gms.gcm.GcmReceiver"
@@ -62,7 +63,9 @@
         </receiver>
         <!-- [END gcm_receiver] -->
 
+        <receiver android:name=".AlarmRecevier">
 
+        </receiver>
         <!-- [START gcm_listener] -->
         <service
             android:name=".Notification.MyGcmListenerService"
@@ -86,7 +89,7 @@
             android:exported="false" />
 
         <activity
-            android:name=".General.Login_new"
+            android:name=".server.Tracking"
             android:label="@string/title_activity_manager_navigation">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -95,7 +98,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".server.ViewTask" />
-
+        <activity android:name=".client.CurrentLocation"></activity>
     </application>
 
 </manifest>

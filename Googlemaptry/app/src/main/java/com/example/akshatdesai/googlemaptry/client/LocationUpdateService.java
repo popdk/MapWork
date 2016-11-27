@@ -29,7 +29,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class MyService extends Service {
+public class LocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000 * 60;
@@ -46,7 +46,7 @@ public class MyService extends Service {
         @Override
         public void onLocationChanged(Location location) {
             Log.e(TAG, "onLocationChanged: " + location);
-            Toast.makeText(MyService.this,""+location,Toast.LENGTH_LONG).show();
+          //  Toast.makeText(LocationUpdateService.this,""+location,Toast.LENGTH_LONG).show();
             mLastLocation.set(location);
             new Web(location).execute();
         }
@@ -63,7 +63,7 @@ public class MyService extends Service {
 
         @Override
         public void onStatusChanged(String provider, int status, Bundle extras) {
-            Log.e(TAG, "onStatusChanged: " + provider);
+          //  Log.e(TAG, "onStatusChanged: " + provider);
         }
     }
 

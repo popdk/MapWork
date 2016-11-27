@@ -92,7 +92,7 @@ public class SelectEmployee extends AppCompatActivity {
 
         protected Object doInBackground(Object[] params) {
             try {
-                //String param = "OrganizationId=" + URLEncoder.encode(MainActivity.OrganizationId + "", "UTF-8");
+                //String param = "OrganizationId=" + URLEncoder.encode(CurrentLocation.OrganizationId + "", "UTF-8");
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php" );
                 URLConnection con = url.openConnection();
                 HttpURLConnection httpURLConnection = (HttpURLConnection) con;

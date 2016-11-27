@@ -1,4 +1,4 @@
-package com.example.akshatdesai.googlemaptry;
+package com.example.akshatdesai.googlemaptry.server;
 
 import android.util.Log;
 
