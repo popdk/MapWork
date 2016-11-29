@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
+import com.example.akshatdesai.googlemaptry.client.Viewtask_client;
 import com.example.akshatdesai.googlemaptry.server.ManagerNavigation;
 
 import org.json.JSONArray;
@@ -39,6 +41,7 @@ public class Login_new extends AppCompatActivity {
     Button submit, cancel;
     HttpURLConnection httpURLConnection;
     JSONArray array;
+
     int status, id1,i;
     ProgressDialog pd1;
 boolean res;
@@ -61,7 +64,7 @@ boolean res;
             i = Integer.parseInt(hm.get(KEY_mid));
 
             if(i==0){
-                Intent i = new Intent(Login_new.this,CurrentLocation.class);
+                Intent i = new Intent(Login_new.this,Viewtask_client.class);
                 startActivity(i);
             }else if(i == 1){
                 Intent i = new Intent(Login_new.this,ManagerNavigation.class);
@@ -75,7 +78,7 @@ boolean res;
         } else {
             tv_mail = (TextView) findViewById(R.id.tv_mail);
             register = (TextView) findViewById(R.id.tv_nr);
-            tv_pass = (TextView) findViewById(R.id.tv_password);
+            tv_pass = (TextView) findViewById(R.id.tv_pass);
             et_mail = (EditText) findViewById(R.id.et_mail);
             et_pass = (EditText) findViewById(R.id.et_pass);
             submit = (Button) findViewById(R.id.btn_submit);
@@ -203,7 +206,7 @@ boolean res;
                 Toast.makeText(Login_new.this, "Successful", Toast.LENGTH_SHORT).show();
                 sessionManager.CreateLoginSession(id1,mail1,pass1,m_id1);
                 if(m_id1.equals("0")){
-                    Intent i = new Intent(Login_new.this,CurrentLocation.class);
+                    Intent i = new Intent(Login_new.this,Viewtask_client.class);
                     startActivity(i);
                 }else if(m_id1.equals("1")){
                     Intent i = new Intent(Login_new.this,ManagerNavigation.class);

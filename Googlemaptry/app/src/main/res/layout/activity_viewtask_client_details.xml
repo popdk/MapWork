@@ -6,7 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout
         android:orientation="vertical" android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp">
@@ -40,45 +40,29 @@
 
 
             <TextView
-                android:text="Assigned To"
+                android:text="Assigned By"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/description1"
-                android:layout_weight="1.25"/>
+                android:layout_weight="1.99"/>
 
             <TextView
                 android:text=""
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/assignedto"
-                android:layout_weight="1.75"/>
+                android:layout_weight="2.65"/>
 
-
-            <TextView
-                android:text="Status"
-                android:layout_width="0dp"
+            <ToggleButton
+                android:text="ToggleButton"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/status1"
-                android:layout_weight="0.75"/>
+                android:id="@+id/toggleButton"
+                android:textOn="completed"
+                android:textOff="running" />
 
-
-            <TextView
-                android:text=""
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/status"
-                android:layout_weight="1.25"/>
 
         </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:id="@+id/show_hide">
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -88,10 +72,9 @@
 
             <TextView
                 android:text="Description"
-                android:layout_width="match_parent"
+                android:layout_width="106dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/startdate1"
-                android:layout_weight=".75"/>
+                android:id="@+id/startdate1" />
 
             <TextView
                 android:text=""
@@ -109,18 +92,18 @@
 
 
             <TextView
-                android:text="Projected Start time"
+                android:text="Start time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/enddate1"
-                android:layout_weight="1.75"/>
+                android:layout_weight="1.18"/>
 
             <TextView
                 android:text=""
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/projectedstarttime"
-                android:layout_weight="2.25"/>
+                android:layout_weight="2.50"/>
 
 
 
@@ -135,18 +118,18 @@
 
 
             <TextView
-                android:text="Projected End time"
+                android:text="End time"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/enddate12"
-                android:layout_weight="1.75"/>
+                android:layout_weight="1.15"/>
 
             <TextView
                 android:text=""
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:id="@+id/projectedendtime"
-                android:layout_weight="2.25"/>
+                android:layout_weight="2.40"/>
 
 
 
@@ -156,7 +139,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/viewinmap"
-            android:text="Full Tracking"/>
-        </LinearLayout>
+            android:text="View in Map" />
     </LinearLayout>
 </LinearLayout>

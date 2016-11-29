@@ -6,13 +6,17 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.Registration;
+import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 
 import org.json.JSONArray;
@@ -33,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Assign_role extends AppCompatActivity {
-    Button manager;
+    Button manager,logout;
     JSONArray array;
     JSONObject temp;
     int status;
@@ -41,32 +45,73 @@ public class Assign_role extends AppCompatActivity {
     Integer[] Ids;
     String msg, tosend;
     String[] Names;
-
+    Sessionmanager sessionmanager;
+    Toolbar mtoolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_role);
+        mtoolbar = (Toolbar) findViewById(R.id.toolbar3);
+        setSupportActionBar(mtoolbar);
+
         Toast.makeText(Assign_role.this, "in home activity", Toast.LENGTH_SHORT);
         manager = (Button) findViewById(R.id.btn_manager);
+        //  logout = (Button)findViewById(R.id.button3);
+        sessionmanager = new Sessionmanager(this);
         manager.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 tosend = "";
+                Log.e("onclick", "dgvdfg");
                 new manager().execute();
+
 
             }
         });
+
     }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.manager_navigation, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        if (id == R.id.action_settings) {
+            return true;
+        } else if(id == R.id.action_logout){
+            sessionmanager.LogOut1();
+           /* Intent in = new Intent(getApplicationContext(), Login_new.class);
+            startActivity(in);*/
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
 
     public class manager extends AsyncTask {
         @Override
         protected Object doInBackground(Object[] params) {
-            try {
+            try {Log.e("onclick","dgvdfg");
 //                Log.e("AP", "" + manager);
                 //String param = "OId=" + URLEncoder.encode(MainActivity.id + "", "UTF-8");
-                URL url = new URL("http://tracking.freevar.com/Tracking/assign.php?");
-                URLConnection con = url.openConnection();
-                HttpURLConnection httpURLConnection = (HttpURLConnection) con;
+
+                URL url = new URL("http://tracking.freevar.com/Tracking/assign.php");
+                Log.e("onclick","dgvdfg");
+               // URLConnection con = url.openConnection();
+
+                HttpURLConnection httpURLConnection = null;
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+               // HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);
                 httpURLConnection.setDoInput(true);
@@ -74,7 +119,7 @@ public class Assign_role extends AppCompatActivity {
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 int rescode = httpURLConnection.getResponseCode();
-//                Log.e("I", "" + rescode);
+                Log.e("I", "" + rescode);
 
                 if (rescode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
@@ -84,7 +129,11 @@ public class Assign_role extends AppCompatActivity {
                         responce.append(inputLine);
                     }
                     in.close();
-                    msg = responce.toString();
+                    String response ="responce" +responce.toString();
+                    String[] res = response.split("\\[");
+                    response = "[" +res[1];
+                    Log.e("RES",response);
+                    msg = response.toString();
 //                    Log.e("responce", "" + msg);
                 }
 

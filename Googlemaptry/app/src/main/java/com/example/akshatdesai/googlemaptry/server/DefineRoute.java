@@ -1,29 +1,22 @@
 package com.example.akshatdesai.googlemaptry.server;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
-import android.location.LocationManager;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.AsyncTask;
-import android.provider.Settings;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -71,6 +64,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     Button btn;
     EditText source, destination;
+    String source1,destination1;
     LatLng start, end;
     static String s1;
     static LatLng point;
@@ -99,6 +93,15 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
         btn = (Button) findViewById(R.id.btn_submit);
         source = (EditText) findViewById(R.id.et_source);
         destination = (EditText) findViewById(R.id.et_destination);
+
+        Bundle extras=getIntent().getExtras();
+        if(extras!=null)
+        {
+            source1 =extras.getString("Source");
+            source.setText(source1);
+            destination1= extras.getString("destination");
+            destination.setText(destination1);
+        }
         if (savedInstanceState == null) {
 
             EnablePermission.checklocationservice(DefineRoute.this);
@@ -190,24 +193,29 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
             hm = new HashMap<>();
             i = 0;
-            String s = source.getText().toString();
-            s1 = destination.getText().toString();
+          /*  Bundle extras=getIntent().getExtras();
+             if(extras!=null)
+             {
+                 source1 =extras.getString("Source");
+                 source.setText(source1);
+                 destination1= extras.getString("destination");
+                 destination.setText(destination1);
+             }*/
 
-
-            if (s.equals("") || s1.equals("")) {
+            if (source1.equals("") || destination1.equals("")) {
                 Toast.makeText(DefineRoute.this, "Please enter Source and destination Address", Toast.LENGTH_SHORT).show();
             } else {
 
 
-                if (s.equalsIgnoreCase("my location")) {
+                if (source1.equalsIgnoreCase("my location")) {
                     myLocation();
                 } else {
-                    new fetchLatLongFromService(s).execute();
+                    new fetchLatLongFromService(source1).execute();
                 }
-                if (s1.equalsIgnoreCase("my location")) {
+                if (destination1.equalsIgnoreCase("my location")) {
                     myLocation();
                 } else {
-                    new fetchLatLongFromService(s1).execute();
+                    new fetchLatLongFromService(destination1).execute();
                 }
 
 

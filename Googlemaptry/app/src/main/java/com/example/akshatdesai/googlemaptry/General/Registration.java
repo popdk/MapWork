@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService;
 import com.example.akshatdesai.googlemaptry.R;
 
 import org.json.JSONArray;
@@ -38,6 +39,7 @@ import java.net.URLEncoder;
 import javax.net.ssl.HttpsURLConnection;
 
 import static android.R.id.message;
+import static com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService.token;
 
 public class Registration extends AppCompatActivity {
     TextView tv_name, tv_mail, tv_pass, tv_phone, tv_address;
@@ -54,7 +56,7 @@ public class Registration extends AppCompatActivity {
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
         tv_name = (TextView) findViewById(R.id.tv_name);
@@ -73,6 +75,12 @@ public class Registration extends AppCompatActivity {
         male = (RadioButton) findViewById(R.id.rb_male);
         female = (RadioButton) findViewById(R.id.rb_female);
 
+        if(savedInstanceState == null)
+        {
+            Intent i = new Intent(this, RegistrationIntentService.class);
+            startService(i);
+        }
+
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,20 +96,8 @@ public class Registration extends AppCompatActivity {
                 }else{
                     gender = "female";
                 }
-                /*if (male.isSelected()) {
-                    gender = "male";
-                    Log.e("temp", gender);
-                } else if (female.isSelected()) {
-                    gender = "female";
-                    Log.e("temp", gender);
-                }*/
 
-                Log.e("temp", name);
-                Log.e("temp", mail);
-                Log.e("temp", pass);
-                Log.e("temp", address);
-                Log.e("temp", phone);
-                Log.e("temp", gender);
+
 
                 new Register_Web().execute();
             }
@@ -109,8 +105,7 @@ public class Registration extends AppCompatActivity {
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent i = new Intent(getApplicationContext(),Login_new.class);
-                startActivity(i);
+                finish();
             }
         });
     }
@@ -127,20 +122,15 @@ public class Registration extends AppCompatActivity {
 
         @Override
         protected Object doInBackground(Object[] objects) {
-            Log.e("temp", name);
-            Log.e("temp", mail);
-            Log.e("temp", pass);
-            Log.e("temp", address);
-            Log.e("temp", phone);
-            Log.e("temp", gender);
+
 
 
             try {
 
-                String params = "Name=" + URLEncoder.encode(String.valueOf(name), "UTF-8") + "&" + "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8") + "&" + "Phone=" + URLEncoder.encode(String.valueOf(phone) + "&" + "Address=" + URLEncoder.encode(String.valueOf(address), "UTF-8") + "&" + "Gender=" + URLEncoder.encode(String.valueOf(gender), "UTF-8"));
+                String params = "Name=" + URLEncoder.encode(String.valueOf(name), "UTF-8") + "&" + "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8") + "&" + "Phone=" + URLEncoder.encode(String.valueOf(phone),"UTF-8") + "&" + "Address=" + URLEncoder.encode(String.valueOf(address), "UTF-8") + "&" + "Gender=" + URLEncoder.encode(String.valueOf(gender), "UTF-8") + "&" + "token=" + URLEncoder.encode(String.valueOf(token), "UTF-8");
                 URL url = new URL("http://tracking.freevar.com/Tracking/registration.php?" + params);
 
-
+                Log.e("URL",""+url);
                 Object obj = null;
 
                 URLConnection con = url.openConnection();

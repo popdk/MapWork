@@ -32,7 +32,7 @@ public class RegistrationIntentService extends IntentService {
 
     private static final String TAG = "RegIntentService";
     private static final String[] TOPICS = {"global"};
-    String token, id, response;
+    public static  String token, id, response;
     int status;
 
     public RegistrationIntentService() {

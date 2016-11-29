@@ -138,6 +138,7 @@ public class LocationUpdateService extends Service {
         {
             Location location;
             String currentDateandTime;
+            int taskid = 9;
             Web(Location location)
             {
                 this.location = location;
@@ -154,7 +155,8 @@ public class LocationUpdateService extends Service {
                     HttpURLConnection httpURLConnection = null;
                     String param="latitude="+ URLEncoder.encode(String.valueOf(location.getLatitude()), "UTF-8")+
                             "&longitude="+ URLEncoder.encode(String.valueOf(location.getLongitude()), "UTF-8")+
-                            "&datetime="+URLEncoder.encode(String.valueOf(currentDateandTime), "UTF-8");
+                            "&datetime="+URLEncoder.encode(String.valueOf(currentDateandTime), "UTF-8")+
+                            "&taskid ="+URLEncoder.encode(String.valueOf(taskid),"UTF-8");
                     URL url=new URL("http://"+ WebServiceConstant.ip+"/Tracking/insert.php?"+param);
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("POST");

@@ -1,5 +1,6 @@
 package com.example.akshatdesai.googlemaptry.server;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
@@ -49,6 +50,11 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
+
+        Intent i = getIntent();
+        int id= i.getIntExtra("taskid",0);
+        Log.e("TaskId",""+id);
+
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map1);
@@ -114,7 +120,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
 
     }
-   
+
         public class Track extends AsyncTask {
 
         JSONArray array;

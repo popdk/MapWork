@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
@@ -80,7 +81,7 @@ public class ViewTask extends AppCompatActivity {
         private String msg,name[],sdate[],edate[],assignedto[],assignedby[],desc[];
         private Scanner scanner;
         private ViewTask viewTask;
-      int status,id[],length1;
+      int status,id[],length1,cstatus[];
       JSONArray array;
 
 
@@ -97,6 +98,9 @@ public class ViewTask extends AppCompatActivity {
 
                 Log.w("UID",""+UId);
                 Log.w("MID",""+mid);
+
+                UId = 4;
+                mid = 1;
                 String param = "id=" + URLEncoder.encode(UId + "", "UTF-8")+ "&" + "type="+ URLEncoder.encode(mid + "", "UTF-8");
                 HttpURLConnection httpURLConnection = null;
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/viewtask.php?" + param);
@@ -116,13 +120,19 @@ public class ViewTask extends AppCompatActivity {
                 if (i == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                     String inputLine;
-                    StringBuffer responce = new StringBuffer();
+                    StringBuffer response = new StringBuffer();
 
                     while ((inputLine = in.readLine()) != null) {
-                        responce.append(inputLine);
+                        response.append(inputLine);
                     }
-                    Log.e("responce", "" + responce);
+                    String responce;
+
                     in.close();
+                    responce = "responce"+response.toString();
+                    String[] res = responce.split("\\[");
+                    responce = "["+res[1];
+
+
                     msg = responce.toString();
                     Log.e("responce", "" + msg);
 
@@ -131,6 +141,7 @@ public class ViewTask extends AppCompatActivity {
                     status = temp.getInt("status");
                     length1 = array.length();
                     id = new int[length1];
+                    cstatus = new int[length1];
                     name = new String[length1];
                     desc = new String[length1];
                     sdate = new String[length1];
@@ -152,8 +163,13 @@ public class ViewTask extends AppCompatActivity {
                             edate[i] = temp1.getString("edate");
                             assignedto[i] = temp1.getString("assignedto");
                             assignedby[i] = temp1.getString("assignedby");
+                            cstatus[i] = temp1.getInt("cstatus");
                         }
                         Log.w("id",""+id[1]);
+                    }
+                    else
+                    {
+                        Toast.makeText(ViewTask.this,"No Data Found",Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (MalformedURLException e) {
@@ -171,9 +187,11 @@ public class ViewTask extends AppCompatActivity {
 
             try {
                 pb.setVisibility(View.GONE);
-                ViewTaskAdapter adapter = new ViewTaskAdapter(id,name,desc,sdate,edate,assignedby);
-                taskView.setAdapter(adapter);
 
+                if(status == 1) {
+                    ViewTaskAdapter adapter = new ViewTaskAdapter(ViewTask.this,id, name, desc, sdate, edate, assignedto, cstatus);
+                    taskView.setAdapter(adapter);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }

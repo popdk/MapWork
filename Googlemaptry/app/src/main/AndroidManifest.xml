@@ -37,7 +37,7 @@
             android:name="com.example.akshatdesai.googlemaptry.General.Registration"
             android:label="@string/title_activity_maps" />
         <activity
-            android:name=".General.Login_new"
+            android:name=".server.AssignTask"
             android:label="@string/title_activity_main" />
 
         <service android:name=".GPSTracker" />
@@ -46,7 +46,8 @@
         <activity
             android:name=".server.DefineRoute"
             android:label="@string/title_activity_tracking" />
-        <activity android:name=".server.AssignTask" />
+        <activity android:name=".server.ViewTask" />
+        <activity android:name=".Admin.Assign_role"/>
         <activity android:name=".server.SelectEmployee" />
         <activity android:name=".server.ManagerNavigation" />
         <activity android:name=".General.AlarmManger1" />
@@ -89,16 +90,21 @@
             android:exported="false" />
 
         <activity
-            android:name=".server.Tracking"
+            android:name=".client.Viewtask_client"
             android:label="@string/title_activity_manager_navigation">
+                   </activity>
+        <activity android:name=".server.Tracking" />
+
+
+
+        <activity android:name=".General.Login_new">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
-        <activity android:name=".server.ViewTask" />
-        <activity android:name=".client.CurrentLocation"></activity>
     </application>
 
 </manifest>
