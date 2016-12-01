@@ -3,7 +3,9 @@ package com.example.akshatdesai.googlemaptry.server;
 import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -11,6 +13,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -25,6 +28,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
+import com.example.akshatdesai.googlemaptry.Notification.QuickstartPreferences;
 import com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService;
 import com.example.akshatdesai.googlemaptry.R;
 import com.google.android.gms.common.ConnectionResult;
@@ -64,7 +68,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     private GoogleMap mMap;
     Button btn;
     EditText source, destination;
-    String source1,destination1;
+    String source1,destination1,fsource,fdestination,stp,stp1,stp2;
     LatLng start, end;
     static String s1;
     static LatLng point;
@@ -101,7 +105,19 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
             source.setText(source1);
             destination1= extras.getString("destination");
             destination.setText(destination1);
+            stp = extras.getString("stopage");
+            if(stp != null)
+            {
+                stp1 = extras.getString("stopage1");
+                if(stp1 != null)
+                {
+                    stp2 = extras.getString("stopage2");
+                }
+            }
+
         }
+
+
         if (savedInstanceState == null) {
 
             EnablePermission.checklocationservice(DefineRoute.this);
@@ -116,10 +132,10 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
             new fetchLatLongFromService(s1).execute();*/
 
-            Intent i = new Intent(this, RegistrationIntentService.class);
-            startService(i);
+            /*Intent i = new Intent(this, RegistrationIntentService.class);
+            startService(i);*/
 
-           /* mRegistrationBroadcastReceiver = new BroadcastReceiver() {
+            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     // mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
@@ -135,7 +151,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
                         Log.e("Nottokensent",""+sentToken);
                     }
                 }
-            };*/
+            };
 
 
             // Toast.makeText(DefineRoute.this,"After First",Toast.LENGTH_SHORT).show();
@@ -202,20 +218,37 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
                  destination.setText(destination1);
              }*/
 
-            if (source1.equals("") || destination1.equals("")) {
+
+            fsource = source.getText().toString();
+            fdestination= destination.getText().toString();
+
+            if (fsource.equals("") || fdestination.equals("")) {
                 Toast.makeText(DefineRoute.this, "Please enter Source and destination Address", Toast.LENGTH_SHORT).show();
             } else {
 
 
-                if (source1.equalsIgnoreCase("my location")) {
+                if (fsource.equalsIgnoreCase("my location")) {
                     myLocation();
                 } else {
-                    new fetchLatLongFromService(source1).execute();
+                    new fetchLatLongFromService(fsource).execute();
                 }
-                if (destination1.equalsIgnoreCase("my location")) {
+                if (fdestination.equalsIgnoreCase("my location")) {
                     myLocation();
                 } else {
-                    new fetchLatLongFromService(destination1).execute();
+                    new fetchLatLongFromService(fdestination).execute();
+                }
+
+                if(stp != null)
+                {
+                    new fetchLatLong(stp).execute();
+                    if(stp1 != null)
+                    {
+                        new fetchLatLong(stp1).execute();
+                        if(stp2 != null)
+                        {
+                            new fetchLatLong(stp2).execute();
+                        }
+                    }
                 }
 
 
@@ -339,6 +372,8 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
     }
+
+
 
 
     public class fetchLatLongFromService extends
@@ -491,6 +526,137 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
             }
         }
     }
+
+
+    public class fetchLatLong extends
+            AsyncTask<Void, Void, String> {
+        String place;
+        ProgressDialog pd;
+        String msg;
+
+
+
+        public fetchLatLong(String place) {
+            super();
+            this.place = place;
+
+        }
+
+        @Override
+        protected void onCancelled() {
+            // TODO Auto-generated method stub
+            super.onCancelled();
+            this.cancel(false);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            // i++;
+            pd = new ProgressDialog(DefineRoute.this);
+            pd.setTitle("Please Wait");
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            try {
+                String param = "address=" + URLEncoder.encode(String.valueOf(this.place), "UTF-8");
+                String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
+                        + param + "&sensor=false&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
+
+
+                URL url = new URL(googleMapUrl);
+                Log.e("URL",""+url);
+                URLConnection con = url.openConnection();
+                HttpURLConnection httpURLConnection = (HttpURLConnection) con;
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestProperty("Accept", "application/json");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+
+
+
+                int rescode = httpURLConnection.getResponseCode();
+                Log.e("Responce",""+rescode);
+                if (rescode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer responce = new StringBuffer();
+                    while ((inputLine = in.readLine()) != null) {
+                        responce.append(inputLine);
+                    }
+                    in.close();
+                    msg = responce.toString();
+                }
+                return msg;
+            }  catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            // TODO Auto-generated method stub
+            super.onPostExecute(result);
+            pd.cancel();
+
+            try {
+                JSONObject jsonObj = new JSONObject(result.toString());
+                String status = jsonObj.getString("status");
+
+
+                if (status.equals("ZERO_RESULTS")) {
+                    Toast.makeText(DefineRoute.this, "Can't Locate this Addtess", Toast.LENGTH_LONG).show();
+                } else {
+
+                    JSONArray resultJsonArray = jsonObj.getJSONArray("results");
+
+                    // Extract the Place descriptions from the results
+                    // resultList = new ArrayList<String>(resultJsonArray.length());
+
+                    JSONObject before_geometry_jsonObj = resultJsonArray
+                            .getJSONObject(0);
+
+                    JSONObject geometry_jsonObj = before_geometry_jsonObj
+                            .getJSONObject("geometry");
+
+                    JSONObject location_jsonObj = geometry_jsonObj
+                            .getJSONObject("location");
+
+                    String lat_helper = location_jsonObj.getString("lat");
+                    double lat = Double.valueOf(lat_helper);
+
+
+                    String lng_helper = location_jsonObj.getString("lng");
+                    double lng = Double.valueOf(lng_helper);
+
+                    Toast.makeText(DefineRoute.this, "Lat:" + lat + " Long :" + lng, Toast.LENGTH_LONG).show();
+                    point = new LatLng(lat, lng);
+
+
+                 mMap.addMarker(new MarkerOptions().title("Stoppage").position(point));
+
+
+                }
+
+            } catch (JSONException e1) {
+                e1.printStackTrace();
+            }
+
+
+
+        }
+    }
+
+
 
     public String makeURL (double sourcelat, double sourcelog, double destlat, double destlog ){
         StringBuilder urlString = new StringBuilder();

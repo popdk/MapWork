@@ -156,6 +156,13 @@ public class ManagerNavigation extends AppCompatActivity
             startActivity(i);
 
         }
+        else if (id == R.id.my_route) {
+            /*Intent i=new Intent(getApplicationContext(),ViewTask.class);
+            startActivity(i);*/
+            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
+
+        }
+        
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

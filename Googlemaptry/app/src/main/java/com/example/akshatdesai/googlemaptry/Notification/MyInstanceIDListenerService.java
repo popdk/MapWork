@@ -4,8 +4,9 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.google.android.gms.iid.InstanceIDListenerService;
+import com.google.firebase.iid.FirebaseInstanceIdService;
 
-public class MyInstanceIDListenerService extends InstanceIDListenerService {
+public class MyInstanceIDListenerService extends FirebaseInstanceIdService {
 
     private static final String TAG = "MyInstanceIDLS";
 

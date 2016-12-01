@@ -83,6 +83,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
     static int m = 0;
     public String[] empNames;
     public Integer empIds[];
+
     Sessionmanager sessionManager;
 
     ArrayList<String> employeeList;
@@ -102,11 +103,13 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         at_startingdate.setFocusableInTouchMode(false);
         at_startingtime= (EditText)findViewById(R.id.task_starting_time) ;
         at_startingtime.setInputType(InputType.TYPE_NULL);
+        at_startingtime.setFocusableInTouchMode(false);
         at_endingdate = (EditText) findViewById(R.id.task_ending_date);
         at_endingdate.setInputType(InputType.TYPE_NULL);
         at_endingdate.setFocusableInTouchMode(false);
         at_endingtime= (EditText)findViewById(R.id.task_ending_time) ;
         at_endingtime.setInputType(InputType.TYPE_NULL);
+        at_endingtime.setFocusableInTouchMode(false);
         at_source=(EditText) findViewById(R.id.source_location);
         at_destination=(EditText) findViewById(R.id.destination);
         at_speed = (EditText) findViewById(R.id.travelling_speed);
@@ -153,7 +156,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Calendar newTime = Calendar.getInstance();
-                newTime.set(hourOfDay,minute);
+                //newTime.set(hourOfDay,minute);
                 at_startingtime.setText(hourOfDay +":" + minute);
             }
         }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE),false);
@@ -187,7 +190,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 Calendar newTime = Calendar.getInstance();
-                newTime.set(hourOfDay,minute);
+                //newTime.set(hourOfDay,minute);
                 at_endingtime.setText(hourOfDay +":" + minute);
             }
         }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE),false);
@@ -206,84 +209,82 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
             @RequiresApi(api = Build.VERSION_CODES.ICE_CREAM_SANDWICH_MR1)
             @Override
             public void onClick(View v) {
-
                 try {
                     //String sTime= new SimpleDateFormat("HH:mm:ss").format(at_startingdate);
-                    SimpleDateFormat format = new SimpleDateFormat("HH:mm");
+                    SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
                    /* sDate=format.format(Date.parse(at_startingdate.getText().toString()));
                     Log.e("sdate", "" + sDate);*/
-                        sDate = at_startingdate.getText().toString();
-                        String[] y1 = sDate.split(" ");
-                        String[] w1 = y1[0].split("/");
-                        sTime=at_startingtime.getText().toString();
+                    sDate = at_startingdate.getText().toString();
+                    String[] y1 = sDate.split(" ");
+                    String[] w1 = y1[0].split("/");
+                    sTime = at_startingtime.getText().toString();
                    /* String z1=y1[1];
                         String sTime=format.format(Date.parse(z1) );
                     Log.e("Stime:", sTime);*/
-                        sDate = "20"+ w1[2] + "-" + w1[1] + "-" + w1[0] +" "+ sTime;
-                        Log.e("Sdate", ""+ sDate);
+                    sDate = "20" + w1[2] + "-" + w1[1] + "-" + w1[0] + " " + sTime;
+                    Log.e("Sdate", "" + sDate);
 
-                   // eDate = at_endingdate.getText().toString();
+                    // eDate = at_endingdate.getText().toString();
                   /* eDate=format.format(Date.parse(at_endingdate.getText().toString()));*/
                    /* Log.e("Edate", "" + eDate);*/
                     /*String eTime= new SimpleDateFormat("HH:mm:ss").format(at_endingdate);*/
                     eDate = at_endingdate.getText().toString();
-                        String[] y2 = eDate.split(" ");
-                        String[] w2 = y2[0].split("/");
+                    String[] y2 = eDate.split(" ");
+                    String[] w2 = y2[0].split("/");
                        /* String z2=y2[1];
                     *//*eTime=format.format(Date.parse(z2) );
                     Log.e("etime:", eTime);*/
-                    eTime=at_endingtime.getText().toString();
-                    eDate = "20"+ w2[2] + "-" + w2[1] + "-" + w2[0] +" "+ eTime;
+                    eTime = at_endingtime.getText().toString();
+                    eDate = "20" + w2[2] + "-" + w2[1] + "-" + w2[0] + " " + eTime;
                     Log.e("Edate", "" + eDate);
                     tName = at_taskname.getText().toString();
                     tDesc = at_taskdescription.getText().toString();
-                    speed= at_speed.getText().toString();
-                    source= at_source.getText().toString();
-                    destination= at_destination.getText().toString();
-                    stoppage=at_stoppage.getText().toString();
-                    stoppage1=at_stoppage1.getText().toString();
-                    stoppage2=at_stoppage2.getText().toString();
+                    speed = at_speed.getText().toString();
+                    source = at_source.getText().toString();
+                    destination = at_destination.getText().toString();
+                    stoppage = at_stoppage.getText().toString();
+                    stoppage1 = at_stoppage1.getText().toString();
+                    stoppage2 = at_stoppage2.getText().toString();
 
-                   /* String[] separate=sDate.split(" ");
-                    String sDateComparator=separate[0].replaceAll("-","");
-                    Log.e("sDateComparator",  sDateComparator);
-                    String sTimeComparator=separate[1].replaceAll(":","");
-                    Log.e("sTimeComparator",  sTimeComparator);
-                    String[] separate1=eDate.split(" ");
-                    String eDateComparator=separate[0].replaceAll("-","");
-                    Log.e("eDateComparator",  eDateComparator);
-                    String eTimeComparator=separate[1].replaceAll(":","");
-                    Log.e("eTimeComparator",  eTimeComparator);
-*/
-                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("")|| sTime.equals("") || eTime.equals("")|| source.equals("")|| destination.equals("") ||speed.equals("") || stoppage.equals("") ) {
+                    String[] separate = sDate.split(" ");
+                    String sDateComparator = separate[0].replaceAll("-", "");
+                    //Log.e("sDateComparator", sDateComparator);
+                    String sTimeComparator = separate[1].replaceAll(":", "");
+                    // Log.e("sTimeComparator", sTimeComparator);
+                    String[] separate1 = eDate.split(" ");
+                    String eDateComparator = separate1[0].replaceAll("-", "");
+                    // Log.e("eDateComparator", eDateComparator);
+                    String eTimeComparator = separate1[1].replaceAll(":", "");
+                    //Log.e("eTimeComparator", eTimeComparator);
+
+                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("") || sTime.equals("") || eTime.equals("") || source.equals("") || destination.equals("") || speed.equals("") || stoppage.equals("")) {
                         Toast.makeText(getApplicationContext(), "Insufficient details..Enter all the details", Toast.LENGTH_SHORT).show();
                     } else if (at_startingdate.length() != at_endingdate.length()) {
                         Toast.makeText(getApplicationContext(), "Select valid End date..", Toast.LENGTH_SHORT).show();
                         at_endingdate.setText("");
                         at_endingdate.callOnClick();
-                    } /*else if (Integer.parseInt(sDateComparator) > Integer.parseInt(eDateComparator)){
-                        Toast.makeText(getApplicationContext(),"Ending date must be greater than starting date",Toast.LENGTH_LONG).show( );
+                    } else if (Integer.parseInt(sDateComparator) > Integer.parseInt(eDateComparator)) {
+                        Toast.makeText(getApplicationContext(), "Ending date must be greater than starting date", Toast.LENGTH_LONG).show();
                         at_endingdate.setText("");
                         at_endingdate.callOnClick();
-                    }
-                    else if(Integer.parseInt(sDateComparator) == Integer.parseInt(eDateComparator))
-                    {
-                        if(Integer.parseInt(sTimeComparator) > Integer.parseInt(eTimeComparator))
-                        {
-                            Toast.makeText(getApplicationContext(),"Ending time must be greater than starting time",Toast.LENGTH_LONG).show( );
+                    } else if (Integer.parseInt(sDateComparator) == Integer.parseInt(eDateComparator)) {
+                        if (Integer.parseInt(sTimeComparator) > Integer.parseInt(eTimeComparator)) {
+                            Toast.makeText(getApplicationContext(), "Ending time must be greater than starting time", Toast.LENGTH_LONG).show();
                             at_endingtime.setText("");
                             at_endingtime.callOnClick();
                         }
-                    }*/
-                    else {
+                        else
+                        {
+                            new AddTask().execute();
+
+                        }
+
+                    } else {
                         new AddTask().execute();
                     }
-
-
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Toast.makeText(getApplicationContext(), "Select valid Starting date..", Toast.LENGTH_SHORT).show();
-                    at_startingdate.setText("");
-                    at_startingdate.callOnClick();
+                    Toast.makeText(getApplicationContext(), "Plz enter valid detials", Toast.LENGTH_SHORT).show();
+                    at_startingdate.setText(" ");
                 }
             }
         });
@@ -298,17 +299,36 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
             public void onClick(View v) {
                 source= at_source.getText().toString();
                 destination= at_destination.getText().toString();
-                    if(source.equals("")|| destination.equals("") )
-                    {
-                        Toast.makeText(AssignTask.this,"Please enter Source and destination",Toast.LENGTH_LONG).show();
-                    }
-                    else {
-                        Intent callactivity = new Intent(AssignTask.this, DefineRoute.class);
-                        callactivity.putExtra("Source",source);
-                        callactivity.putExtra("destination",destination);
-                        startActivity(callactivity);
-                    }
+                if(source.equals("")|| destination.equals("") )
+                {
+                    Toast.makeText(AssignTask.this,"Please enter Source and destination",Toast.LENGTH_LONG).show();
                 }
+                else {
+                    Intent callactivity = new Intent(AssignTask.this, DefineRoute.class);
+                    callactivity.putExtra("Source",source);
+                    callactivity.putExtra("destination",destination);
+
+                    stoppage=at_stoppage.getText().toString();
+                    stoppage1=at_stoppage1.getText().toString();
+                    stoppage2=at_stoppage2.getText().toString();
+
+                    if(!stoppage.equals(""))
+                    {
+                        callactivity.putExtra("stopage",stoppage);
+
+                        if(!stoppage1.equals(""))
+                        {
+                            callactivity.putExtra("stopage1",stoppage1);
+
+                            if(!stoppage2.equals(""))
+                            {
+                                callactivity.putExtra("stopage2",stoppage2);
+                            }
+                        }
+                    }
+                    startActivity(callactivity);
+                }
+            }
 
         });
 
@@ -526,4 +546,79 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         }
     }
 
+
+    public class SendMessage extends AsyncTask {
+        @Override
+        protected void onPreExecute() {
+            pd = new ProgressDialog(AssignTask.this);
+            pd.setMessage("Adding Task.. please wait");
+            pd.show();
+            pd.setCancelable(false);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            try {
+                String param = "TaskName=" + URLEncoder.encode(String.valueOf(tName), "UTF-8") + "&"
+
+                        + "AssignedBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&"
+                        + "AssignedTo=" + URLEncoder.encode(String.valueOf(employeeId), "UTF-8");
+
+
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/AddTaskWebservice.php?" + param);
+                URLConnection con = url.openConnection();
+                HttpURLConnection httpURLConnection = (HttpURLConnection) con;
+
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestProperty("Accept", "application/json");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                int rescode = httpURLConnection.getResponseCode();
+                Log.e("I", "" + url);
+//
+                if (rescode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer responce = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        responce.append(inputLine);
+                    }
+
+                    in.close();
+                    got = responce.toString();
+                    got=got.trim();
+                    Log.e("responce",got);
+                }
+
+
+
+//                Log.e("from", got);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+            super.onPostExecute(o);
+            pd.cancel();
+            if (got.equals("1")) {
+                Toast.makeText(AssignTask.this, "Task is assigned Successfully", Toast.LENGTH_SHORT).show();
+
+
+
+
+            } else {
+                Toast.makeText(AssignTask.this, "Problem in assigning Task.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

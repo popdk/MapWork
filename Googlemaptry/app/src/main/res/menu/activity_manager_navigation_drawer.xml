@@ -4,13 +4,17 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/assign_task"
-            android:title="Assign Task" />
+            android:title="Assign Task"
+            android:icon="@drawable/cir"/>
         <item
             android:id="@+id/Add_Employee"
             android:title="Add Employee" />
         <item
             android:id="@+id/view_task"
             android:title="View Task" />
+        <item
+            android:id="@+id/my_route"
+            android:title="Follow Me" />
     </group>
 
 </menu>

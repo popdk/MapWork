@@ -79,7 +79,11 @@ public class Registration extends AppCompatActivity {
         {
             Intent i = new Intent(this, RegistrationIntentService.class);
             startService(i);
+
+
         }
+
+
 
         submit.setOnClickListener(new View.OnClickListener() {
             @Override

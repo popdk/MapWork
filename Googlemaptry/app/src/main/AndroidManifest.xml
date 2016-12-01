@@ -19,7 +19,9 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:name="android.support.multidex.MultiDexApplication"
+        >
 
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -94,7 +96,7 @@
             android:label="@string/title_activity_manager_navigation">
                    </activity>
         <activity android:name=".server.Tracking" />
-
+        <activity android:name=".client.CurrentLocation"/>
 
 
         <activity android:name=".General.Login_new">

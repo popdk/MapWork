@@ -102,7 +102,7 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
 
         if(cstatus[position] == 2)
         {
-            holder.status.setText("Not Completed");
+            holder.status.setText("Not Started");
             holder.ViewInMap.setVisibility(View.GONE);
         }
         else if(cstatus[position] == 1)
