@@ -54,16 +54,7 @@
         <activity android:name=".server.ManagerNavigation" />
         <activity android:name=".General.AlarmManger1" />
 
-        <receiver
-            android:name="com.google.android.gms.gcm.GcmReceiver"
-            android:exported="true"
-            android:permission="com.google.android.c2dm.permission.SEND">
-            <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
-                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
-            </intent-filter>
-        </receiver>
         <!-- [END gcm_receiver] -->
 
         <receiver android:name=".AlarmRecevier">
@@ -74,16 +65,16 @@
             android:name=".Notification.MyGcmListenerService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
         <!-- [END gcm_listener] -->
         <!-- [START instanceId_listener] -->
         <service
             android:name=".Notification.MyInstanceIDListenerService"
-            android:exported="false">
+            >
             <intent-filter>
-                <action android:name="com.google.android.gms.iid.InstanceID" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->

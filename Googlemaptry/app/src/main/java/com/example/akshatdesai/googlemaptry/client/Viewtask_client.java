@@ -44,7 +44,7 @@ public class Viewtask_client extends AppCompatActivity {
     int UId, mid;
     Toolbar mtoolbar;
     ProgressDialog pd1;
-    String msg, name[], sdate[], edate[], assignedto[], assignedby[], desc[];
+    String msg, name[], sdate[], edate[], assignedto[], assignedby[], desc[],source[],destination[],stopage[];
     Sessionmanager sessionmanager;
     int status, id[], length1, cstatus[];
     JSONArray array;
@@ -170,6 +170,9 @@ public class Viewtask_client extends AppCompatActivity {
                     edate = new String[length1];
                     assignedby = new String[length1];
                     assignedto = new String[length1];
+                    source = new String[length1];
+                    destination = new String[length1];
+                    stopage = new String[length1];
 
 
                     if (status == 1)
@@ -183,7 +186,9 @@ public class Viewtask_client extends AppCompatActivity {
                             edate[i] = temp1.getString("edate");
                             assignedto[i] = temp1.getString("assignedto");
                             assignedby[i] = temp1.getString("assignedby");
-
+                            source[i] = temp1.getString("source");
+                            destination[i] = temp1.getString("destination");
+                            stopage[i] = temp1.getString("stopage");
                             Log.e("desc" , ""+desc[i]);
                             Log.e("desc" , ""+sdate[i]);
                             Log.e("desc" , ""+edate[i]);
@@ -216,7 +221,7 @@ public class Viewtask_client extends AppCompatActivity {
                     Log.e("name",""+name[i]);
                 }
 
-                ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,Viewtask_client.this);
+                ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,source,destination,stopage,Viewtask_client.this);
                 taskView.setAdapter(adapter);
 
             } catch (Exception e) {

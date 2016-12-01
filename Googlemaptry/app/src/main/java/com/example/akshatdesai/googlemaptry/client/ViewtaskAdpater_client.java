@@ -25,16 +25,20 @@ import java.util.Date;
 
 public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater_client.Viewholder1> {
     int id[];
-    String title[], desc[], startdate[], enddate[], assignedby[];
+    String title[], desc[], startdate[], enddate[], assignedby[],source[],destination[],stopage[];
     Context context;
+    Intent callactivity;
 
-    public ViewtaskAdpater_client(int id[], String title[], String desc[], String startdate[], String enddate[], String assignedby[], Context context) {
+    public ViewtaskAdpater_client(int id[], String title[], String desc[], String startdate[], String enddate[], String assignedby[],String source[],String destination[], String stopage[] , Context context) {
         this.id = id;
         this.title = title;
         this.desc = desc;
         this.startdate = startdate;
         this.enddate = enddate;
         this.assignedby = assignedby;
+        this.source = source;
+        this.destination = destination;
+        this.stopage = stopage;
         this.context = context;
 
         Log.e("id length", "" +id.length +"  "  + this.id.length);
@@ -94,14 +98,28 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
         holder.description.setText(desc[position]);
         holder.startdate.setText(startdate[position]);
         holder.assignedby.setText(assignedby[position]);
+        String stop = stopage[position];
+         callactivity = new Intent(context, DefineRoute.class);
+
+        if(!stop.equals(",,"))
+        {
+
+            String s[]= stop.split(",");
+            for(int i =0;i<s.length;i++)
+            {
+                callactivity.putExtra("stopage"+i,s[i]);
+            }
+
+        }
+
 
         holder.ViewInMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent callactivity = new Intent(context, DefineRoute.class);
-                callactivity.putExtra("Source","Ahmedabad");
-                callactivity.putExtra("destination","Surat");
+
+                callactivity.putExtra("Source",source[position]);
+                callactivity.putExtra("destination",destination[position]);
                 context.startActivity(callactivity);
             }
         });

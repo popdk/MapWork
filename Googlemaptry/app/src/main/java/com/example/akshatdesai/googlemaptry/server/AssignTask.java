@@ -155,8 +155,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
 
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                Calendar newTime = Calendar.getInstance();
-                //newTime.set(hourOfDay,minute);
+
                 at_startingtime.setText(hourOfDay +":" + minute);
             }
         }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE),false);
@@ -189,8 +188,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         timePickerDialog2 = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
 
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                Calendar newTime = Calendar.getInstance();
-                //newTime.set(hourOfDay,minute);
+
                 at_endingtime.setText(hourOfDay +":" + minute);
             }
         }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE),false);
@@ -221,7 +219,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                    /* String z1=y1[1];
                         String sTime=format.format(Date.parse(z1) );
                     Log.e("Stime:", sTime);*/
-                    sDate = "20" + w1[2] + "-" + w1[1] + "-" + w1[0] + " " + sTime;
+                    sDate = "20" + w1[2] + "-" + w1[1] + "-" + w1[0] + " " + sTime + ":00";
                     Log.e("Sdate", "" + sDate);
 
                     // eDate = at_endingdate.getText().toString();
@@ -235,7 +233,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                     *//*eTime=format.format(Date.parse(z2) );
                     Log.e("etime:", eTime);*/
                     eTime = at_endingtime.getText().toString();
-                    eDate = "20" + w2[2] + "-" + w2[1] + "-" + w2[0] + " " + eTime;
+                    eDate = "20" + w2[2] + "-" + w2[1] + "-" + w2[0] + " " + eTime + ":00";
                     Log.e("Edate", "" + eDate);
                     tName = at_taskname.getText().toString();
                     tDesc = at_taskdescription.getText().toString();
@@ -257,7 +255,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                     String eTimeComparator = separate1[1].replaceAll(":", "");
                     //Log.e("eTimeComparator", eTimeComparator);
 
-                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("") || sTime.equals("") || eTime.equals("") || source.equals("") || destination.equals("") || speed.equals("") || stoppage.equals("")) {
+                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("") || sTime.equals("") || eTime.equals("") || source.equals("") || destination.equals("") || speed.equals("")) {
                         Toast.makeText(getApplicationContext(), "Insufficient details..Enter all the details", Toast.LENGTH_SHORT).show();
                     } else if (at_startingdate.length() != at_endingdate.length()) {
                         Toast.makeText(getApplicationContext(), "Select valid End date..", Toast.LENGTH_SHORT).show();
@@ -276,14 +274,15 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                         else
                         {
                             new AddTask().execute();
-
+                            new SendMessage().execute();
                         }
 
                     } else {
                         new AddTask().execute();
+                        new SendMessage().execute();
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
-                    Toast.makeText(getApplicationContext(), "Plz enter valid detials", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
                     at_startingdate.setText(" ");
                 }
             }
@@ -314,7 +313,7 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
                     if(!stoppage.equals(""))
                     {
-                        callactivity.putExtra("stopage",stoppage);
+                        callactivity.putExtra("stopage0",stoppage);
 
                         if(!stoppage1.equals(""))
                         {
@@ -326,6 +325,10 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                             }
                         }
                     }
+
+
+
+
                     startActivity(callactivity);
                 }
             }
@@ -548,6 +551,8 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
 
     public class SendMessage extends AsyncTask {
+
+        JSONObject object;
         @Override
         protected void onPreExecute() {
             pd = new ProgressDialog(AssignTask.this);
@@ -559,13 +564,13 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
         @Override
         protected Object doInBackground(Object[] params) {
             try {
-                String param = "TaskName=" + URLEncoder.encode(String.valueOf(tName), "UTF-8") + "&"
+                String param =  "AssignedBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&"
+                        + "AssignedTo=" + URLEncoder.encode(String.valueOf(employeeId), "UTF-8") +"&"
+                        + "title=" + URLEncoder.encode(String.valueOf(tName), "UTF-8") +"&"
+                        + "description=" + URLEncoder.encode(String.valueOf(tDesc), "UTF-8");
 
-                        + "AssignedBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&"
-                        + "AssignedTo=" + URLEncoder.encode(String.valueOf(employeeId), "UTF-8");
 
-
-                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/AddTaskWebservice.php?" + param);
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/sendmessage.php?" + param);
                 URLConnection con = url.openConnection();
                 HttpURLConnection httpURLConnection = (HttpURLConnection) con;
 
@@ -589,7 +594,11 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
 
                     in.close();
                     got = responce.toString();
-                    got=got.trim();
+
+                     object = new JSONObject(got);
+
+
+                   // got=got.trim();
                     Log.e("responce",got);
                 }
 
@@ -602,15 +611,24 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
             return null;
         }
 
         @Override
         protected void onPostExecute(Object o) {
+
+            int s =0;
             super.onPostExecute(o);
             pd.cancel();
-            if (got.equals("1")) {
+            try {
+                 s = Integer.parseInt(object.getString("success"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (s == 1) {
                 Toast.makeText(AssignTask.this, "Task is assigned Successfully", Toast.LENGTH_SHORT).show();
 
 
@@ -621,4 +639,5 @@ public class AssignTask extends AppCompatActivity implements AdapterView.OnItemS
             }
         }
     }
+
 }

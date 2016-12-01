@@ -10,9 +10,9 @@ import android.util.Log;
 
 //import com.example.akshatdesai.assetmanagment.R;
 import com.example.akshatdesai.googlemaptry.R;
-import com.google.android.gms.gcm.GcmPubSub;
+/*import com.google.android.gms.gcm.GcmPubSub;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.android.gms.iid.InstanceID;
+import com.google.android.gms.iid.InstanceID;*/
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,12 +52,12 @@ public class RegistrationIntentService extends IntentService {
                 // R.string.gcm_defaultSenderId (the Sender ID) is typically derived from google-services.json.
                 // See https://developers.google.com/cloud-messaging/android/start for details on this file.
                 // [START get_token]
-                InstanceID instanceID = InstanceID.getInstance(this);
+               /* InstanceID instanceID = InstanceID.getInstance(this);
                 token = instanceID.getToken(getString(R.string.gcm_defaultSenderId),
                         GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
                 Log.e("in service", "" + token);
                 // [END get_token]
-                Log.i(TAG, "GCM Registration Token: " + token);
+                Log.i(TAG, "GCM Registration Token: " + token);*/
 
                 // TODO: Implement this method to send any registration to your app's servers.
              //   sendRegistrationToServer(token);
@@ -83,9 +83,9 @@ public class RegistrationIntentService extends IntentService {
               //  sharedPreferences.edit().putBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false).apply();
             }
             // Notify UI that registration has completed, so the progress indicator can be hidden.
-            Intent registrationComplete = new Intent(QuickstartPreferences.REGISTRATION_COMPLETE);
+         /*   Intent registrationComplete = new Intent(QuickstartPreferences.REGISTRATION_COMPLETE);
             LocalBroadcastManager.getInstance(this).sendBroadcast(registrationComplete);
-            Log.e("service", "registration complete");
+            Log.e("service", "registration complete");*/
         }
    // }
 
@@ -163,7 +163,7 @@ public class RegistrationIntentService extends IntentService {
      *
      * @param token The new token.
      */
-    private void sendRegistrationToServer(String token) {
+    public void sendRegistrationToServer(String token) {
         // Add custom implementation, as needed.
     }
 
@@ -175,11 +175,7 @@ public class RegistrationIntentService extends IntentService {
      */
     // [START subscribe_topics]
     private void subscribeTopics(String token) throws IOException {
-        GcmPubSub pubSub = GcmPubSub.getInstance(this);
-        for (String topic : TOPICS) {
-            Log.e("service","subscribe topics");
-            pubSub.subscribe(token, "/topics/" + topic, null);
-        }
+       // FirebaseMessaging.getInstance().subscribeToTopic("mytopic");
     }
     // [END subscribe_topics]
 

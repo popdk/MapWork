@@ -39,6 +39,7 @@ import java.net.URLEncoder;
 import javax.net.ssl.HttpsURLConnection;
 
 import static android.R.id.message;
+import static com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDListenerService.refreshedToken;
 import static com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService.token;
 
 public class Registration extends AppCompatActivity {
@@ -131,7 +132,7 @@ public class Registration extends AppCompatActivity {
 
             try {
 
-                String params = "Name=" + URLEncoder.encode(String.valueOf(name), "UTF-8") + "&" + "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8") + "&" + "Phone=" + URLEncoder.encode(String.valueOf(phone),"UTF-8") + "&" + "Address=" + URLEncoder.encode(String.valueOf(address), "UTF-8") + "&" + "Gender=" + URLEncoder.encode(String.valueOf(gender), "UTF-8") + "&" + "token=" + URLEncoder.encode(String.valueOf(token), "UTF-8");
+                String params = "Name=" + URLEncoder.encode(String.valueOf(name), "UTF-8") + "&" + "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8") + "&" + "Phone=" + URLEncoder.encode(String.valueOf(phone),"UTF-8") + "&" + "Address=" + URLEncoder.encode(String.valueOf(address), "UTF-8") + "&" + "Gender=" + URLEncoder.encode(String.valueOf(gender), "UTF-8") + "&" + "token=" + URLEncoder.encode(String.valueOf(refreshedToken), "UTF-8");
                 URL url = new URL("http://tracking.freevar.com/Tracking/registration.php?" + params);
 
                 Log.e("URL",""+url);
@@ -200,5 +201,8 @@ public class Registration extends AppCompatActivity {
 
         }
     }
+
+
+
 
 }

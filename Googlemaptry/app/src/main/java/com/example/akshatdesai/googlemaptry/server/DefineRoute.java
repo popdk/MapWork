@@ -105,7 +105,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
             source.setText(source1);
             destination1= extras.getString("destination");
             destination.setText(destination1);
-            stp = extras.getString("stopage");
+            stp = extras.getString("stopage0");
             if(stp != null)
             {
                 stp1 = extras.getString("stopage1");

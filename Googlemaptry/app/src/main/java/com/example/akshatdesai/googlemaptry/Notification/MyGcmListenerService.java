@@ -13,30 +13,26 @@ import android.util.Log;
 import com.example.akshatdesai.googlemaptry.server.DefineRoute;
 //import com.example.android.assetmanagement.Activity.MainActivity;
 import com.google.android.gms.gcm.GcmListenerService;
+import com.google.firebase.messaging.FirebaseMessagingService;
+import com.google.firebase.messaging.RemoteMessage;
 
-public class MyGcmListenerService extends GcmListenerService {
+import java.util.Map;
+
+public class MyGcmListenerService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
 
     /**
      * Called when message is received.
      *
-     * @param from SenderID of the sender.
-     * @param data Data bundle containing message data as key/value pairs.
-     *             For Set of keys use data.keySet().
+     * @param message SenderID of the sender.
      */
     // [START receive_message]
     @Override
-    public void onMessageReceived(String from, Bundle data) {
-        String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
-        Log.d(TAG, "Message: " + message);
+    public void onMessageReceived(RemoteMessage message){
+        String from = message.getFrom();
+        Map data = message.getData();
 
-        if (from.startsWith("/topics/")) {
-            // message received from some topic.
-        } else {
-            // normal downstream message.
-        }
 
         // [START_EXCLUDE]
         /**
@@ -50,7 +46,7 @@ public class MyGcmListenerService extends GcmListenerService {
          * In some cases it may be useful to show a notification indicating to the user
          * that a message was received.
          */
-        sendNotification(message);
+       // sendNotification(data);
         // [END_EXCLUDE]
     }
     // [END receive_message]
