@@ -30,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,6 +46,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     String time[];
     private String TAG ="TRACKING";
     Timer t;
+    int id;
     CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +54,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         setContentView(R.layout.activity_tracking);
 
         Intent i = getIntent();
-        int id= i.getIntExtra("taskid",0);
+         id= i.getIntExtra("taskid",0);
         Log.e("TaskId",""+id);
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
@@ -168,7 +170,8 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                 String param = "latitude=" + URLEncoder.encode(String.valueOf(location.getLatitude()), "UTF-8") +
                         "&longitude=" + URLEncoder.encode(String.valueOf(location.getLongitude()), "UTF-8") +
                         "&datetime=" + URLEncoder.encode(String.valueOf(currentDateandTime), "UTF-8");*/
-                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/fetch.php");
+                String param = "id="+ URLEncoder.encode(String.valueOf(id), "UTF-8");
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/fetch.php?"+param);
                 httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
                 httpURLConnection.setDoOutput(true);

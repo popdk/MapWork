@@ -3,6 +3,8 @@ package com.example.akshatdesai.googlemaptry.General;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,8 +17,10 @@ import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
 import com.example.akshatdesai.googlemaptry.R;
+import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.example.akshatdesai.googlemaptry.client.Client_Home;
 import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
-import com.example.akshatdesai.googlemaptry.client.Viewtask_client;
+
 import com.example.akshatdesai.googlemaptry.server.ManagerNavigation;
 
 import org.json.JSONArray;
@@ -57,6 +61,14 @@ boolean res;
         sessionManager = new Sessionmanager(getApplicationContext());
         res = sessionManager.checklogin();
 
+        //Intent it = getIntent();
+        if(getIntent().getStringExtra("Key") != null)
+        {
+            String sop = getIntent().getStringExtra("Key");
+            Log.e("SOP",sop);
+        }
+
+
 
 
         if (res) {
@@ -64,7 +76,7 @@ boolean res;
             i = Integer.parseInt(hm.get(KEY_mid));
 
             if(i==0){
-                Intent i = new Intent(Login_new.this,Viewtask_client.class);
+                Intent i = new Intent(Login_new.this,Client_Home.class);
                 startActivity(i);
             }else if(i == 1){
                 Intent i = new Intent(Login_new.this,ManagerNavigation.class);
@@ -108,6 +120,13 @@ boolean res;
         }
     }
 
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
+    }
+
     public class Check_web extends AsyncTask {
 
         @Override
@@ -130,7 +149,7 @@ boolean res;
                 String param = "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8");
 
                 Log.e("params", param);
-                URL url = new URL("http://tracking.freevar.com/Tracking/login.php?" + param);
+                URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/login.php?" + param);
                 Log.e("url", ""+url);
 
                 Object obj = null;
@@ -206,7 +225,7 @@ boolean res;
                 Toast.makeText(Login_new.this, "Successful", Toast.LENGTH_SHORT).show();
                 sessionManager.CreateLoginSession(id1,mail1,pass1,m_id1);
                 if(m_id1.equals("0")){
-                    Intent i = new Intent(Login_new.this,Viewtask_client.class);
+                    Intent i = new Intent(Login_new.this,Client_Home.class);
                     startActivity(i);
                 }else if(m_id1.equals("1")){
                     Intent i = new Intent(Login_new.this,ManagerNavigation.class);

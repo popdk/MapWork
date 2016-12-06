@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.akshatdesai.googlemaptry.General.Registration;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
+import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -105,7 +106,7 @@ public class Assign_role extends AppCompatActivity {
 //                Log.e("AP", "" + manager);
                 //String param = "OId=" + URLEncoder.encode(MainActivity.id + "", "UTF-8");
 
-                URL url = new URL("http://tracking.freevar.com/Tracking/assign.php");
+                URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/assign.php");
                 Log.e("onclick","dgvdfg");
                // URLConnection con = url.openConnection();
 

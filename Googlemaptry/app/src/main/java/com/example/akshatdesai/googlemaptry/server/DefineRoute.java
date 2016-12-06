@@ -412,7 +412,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
             try {
                 String param = "address=" + URLEncoder.encode(String.valueOf(this.place), "UTF-8");
                 String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
-                        + param + "&sensor=false&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
+                        + param + "&region=in&sensor=false&language=en|gu|hi&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
 
 
                 URL url = new URL(googleMapUrl);
@@ -513,7 +513,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
 
                         String path = makeURL(Lati1, Lang1, Lati2, Lang2);
-                        new connectAsyncTask(path, false).execute();
+                        new connectAsyncTask(path, true).execute();
                         i = 0;
                     }
 
@@ -564,7 +564,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
             try {
                 String param = "address=" + URLEncoder.encode(String.valueOf(this.place), "UTF-8");
                 String googleMapUrl = "https://maps.googleapis.com/maps/api/geocode/json?"
-                        + param + "&sensor=false&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
+                        + param + "&sensor=false&region=in&language=en|gu|hi&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M";
 
 
                 URL url = new URL(googleMapUrl);
@@ -671,12 +671,42 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
                 .append(Double.toString( destlat));
         urlString.append(",");
         urlString.append(Double.toString( destlog));
-        urlString.append("&sensor=false&mode=driving&alternatives=true");
+        callmenow(urlString);
+
+        //urlString.append("&waypoints="+URLEncoder.encode(String.valueOf(stp), "UTF-8")+"|"+ ) ; //Godhra|Halol);
+      //  urlString.append("alternatives=true");
+        urlString.append("&region=in");
+        urlString.append("&sensor=false&mode=driving|walking&alternatives=true");
+        urlString.append("&language=en|gu|hi");
         urlString.append("&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M");
         return urlString.toString();
     }
 
+    private void callmenow(StringBuilder urlString) {
+        try {
+        if (stp != null && stp1 != null && stp2 != null) {
 
+                urlString.append("&waypoints=" + URLEncoder.encode(String.valueOf(stp), "UTF-8")+"|"
+                        +URLEncoder.encode(String.valueOf(stp1), "UTF-8")+"|"+URLEncoder.encode(String.valueOf(stp2), "UTF-8"));
+
+
+
+
+        }
+        else if (stp != null && stp1 != null)
+        {
+            urlString.append("&waypoints=" + URLEncoder.encode(String.valueOf(stp), "UTF-8")+"|"
+                    +URLEncoder.encode(String.valueOf(stp1), "UTF-8"));
+        }
+        else if(stp != null)
+        {
+            urlString.append("&waypoints=" + URLEncoder.encode(String.valueOf(stp), "UTF-8"));
+        }
+
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

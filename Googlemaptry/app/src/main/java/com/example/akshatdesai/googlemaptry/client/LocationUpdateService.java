@@ -34,6 +34,8 @@ public class LocationUpdateService extends Service {
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000 * 60;
     private static final float LOCATION_DISTANCE = 10f;
+    private static int taskid;
+   // static int val =0;
 
     private class LocationListener implements android.location.LocationListener {
         Location mLastLocation;
@@ -48,7 +50,7 @@ public class LocationUpdateService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
           //  Toast.makeText(LocationUpdateService.this,""+location,Toast.LENGTH_LONG).show();
             mLastLocation.set(location);
-            new Web(location).execute();
+            new Web(location,taskid).execute();
         }
 
         @Override
@@ -81,7 +83,12 @@ public class LocationUpdateService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.e(TAG, "onStartCommand");
         super.onStartCommand(intent, flags, startId);
-        return START_STICKY;
+
+        if(intent.hasExtra("taskid")) {
+            taskid = Integer.parseInt(intent.getExtras().getString("taskid"));
+        }
+            Log.e("TASKID",""+taskid);
+        return START_REDELIVER_INTENT;
     }
 
     @Override
@@ -138,11 +145,12 @@ public class LocationUpdateService extends Service {
         {
             Location location;
             String currentDateandTime;
-            int taskid = 9;
-            Web(Location location)
+            int taskid;
+            Web(Location location,int taskid)
             {
                 this.location = location;
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd_HHmmss");
+                this.taskid = taskid;
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                  currentDateandTime = sdf.format(new Date());
 
             }
@@ -156,7 +164,7 @@ public class LocationUpdateService extends Service {
                     String param="latitude="+ URLEncoder.encode(String.valueOf(location.getLatitude()), "UTF-8")+
                             "&longitude="+ URLEncoder.encode(String.valueOf(location.getLongitude()), "UTF-8")+
                             "&datetime="+URLEncoder.encode(String.valueOf(currentDateandTime), "UTF-8")+
-                            "&taskid ="+URLEncoder.encode(String.valueOf(taskid),"UTF-8");
+                            "&taskid="+URLEncoder.encode(String.valueOf(taskid),"UTF-8");
                     URL url=new URL("http://"+ WebServiceConstant.ip+"/Tracking/insert.php?"+param);
                     httpURLConnection = (HttpURLConnection) url.openConnection();
                     httpURLConnection.setRequestMethod("POST");
@@ -164,6 +172,8 @@ public class LocationUpdateService extends Service {
                     httpURLConnection.setDoInput(true);
                     httpURLConnection.setRequestProperty("Accept", "application/json");
                     httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                    Log.e(TAG,""+url);
 
                     int i = httpURLConnection.getResponseCode();
                     Log.e(TAG,""+i);

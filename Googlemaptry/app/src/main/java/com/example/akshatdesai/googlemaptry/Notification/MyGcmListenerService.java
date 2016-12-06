@@ -9,7 +9,9 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.server.DefineRoute;
 //import com.example.android.assetmanagement.Activity.MainActivity;
 import com.google.android.gms.gcm.GcmListenerService;
@@ -30,8 +32,20 @@ public class MyGcmListenerService extends FirebaseMessagingService {
     // [START receive_message]
     @Override
     public void onMessageReceived(RemoteMessage message){
-        String from = message.getFrom();
-        Map data = message.getData();
+
+        Log.e("ABC","aabbc");
+
+        Map<String, String> data = message.getData();
+        String myCustomKey = data.get("Key");
+        Log.e("NOTIFICATION",myCustomKey);
+
+
+        addNotification(message.getNotification().getBody());
+        Log.d(TAG, "From: " + message.getFrom());
+        Log.d(TAG, "Notification Message Body: " + message.getNotification().getBody());
+
+
+        ;
 
 
         // [START_EXCLUDE]
@@ -56,10 +70,10 @@ public class MyGcmListenerService extends FirebaseMessagingService {
      *
      * @param message GCM message received.
      */
-    private void sendNotification(String message) {
+  /*  private void sendNotification(String message) {
         Intent intent = new Intent(this, DefineRoute.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 *//* Request code *//*, intent,
                 PendingIntent.FLAG_ONE_SHOT);
         Log.e("listener service","in send notification");
         Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
@@ -67,13 +81,29 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
                 .setContentTitle("GCM Message")
                 .setContentText(message)
-                .setAutoCancel(true)
+                .setAutoCancel(false)
                 .setSound(defaultSoundUri)
                 .setContentIntent(pendingIntent);
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
-        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build());
+        notificationManager.notify(0 *//* ID of notification *//*, notificationBuilder.build());
+    }*/
+    private void addNotification(String message) {
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.ic_menu_camera)
+                        .setContentTitle("Notifications Example")
+                        .setContentText(message);
+
+        Intent notificationIntent = new Intent(this, DefineRoute.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+
+        // Add as notification
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        manager.notify(0, builder.build());
     }
 }

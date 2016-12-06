@@ -1,104 +1,80 @@
 package com.example.akshatdesai.googlemaptry.server;
 
-import android.content.Intent;
-import android.os.AsyncTask;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Fragment.AddEmployee;
+import com.example.akshatdesai.googlemaptry.Fragment.AssignTask;
+//import com.example.akshatdesai.googlemaptry.Fragment.EmployeeList;
+import com.example.akshatdesai.googlemaptry.Fragment.ViewTask;
+import com.example.akshatdesai.googlemaptry.General.EmployeeList;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
-import com.example.akshatdesai.googlemaptry.WebServiceConstant;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.HashMap;
-import java.util.Scanner;
 
 public class ManagerNavigation extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-    ProgressBar pb;
-    private RecyclerView taskView;
-    int UId,mid;
+    Fragment fragment = null;
+    String title;
+    DrawerLayout drawer;
+    Toolbar toolbar;
+    android.support.v7.app.ActionBarDrawerToggle toggle;
     Sessionmanager sessionmanager;
-    android.support.v4.app.ActionBarDrawerToggle toggle;
+   /* ProgressBar pb;
+    Activity context;
+    private RecyclerView taskView;
+    Sessionmanager sessionManager;*/
+    int UId, mid;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_manager_navigation);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        pb = (ProgressBar) findViewById(R.id.progressBar_managerviewtask);
+      /*  pb = (ProgressBar) findViewById(R.id.progressBar_managerviewtask);
         taskView = (RecyclerView) findViewById(R.id.rv_manager);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(ManagerNavigation.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        taskView.setLayoutManager(layoutManager);
+        taskView.setLayoutManager(layoutManager);*/
+        fragment=new ViewTask();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.container_body, fragment);
+        fragmentTransaction.commit();
+        sessionmanager=new Sessionmanager(getApplicationContext());
 
-        final DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        toggle = new android.support.v4.app.ActionBarDrawerToggle(this,drawer,R.drawable.ic_drawer,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+       /* toggle = new android.support.v4.app.ActionBarDrawerToggle(this,drawer,R.drawable.ic_drawer,R.string.navigation_drawer_open,R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
+        toggle = setupDrawerToggle();
+        drawer.setDrawerListener(toggle);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        /*getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);
-
-       /* getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_HOME_AS_UP);
-        getSupportActionBar().setIcon(R.drawable.ic_drawer);*/
-       /* toggle.setDrawerIndicatorEnabled(false);
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.ic_drawer, getApplicationContext().getTheme());
-        toggle.setHomeAsUpIndicator(drawable);
-        toggle.setToolbar(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (drawer.isDrawerVisible(GravityCompat.START)) {
-                    drawer.closeDrawer(GravityCompat.START);
-                } else {
-                    drawer.openDrawer(GravityCompat.START);
-                }
-            }
-        });*/
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer);*/
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        sessionmanager=new Sessionmanager(getApplicationContext());
-
-        HashMap<String, String> user = sessionmanager.getuserdetails();
-        // name
-        if (sessionmanager.isLoggedIn())
-        {
-            UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
-            mid= Integer.parseInt(user.get(Sessionmanager.KEY_mid));
-        }
-
-        new Web().execute();
+       // new Web().execute();
     }
 
-    public void onResume() {
-        super.onResume();
-        //new Web().execute();
+    private ActionBarDrawerToggle setupDrawerToggle() {
+        return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     }
 
     @Override
@@ -109,6 +85,20 @@ public class ManagerNavigation extends AppCompatActivity
         } else {
             super.onBackPressed();
         }
+    }
+
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        toggle.syncState();
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggles
+        toggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -123,17 +113,20 @@ public class ManagerNavigation extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+        if (toggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
-        } else if(id == R.id.action_logout){
+        } else if (id == R.id.action_logout) {
             sessionmanager.LogOut1();
-           /* Intent in = new Intent(getApplicationContext(), Login_new.class);
+           /*Intent in = new Intent(getApplicationContext(), Login_new.class);
             startActivity(in);*/
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -144,36 +137,39 @@ public class ManagerNavigation extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.assign_task) {
-            Intent i=new Intent(getApplicationContext(),AssignTask.class);
-            startActivity(i);
-
+            fragment = new AssignTask();
+            title = "Assign Task to Employee";
+            // Log.e("assign","assign");
+            // Handle the camera action
         } else if (id == R.id.Add_Employee) {
-            Intent i=new Intent(getApplicationContext(),SelectEmployee.class);
-            startActivity(i);
-
+            fragment = new AddEmployee();
+            title = "Select Employee";
         } else if (id == R.id.view_task) {
-            Intent i=new Intent(getApplicationContext(),ViewTask.class);
-            startActivity(i);
-
+            fragment = new ViewTask();
+            title = "View Task";
+        } else if (id == R.id.send_message) {
+            fragment = new EmployeeList();
+            title = "Send Message";
         }
-        else if (id == R.id.my_route) {
-            /*Intent i=new Intent(getApplicationContext(),ViewTask.class);
-            startActivity(i);*/
-            Toast.makeText(this, "Coming Soon", Toast.LENGTH_SHORT).show();
 
+        if (fragment != null) {
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            fragmentTransaction.replace(R.id.container_body, fragment);
+            fragmentTransaction.commit();
+            getSupportActionBar().setTitle(title);
         }
-        
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
 
-   public class Web extends AsyncTask {
+
+   /* public class Web extends AsyncTask {
 
         private String msg, name[], sdate[], edate[], assignedto[], assignedby[], desc[];
-        private Scanner scanner;
-        private ViewTask viewTask;
+
         //int status, id[], length1;
         int status, id[], length1, cstatus[];
         JSONArray array;
@@ -195,7 +191,8 @@ public class ManagerNavigation extends AppCompatActivity
 
                 UId = 4;
                 mid = 1;
-                String param = "id=" + URLEncoder.encode(UId + "", "UTF-8") + "&" + "type=" + URLEncoder.encode(mid + "", "UTF-8");
+                String param = "id=" + URLEncoder.encode(UId + "", "UTF-8")+ "&" + "type="+ URLEncoder.encode(mid + "", "UTF-8");
+                //String param = "id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&" + "type=" + URLEncoder.encode(String.valueOf(mid), "UTF-8");
                 HttpURLConnection httpURLConnection = null;
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/viewtask.php?" + param);
 
@@ -286,5 +283,6 @@ public class ManagerNavigation extends AppCompatActivity
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 }
+
