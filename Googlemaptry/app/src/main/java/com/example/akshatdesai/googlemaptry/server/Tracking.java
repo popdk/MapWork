@@ -45,8 +45,8 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     double latitude[],longitude[];
     String time[];
     private String TAG ="TRACKING";
-    Timer t;
-    int id;
+   public Timer t;
+    int id,dotrack;
     CoordinatorLayout coordinatorLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,12 +55,32 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
         Intent i = getIntent();
          id= i.getIntExtra("taskid",0);
+         dotrack = i.getIntExtra("dotrack",0);
+
         Log.e("TaskId",""+id);
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
+
+        if(dotrack == 1) {
+            t = new Timer();
+//Set the schedule function and rate
+            t.scheduleAtFixedRate(new TimerTask() {
+
+                                      @Override
+                                      public void run() {
+                                          //Called each time when 1000 milliseconds (1 second) (the period parameter)
+                                          new Track().execute();
+                                      }
+
+                                  },
+//Set how long before to start calling the TimerTask (in milliseconds)
+                    0,
+//Set the amount of time between each execution (in milliseconds)
+                    60000);
+        }
 
 
     }
@@ -82,7 +102,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
 
       else {
-            t = new Timer();
+           /* t = new Timer();
 //Set the schedule function and rate
             t.scheduleAtFixedRate(new TimerTask() {
 
@@ -96,7 +116,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 //Set how long before to start calling the TimerTask (in milliseconds)
                     0,
 //Set the amount of time between each execution (in milliseconds)
-                    60000);
+                    60000);*/
 
         }
 

@@ -61,11 +61,8 @@ public class Registration extends AppCompatActivity {
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main1);
-        tv_name = (TextView) findViewById(R.id.tv_name);
-        tv_mail = (TextView) findViewById(R.id.tv_mail);
-        tv_pass = (TextView) findViewById(R.id.tv_password);
-        tv_phone = (TextView) findViewById(R.id.tv_phone);
-        tv_address = (TextView) findViewById(R.id.tv_address);
+
+
         et_name = (EditText) findViewById(R.id.et_name);
         et_mail = (EditText) findViewById(R.id.et_mail);
         et_pass = (EditText) findViewById(R.id.et_pass);
@@ -103,9 +100,12 @@ public class Registration extends AppCompatActivity {
                     gender = "female";
                 }
 
+                if (name == null || mail == null || pass == null||address==null||phone==null||gender==null){
+                    Toast.makeText(Registration.this,"Enter Sufficient Details",Toast.LENGTH_LONG).show();
+                }else {
 
-
-                new Register_Web().execute();
+                    new Register_Web().execute();
+                }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {

@@ -513,7 +513,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
 
                         String path = makeURL(Lati1, Lang1, Lati2, Lang2);
-                        new connectAsyncTask(path, true).execute();
+                        new connectAsyncTask(path, false).execute();
                         i = 0;
                     }
 

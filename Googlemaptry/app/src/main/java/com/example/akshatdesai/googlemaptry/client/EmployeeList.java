@@ -93,8 +93,8 @@ public class EmployeeList extends Fragment {
                 protected Object doInBackground(Object[] params) {
                     try {
                         msg = "";
-                        String param = "Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
-                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php?" + param);
+                       // String param = "Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
+                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/chattinglist.php");
                         URLConnection con = url.openConnection();
                         HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                         httpURLConnection.setRequestMethod("POST");

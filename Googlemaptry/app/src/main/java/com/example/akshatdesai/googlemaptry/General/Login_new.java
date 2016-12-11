@@ -2,9 +2,11 @@ package com.example.akshatdesai.googlemaptry.General;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -45,12 +47,13 @@ public class Login_new extends AppCompatActivity {
     Button submit, cancel;
     HttpURLConnection httpURLConnection;
     JSONArray array;
+    Toolbar toolbar;
 
     int status, id1,i;
     ProgressDialog pd1;
 boolean res;
     Sessionmanager sessionManager;
-
+    TextInputLayout inputLayoutName, inputLayoutPassword;
 
    // Sessionmanager sessionManager;
 
@@ -58,6 +61,12 @@ boolean res;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login_new);
+       /* toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.WHITE);
+        toolbar.setSubtitleTextColor(Color.WHITE);*/
+
+
         sessionManager = new Sessionmanager(getApplicationContext());
         res = sessionManager.checklogin();
 
@@ -88,9 +97,12 @@ boolean res;
             }
             finish();
         } else {
-            tv_mail = (TextView) findViewById(R.id.tv_mail);
+
+            inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_mail);
+            inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);
+           // tv_mail = (TextView) findViewById(R.id.tv_mail);
             register = (TextView) findViewById(R.id.tv_nr);
-            tv_pass = (TextView) findViewById(R.id.tv_pass);
+            //tv_pass = (TextView) findViewById(R.id.tv_pass);
             et_mail = (EditText) findViewById(R.id.et_mail);
             et_pass = (EditText) findViewById(R.id.et_pass);
             submit = (Button) findViewById(R.id.btn_submit);
@@ -113,11 +125,22 @@ boolean res;
                         Intent i = new Intent(Login_new.this, Assign_role.class);
                         startActivity(i);
                     } else {*/
+                    if(mail == null || pass==null){
+                        Toast.makeText(Login_new.this,"Enter Email and Password",Toast.LENGTH_LONG).show();
+                    }
                         new Check_web().execute();
 
                 }
             });
+
+
         }
+    }
+
+
+    public  void btnCancle(View view)
+    {
+        finishAffinity();
     }
 
 
@@ -223,7 +246,7 @@ boolean res;
             } else if (status == 1) {
                 pd1.cancel();
                 Toast.makeText(Login_new.this, "Successful", Toast.LENGTH_SHORT).show();
-                sessionManager.CreateLoginSession(id1,mail1,pass1,m_id1);
+                sessionManager.CreateLoginSession(id1,name1,mail1,pass1,m_id1);
                 if(m_id1.equals("0")){
                     Intent i = new Intent(Login_new.this,Client_Home.class);
                     startActivity(i);

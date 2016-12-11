@@ -57,32 +57,28 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".server.AssignTask"
-            android:label="@string/title_activity_main" />
 
         <service android:name=".GPSTracker" />
         <service android:name=".client.LocationUpdateService" />
 
         <activity
             android:name=".General.AlarmManger1"
-            android:label="@string/title_activity_tracking">
+            android:label="@string/title_activity_tracking"></activity>
+        <activity android:name=".server.ViewTask" />
+        <activity android:name=".client.Chatting">
             <intent-filter>
-                <action android:name="OPEN_ACTIVITY_1" />
+                <action android:name="OPEN_ACTIVITY_3" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".server.ViewTask" />
-        <activity android:name=".client.Chatting" />
         <activity android:name=".Admin.Assign_role" />
-        <activity android:name=".server.SelectEmployee" />
         <activity android:name=".server.ManagerNavigation" />
         <activity android:name=".server.DefineRoute" />
 
         <!-- [END gcm_receiver] -->
 
-        <receiver android:name=".AlarmRecevier"></receiver>
+        <receiver android:name=".AlarmRecevier" />
         <!-- [START gcm_listener] -->
         <service android:name=".Notification.MyGcmListenerService">
             <intent-filter>
@@ -101,13 +97,22 @@
             android:name=".Notification.RegistrationIntentService"
             android:exported="false" />
 
-        <activity
+        <!--
+            <activity
             android:name=".client.Viewtask_client"
             android:label="@string/title_activity_manager_navigation"></activity>
+        -->
         <activity android:name=".server.Tracking" />
         <activity android:name=".client.CurrentLocation" />
-        <activity android:name=".General.Registration"></activity>
-        <activity android:name=".client.Client_Home"></activity>
+        <activity android:name=".General.Registration" />
+        <activity android:name=".client.Client_Home">
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_1" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
     </application>
 
 </manifest>

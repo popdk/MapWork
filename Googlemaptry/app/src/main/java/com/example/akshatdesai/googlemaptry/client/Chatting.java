@@ -1,7 +1,10 @@
 package com.example.akshatdesai.googlemaptry.client;
 
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -47,17 +50,18 @@ public class Chatting extends AppCompatActivity {
     RecyclerView.Adapter revAdap;
     RecyclerView.LayoutManager revLam;
   */ EditText type;
+    SingleChat singleChat;
     Button send;
     int position;
     int sendto;
-    String msgdata, msg;
+    static String msgdata, msg,name,got,username;
     String[] messagearray, sendbyarray, sendtoarray, timearray;
     private JSONArray array;
     private JSONObject temp;
     private int status;
     //RecyclerViewAdapter recyclerViewAdapter;
     private ProgressDialog pd1;
-    ListView lv;
+    public ListView lv;
     Sessionmanager sessionManager;
     int UId;
 
@@ -71,7 +75,7 @@ public class Chatting extends AppCompatActivity {
         send = (Button) findViewById(R.id.button2);
         //recyclerView = (RecyclerView) findViewById(R.id.r1);
         lv = (ListView) findViewById(R.id.r1);
-        new FetchMessageDetails().execute();
+
         /*final LinearLayoutManager layoutManager = new LinearLayoutManager(MainActiviy.this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(layoutManager);*/
@@ -82,11 +86,12 @@ public class Chatting extends AppCompatActivity {
         // name
         if (sessionManager.isLoggedIn()) {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
+            username = user.get(Sessionmanager.KEY_NAME);
         }
-        Bundle extras=getIntent().getExtras();
-        if(extras!=null)
+       // Bundle extras=getIntent().getExtras();
+        if(getIntent().getStringExtra("Key")!=null)
         {
-            sendto =extras.getInt("sendto");
+            sendto = Integer.parseInt(getIntent().getStringExtra("Key"));
 
         }
         send.setOnClickListener(new View.OnClickListener() {
@@ -94,11 +99,53 @@ public class Chatting extends AppCompatActivity {
             public void onClick(View view) {
                 msgdata = type.getText().toString();
                 Log.e("msgdata", msgdata);
-                new send_web().execute();
-                type.setText("");
+                if(msgdata==null){
+                    Toast.makeText(Chatting.this,"Enter Message",Toast.LENGTH_LONG).show();
+                }else {
+                    new send_web().execute();
+                    new SendMessage().execute();
+                    type.setText("");
+                }
             }
         });
+
+        new FetchMessageDetails().execute();
+        }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+            getApplicationContext().registerReceiver(mMessageReceiver, new IntentFilter("ReceiveMessage"));
+
     }
+
+    //Must unregister onPause()
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+            getApplicationContext().unregisterReceiver(mMessageReceiver);
+
+        }
+
+
+    //This is the handler that will manager to process the broadcast intent
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            // Extract data included in the Intent
+           // String message = intent.getStringExtra("message");
+            if(singleChat != null) {
+                singleChat.notifyDataSetChanged();
+                lv.setAdapter(singleChat);
+            }
+
+            //do other stuff here
+        }
+    };
 
     public class send_web extends AsyncTask {
 
@@ -106,7 +153,9 @@ public class Chatting extends AppCompatActivity {
         protected Object doInBackground(Object[] objects) {
             try {
 
-                String param = "msg=" + URLEncoder.encode(String.valueOf(msgdata), "UTF-8") + "&" + "sendby=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&" + "sendto=" + URLEncoder.encode(String.valueOf(sendto), "UTF-8");
+                String param = "msg=" + URLEncoder.encode(String.valueOf(msgdata), "UTF-8") + "&"
+                        + "sendby=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&" +
+                        "sendto=" + URLEncoder.encode(String.valueOf(sendto), "UTF-8");
                 Log.e("url", "" + param);
                 URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/send.php?" + param);
                 Log.e("url", "" + url);
@@ -184,7 +233,8 @@ public class Chatting extends AppCompatActivity {
         protected Object doInBackground(Object[] objects) {
             try {
 
-                String param = "sendBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&" + "sendTo=" + URLEncoder.encode(String.valueOf(sendto), "UTF-8");
+                String param = "sendBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&" +
+                        "sendTo=" + URLEncoder.encode(String.valueOf(sendto), "UTF-8");
                 Log.e("url", "" + param);
                 URL url = new URL("http://"+ WebServiceConstant.ip+ "/Tracking/MessageDetails.php?" + param);
                 Log.e("url", "" + url);
@@ -271,7 +321,8 @@ public class Chatting extends AppCompatActivity {
                 Log.e("activity", "" + getParent());
                 // Log.e("length",""+desc.length);
                 Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG);
-                SingleChat singleChat = new SingleChat(Chatting.this, messagearray, sendbyarray, sendtoarray, timearray);
+                 singleChat = new SingleChat(Chatting.this, messagearray, sendbyarray, sendtoarray, timearray);
+               // singleChat.notifyDataSetChanged();
                 lv.setAdapter(singleChat);
 
             }
@@ -281,4 +332,98 @@ public class Chatting extends AppCompatActivity {
     }
 
 
-}}
+}
+
+    public class SendMessage extends AsyncTask {
+
+        JSONObject object;
+        ProgressDialog pd;
+        @Override
+        protected void onPreExecute() {
+            pd = new ProgressDialog(Chatting.this);
+            pd.setMessage("Adding Task.. please wait");
+            pd.show();
+            pd.setCancelable(false);
+        }
+
+        @Override
+        protected Object doInBackground(Object[] params) {
+            try {
+                String param =  "AssignedBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&"
+                        + "AssignedTo=" + URLEncoder.encode(String.valueOf(sendto), "UTF-8") +"&"
+                        + "title=" + URLEncoder.encode(String.valueOf(username), "UTF-8") +"&"
+                        + "description=" + URLEncoder.encode(String.valueOf(msgdata), "UTF-8")+"&"
+                        + "type=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
+
+
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/sendmessage.php?" + param);
+                URLConnection con = url.openConnection();
+                HttpURLConnection httpURLConnection = (HttpURLConnection) con;
+
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+                httpURLConnection.setRequestProperty("Accept", "application/json");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                int rescode = httpURLConnection.getResponseCode();
+                Log.e("I", "" + url);
+//
+                if (rescode == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer responce = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        responce.append(inputLine);
+                    }
+
+                    in.close();
+                    got = responce.toString();
+
+                    object = new JSONObject(got);
+
+
+                    // got=got.trim();
+                    Log.e("responce",got);
+                }
+
+
+
+//                Log.e("from", got);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (ProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+
+            int s =0;
+            super.onPostExecute(o);
+            pd.cancel();
+            try {
+                s = Integer.parseInt(object.getString("success"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (s == 1) {
+                Toast.makeText(Chatting.this, "Task is assigned Successfully", Toast.LENGTH_SHORT).show();
+
+
+
+
+            } else {
+                Toast.makeText(Chatting.this, "Problem in assigning Task.", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+}

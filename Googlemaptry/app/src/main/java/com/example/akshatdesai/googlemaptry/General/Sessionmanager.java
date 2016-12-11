@@ -14,6 +14,8 @@ public class Sessionmanager {
 
 
     public static final String KEY_NAME = "UserName";
+
+    public static final String KEY_MAIL = "Email";
     public static final String KEY_ID = "UserId";
     public static final String Email = "Email";
     public static final String KEY_PASS = "Password";
@@ -36,13 +38,15 @@ public class Sessionmanager {
         editor = preferences.edit();
     }
 
-    public void CreateLoginSession(Integer userid,String username,String Password, String m_id)
+    public void CreateLoginSession(Integer userid,String name,String mail,String Password, String m_id)
     {
         editor.putBoolean(IS_LOGIN,true);
         editor.putString(KEY_ID,userid.toString());
-        editor.putString(KEY_NAME,username);
+        editor.putString(KEY_NAME,name);
+        editor.putString(KEY_MAIL,mail);
         editor.putString(KEY_PASS,Password);
         editor.putString(KEY_mid,m_id);
+
         //editor.putString()
         // editor.putString(Wrong_Attempt,WrongAttempt);
 

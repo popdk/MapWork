@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.*;
 import com.example.akshatdesai.googlemaptry.General.EmployeeList;
@@ -35,6 +36,7 @@ public class Client_Home extends AppCompatActivity {
         setSupportActionBar(toolbar);
         EnablePermission.checklocationservice(Client_Home.this);
         showPermissionDialog(this);
+
         pager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(pager);
         slidingTabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -92,7 +94,14 @@ public class Client_Home extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(!EnablePermission.isInternetConnected(Client_Home.this))
+        {
+            Toast.makeText(Client_Home.this,"Please Connect to internet",Toast.LENGTH_LONG).show();
+        }
+    }
 }
 
 

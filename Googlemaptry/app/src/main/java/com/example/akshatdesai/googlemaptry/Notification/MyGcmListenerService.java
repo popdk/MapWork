@@ -4,26 +4,24 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
-import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.R;
-import com.example.akshatdesai.googlemaptry.server.DefineRoute;
-//import com.example.android.assetmanagement.Activity.MainActivity;
-import com.google.android.gms.gcm.GcmListenerService;
+import com.example.akshatdesai.googlemaptry.client.Chatting;
+import com.example.akshatdesai.googlemaptry.client.Client_Home;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
 import java.util.Map;
 
+//import com.example.android.assetmanagement.Activity.MainActivity;
+
 public class MyGcmListenerService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
-
+    Intent notificationIntent;
+    String name;
     /**
      * Called when message is received.
      *
@@ -37,15 +35,27 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
         Map<String, String> data = message.getData();
         String myCustomKey = data.get("Key");
+        if(!myCustomKey.equalsIgnoreCase("task")) {
+            name = data.get("sendername");
+            Log.e("NOTIFICATION",name);
+        }
         Log.e("NOTIFICATION",myCustomKey);
 
 
-        addNotification(message.getNotification().getBody());
+
+
+
+
+        addNotification(myCustomKey,message.getNotification().getBody());
         Log.d(TAG, "From: " + message.getFrom());
         Log.d(TAG, "Notification Message Body: " + message.getNotification().getBody());
 
 
-        ;
+        if(!myCustomKey.equalsIgnoreCase("task")) {
+
+            Intent intent = new Intent("ReceiveMessage");//put data if you want in putextras
+            this.sendBroadcast(intent);
+        }
 
 
         // [START_EXCLUDE]
@@ -90,20 +100,34 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
         notificationManager.notify(0 *//* ID of notification *//*, notificationBuilder.build());
     }*/
-    private void addNotification(String message) {
+    private void addNotification(String type,String message) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_menu_camera)
-                        .setContentTitle("Notifications Example")
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentTitle(name)
                         .setContentText(message);
 
-        Intent notificationIntent = new Intent(this, DefineRoute.class);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
+
+        if(type.equalsIgnoreCase("task")) {
+
+            notificationIntent  = new Intent(this, Client_Home.class);
+        }
+        else
+        {
+                             //   adapter.notifyDataSetChanged();
+
+            Log.e("TYPE",type);
+            notificationIntent  = new Intent(this, Chatting.class);
+            notificationIntent.putExtra("Key",type);
+        }
+
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
 
         // Add as notification
         NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         manager.notify(0, builder.build());
+        builder.setAutoCancel(true);
     }
 }

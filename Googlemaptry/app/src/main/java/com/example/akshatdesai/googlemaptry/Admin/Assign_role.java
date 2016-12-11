@@ -181,7 +181,7 @@ public class Assign_role extends AppCompatActivity {
             }
 
             final CharSequence[] dialogList = list.toArray(new CharSequence[list.size()]);
-            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(Assign_role.this);
+            final AlertDialog.Builder builderDialog = new AlertDialog.Builder(Assign_role.this,R.style.alertbox);
             builderDialog.setTitle("Select Manager");
             int count = dialogList.length;
             boolean[] is_checked = new boolean[count];

@@ -1,95 +1,130 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_login_new"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.admin.login.Login_new">
-    <TextView
-        android:text="Email"
-        android:layout_width="wrap_content"
+    tools:context="com.example.akshatdesai.googlemaptry.General.Login_new">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/scrollView"
+        android:padding="5dp">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/tv_mail"
-        />
+        android:id="@+id/ll"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Login"
+            android:layout_gravity="center"
+            android:textSize="35sp"
+            android:textColor="#2C3E50"
+            />
+    </LinearLayout>
+
+
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_mail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:hint="Enter Email"
+        android:layout_below="@id/ll"
+        android:layout_marginTop="26dp"
+        >
+
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
-        android:ems="10"
-        android:layout_marginLeft="30dp"
-        android:layout_marginStart="30dp"
+
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="26dp"
         android:id="@+id/et_mail"
+        android:layout_marginRight="10dp"
         android:layout_alignBaseline="@+id/tv_mail"
         android:layout_alignBottom="@+id/tv_mail"
         android:layout_toRightOf="@+id/tv_mail"
         android:layout_toEndOf="@+id/tv_mail"
-        android:hint="Enter Email" />
+        />
 
-    <TextView
-        android:text="Password"
-        android:layout_width="wrap_content"
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/input_layout_password"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/et_pass"
-        android:layout_alignLeft="@+id/tv_mail"
-        android:layout_alignStart="@+id/tv_mail"
-        android:layout_marginBottom="11dp"
-        android:id="@+id/tv_pass"/>
+        android:hint="Enter Password"
+        android:orientation="horizontal"
+        android:layout_below="@+id/input_layout_mail">
 
     <EditText
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textPassword"
-        android:ems="10"
         android:layout_marginTop="26dp"
         android:id="@+id/et_pass"
-        android:hint="Enter Password"
+        android:layout_marginRight="10dp"
         android:layout_below="@+id/et_mail"
-        android:layout_alignLeft="@+id/et_mail"
-        android:layout_alignStart="@+id/et_mail"
-        android:layout_marginLeft="12dp"
-        android:layout_marginStart="12dp" />
+        android:layout_marginLeft="20dp"
+        android:layout_marginStart="20dp" />
+</android.support.design.widget.TextInputLayout>
 
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/login_ll1"
+    android:layout_below="@+id/input_layout_password"
+    android:weightSum="5"
+    android:layout_marginTop="26dp">
     <Button
         android:text="submit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_pass"
-        android:layout_alignLeft="@+id/tv_pass"
-        android:layout_alignStart="@+id/tv_pass"
-        android:layout_marginLeft="23dp"
-        android:layout_marginStart="23dp"
-        android:layout_marginTop="58dp"
-        android:id="@+id/btn_submit" />
+        android:id="@+id/btn_submit"
+        android:layout_weight="2.5"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        style="@style/CustomStyleButton"/>
 
     <Button
         android:text="cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/btn_submit"
-        android:layout_toRightOf="@+id/btn_submit"
-        android:layout_toEndOf="@+id/btn_submit"
-        android:layout_marginLeft="36dp"
-        android:layout_marginStart="36dp"
+        style="@style/CustomStyleButton"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="2.5"
+        android:onClick="btnCancle"
         android:id="@+id/btn_cancel" />
-
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/login_ll1">
     <TextView
         android:text="Not Registered?"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="200dp"
         android:id="@+id/tv_nr"
-        android:layout_below="@+id/btn_cancel"
-        android:layout_alignRight="@+id/et_mail"
-        android:layout_alignEnd="@+id/et_mail" />
-
+              />
+    </LinearLayout>
+</LinearLayout>
+    </ScrollView>
 </RelativeLayout>

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.akshatdesai.googlemaptry.R;
@@ -32,7 +33,7 @@ public class EmployeeListAdapter extends ArrayAdapter {
 
         LayoutInflater layoutInflater = activity.getLayoutInflater();
         View view = layoutInflater.inflate(R.layout.fragment_employee_list, null, true);
-        TextView name = (TextView) view.findViewById(R.id.username);
+        Button name = (Button) view.findViewById(R.id.username);
         name.setText(empName[position]);
         return view;
     }

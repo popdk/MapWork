@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/btn_manager"
+        style="@style/CustomStyleButton"
         android:layout_marginTop="172dp"
         android:layout_below="@+id/linearLayout2"
         android:layout_centerHorizontal="true" />

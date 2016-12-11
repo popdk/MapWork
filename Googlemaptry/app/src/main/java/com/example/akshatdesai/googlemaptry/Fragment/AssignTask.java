@@ -146,7 +146,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         defineRoute = (Button) view.findViewById(R.id.define_route_button);
         employeeList = new ArrayList<String>();
 
-        dateFormatter = new SimpleDateFormat();
+        dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         employees.setOnItemSelectedListener(this);
         new GetEmployees().execute();
         at_startingdate.setOnClickListener(new View.OnClickListener() {
@@ -296,14 +296,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                           String val = url(source,destination);
                         new distancetimecalculator(val).execute();
                             new AddTask().execute();
-                            //new SendMessage().execute();
+                            new SendMessage().execute();
                         }
 
                     } else {
                         String val = url(source,destination);
                         new distancetimecalculator(val).execute();
                         new AddTask().execute();
-                        //new SendMessage().execute();
+                        new SendMessage().execute();
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                     Toast.makeText(getContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
@@ -702,7 +702,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         }
     }
 
-    /*public class SendMessage extends AsyncTask {
+    public class SendMessage extends AsyncTask {
 
         JSONObject object;
         @Override
@@ -719,7 +719,8 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                 String param =  "AssignedBy=" + URLEncoder.encode(String.valueOf(UId), "UTF-8") + "&"
                         + "AssignedTo=" + URLEncoder.encode(String.valueOf(employeeId), "UTF-8") +"&"
                         + "title=" + URLEncoder.encode(String.valueOf(tName), "UTF-8") +"&"
-                        + "description=" + URLEncoder.encode(String.valueOf(tDesc), "UTF-8");
+                        + "description=" + URLEncoder.encode(String.valueOf(tDesc), "UTF-8")+"&"
+                        + "type=" + URLEncoder.encode("task", "UTF-8");
 
 
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/sendmessage.php?" + param);
@@ -790,7 +791,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                 Toast.makeText(getContext(), "Problem in assigning Task.", Toast.LENGTH_SHORT).show();
             }
         }
-    }*/
+    }
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
 

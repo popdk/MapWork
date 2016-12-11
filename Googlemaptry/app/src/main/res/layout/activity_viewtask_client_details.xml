@@ -51,15 +51,17 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/assignedto"
-                android:layout_weight="2"/>
+                android:layout_weight="1.75"/>
 
             <ToggleButton
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/toggleButton"
-                android:layout_weight="1.5"
+                android:layout_weight="1.75"
                 android:textOn="Completed"
-                android:textOff="Running" />
+                android:textOff="Running"
+                style="@style/CustomStyleButton"
+                />
         </LinearLayout>
 
 
@@ -147,7 +149,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:id="@+id/viewinmap"
-                android:text="View in Map"/>
+                android:text="View in Map"
+                style="@style/CustomStyleButton"/>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -18,7 +18,7 @@ import com.example.akshatdesai.googlemaptry.R;
 
 public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewholder1> {
 
-    int id[],cstatus[];
+    int id[],cstatus[],flag =0;
     String title[],desc[],startdate[],enddate[],assignedto[];
     Context context;
 
@@ -114,6 +114,7 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
         {
             holder.status.setText("Running");
             holder.ViewInMap.setVisibility(View.VISIBLE);
+            flag =1;
         }
 
         holder.ViewInMap.setOnClickListener(new View.OnClickListener() {
@@ -122,6 +123,7 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
                 int i = id[position];
                 Intent intent = new Intent(context,Tracking.class);
                 intent.putExtra("taskid",i);
+                intent.putExtra("dotrack",flag);
                 context.startActivity(intent);
             }
         });

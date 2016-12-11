@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
    
-    tools:context="com.example.urvi.chat.MainActivity">
+    tools:context="com.example.akshatdesai.googlemaptry.client.Chatting">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -18,7 +18,7 @@
         android:id="@+id/linearlayout"
         android:orientation="vertical"
         android:layout_weight="8"
-        android:background="#FFF8DC"
+        android:background="#D6DBDF"
         >
 
 
@@ -55,7 +55,7 @@
     <EditText
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:inputType="textPersonName"
+        android:inputType="textMultiLine|textShortMessage"
         android:ems="10"
         android:id="@+id/et_type"
         android:hint="Start Typing....."
@@ -69,6 +69,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.25"
             android:id="@+id/button2"
+            style="@style/CustomStyleButton"
             android:text="Send"
             />
 

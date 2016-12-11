@@ -177,11 +177,11 @@ public class ViewTask extends Fragment {
                             assignedby[i] = temp1.getString("assignedby");
                             cstatus[i] = temp1.getInt("cstatus");
                         }
-                        Log.w("id",""+id[1]);
+                        Log.w("id",""+id[0]);
                     }
                     else
                     {
-                        //Toast.makeText(getContext(),"No Data Found",Toast.LENGTH_LONG).show();
+                      //  Toast.makeText(getActivity(),"No Data Found",Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (MalformedURLException e) {

@@ -35,7 +35,7 @@ public class EmployeeList extends Fragment {
 
     ListView employeeList;
     String[] empNames;
-    int empIds[];
+    String[] empIds;
     String empName;
     String msg;
     JSONArray array = null;
@@ -93,8 +93,8 @@ public class EmployeeList extends Fragment {
                 protected Object doInBackground(Object[] params) {
                     try {
                         msg = "";
-                        String param = "Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
-                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php?" + param);
+                       // String param = "Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
+                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/chattinglist.php?");
                         URLConnection con = url.openConnection();
                         HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                         httpURLConnection.setRequestMethod("POST");
@@ -129,12 +129,12 @@ public class EmployeeList extends Fragment {
                         status = object.getInt("Status");
                         int size = array.length();
                         empNames = new String[size];
-                        empIds = new int[size];
+                        empIds = new String[size];
                         if (status == 1) {
                             for (int j = 0; j < size; j++) {
                                 object = array.getJSONObject(j);
                                 empNames[j] = object.getString("Name");
-                                empIds[j] = Integer.parseInt(object.getString("Id"));
+                                empIds[j] = object.getString("Id");
                                 //empIds[j] = object.getInt("Id");
                                 //employeeList.add(empNames[j]);
                             }
@@ -177,9 +177,9 @@ public class EmployeeList extends Fragment {
                                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                     empName = empNames[position];
 
-                                    Intent i=new Intent(getContext(), Chatting.class);
+                                    Intent i=new Intent(getActivity(), Chatting.class);
                                     Log.e("sendto",""+empIds[position]);
-                                    i.putExtra("sendto",empIds[position]);
+                                    i.putExtra("Key",empIds[position]);
                                     startActivity(i);
                                 }
                             });
