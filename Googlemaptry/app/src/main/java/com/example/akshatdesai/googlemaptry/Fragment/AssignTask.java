@@ -27,6 +27,9 @@ import android.widget.Spinner;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
+import com.example.akshatdesai.googlemaptry.General.Login_new;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
@@ -63,13 +66,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     ImageView floatingPlus;
     Toolbar toolbar;
     Spinner employees;
+    EnablePermission ep = new EnablePermission();
     private DatePickerDialog datePickerDialog;
     private DatePickerDialog datePickerDialog2;
     private TimePickerDialog timePickerDialog;
     private   TimePickerDialog timePickerDialog2;
     private SimpleDateFormat dateFormatter;
     public static String distance,duration;
-    public int UId;
+    public static int UId;
     public static int employeeId;
     String tName = "";
     String tDesc = "";
@@ -91,13 +95,13 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     JSONObject temp;
     public int status, status1;
     static int m = 0;
-    public String[] empNames;
+    public String[] empNames,empStrings;
     public Integer empIds[];
 
     Sessionmanager sessionManager;
 
     ArrayList<String> employeeList;
-
+    ArrayList<Integer> employeeList1;
 
 
     public AssignTask() {
@@ -145,10 +149,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         cancel = (Button) view.findViewById(R.id.assign_task_btn_cancel);
         defineRoute = (Button) view.findViewById(R.id.define_route_button);
         employeeList = new ArrayList<String>();
-
+        employeeList1 = new ArrayList<Integer>();
         dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         employees.setOnItemSelectedListener(this);
-        new GetEmployees().execute();
+        if(ep.isInternetConnected(getActivity())) {
+            new GetEmployees().execute();
+        }else{
+            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+        }
         at_startingdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -221,6 +229,13 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         // name
         if (sessionManager.isLoggedIn()) {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
+
+        }
+        else {
+            Intent i = new Intent(getContext(), Login_new.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(i);
         }
 
         add.setOnClickListener(new View.OnClickListener() {
@@ -293,17 +308,26 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                             at_endingtime.callOnClick();
                         } else {
 
-                          String val = url(source,destination);
-                        new distancetimecalculator(val).execute();
-                            new AddTask().execute();
-                            new SendMessage().execute();
-                        }
+                            String val = url(source, destination);
+                            if (ep.isInternetConnected(getActivity())) {
 
+                                new distancetimecalculator(val).execute();
+                                new AddTask().execute();
+                                new SendMessage().execute();
+
+                            } else {
+                                Toast.makeText(getActivity(), "No internrt connection", Toast.LENGTH_LONG);
+                            }
+                        }
                     } else {
                         String val = url(source,destination);
-                        new distancetimecalculator(val).execute();
-                        new AddTask().execute();
-                        new SendMessage().execute();
+                        if(ep.isInternetConnected(getActivity())) {
+                            new distancetimecalculator(val).execute();
+                            new AddTask().execute();
+                            new SendMessage().execute();
+                        }else{
+                            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                        }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
                     Toast.makeText(getContext(), "Please enter all the details", Toast.LENGTH_SHORT).show();
@@ -446,6 +470,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
             progressDialog = new ProgressDialog(getActivity());
             progressDialog.setMessage("Fetching route, Please wait...");
             progressDialog.setIndeterminate(true);
+            progressDialog.setCancelable(false);
             progressDialog.show();
         }
         @Override
@@ -505,7 +530,8 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
         protected Object doInBackground(Object[] params) {
             try {
-                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php");
+                String param="Manager_Id="+ URLEncoder.encode(String.valueOf(UId), "UTF-8");
+                URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/EmployeeList.php?" + param);
                 Log.e("URL", "" + url);
                 URLConnection con = url.openConnection();
                 HttpURLConnection httpURLConnection = (HttpURLConnection) con;
@@ -537,13 +563,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                 status1 = array.length();
                 empNames = new String[status1];
                 empIds = new Integer[status1];
-
+                empStrings=new String[status1];
                 if (status == 1) {
                     for (int j = 0; j < status1; j++) {
                         temp = array.getJSONObject(j);
                         empNames[j] = temp.getString("Name");
                         empIds[j] = temp.getInt("Id");
-                        employeeList.add(empNames[j]);
+                        empStrings[j]=temp.getString("eid");
+                        //employeeList.add(empNames[j]);
                     }
                 }
             } catch (MalformedURLException e) {
@@ -560,6 +587,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
+            for (int i=0;i<status1;i++)
+            {
+                if(empStrings[i].contains("E" + empIds[i] +"E") && !empIds[i].equals(UId))
+                {
+                    employeeList.add(empNames[i]);
+                    employeeList1.add(empIds[i]);
+                }
+            }
             populateSpinner();
             pd.cancel();
 
@@ -589,7 +624,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
    @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        employeeId = empIds[i];
+        employeeId = employeeList1.get(i);
     }
 
     @Override

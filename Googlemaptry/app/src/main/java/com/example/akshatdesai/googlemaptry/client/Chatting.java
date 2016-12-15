@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -36,8 +37,10 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
+
 import static android.R.attr.id;
 import static android.R.attr.name;
+import static com.example.akshatdesai.googlemaptry.server.ManagerNavigation.toolbar;
 
 /**
  * Created by Urvi on 12/02/2016.
@@ -54,7 +57,7 @@ public class Chatting extends AppCompatActivity {
     Button send;
     int position;
     int sendto;
-    static String msgdata, msg,name,got,username;
+    static String msgdata, msg,sendto_name,got,username;
     String[] messagearray, sendbyarray, sendtoarray, timearray;
     private JSONArray array;
     private JSONObject temp;
@@ -65,10 +68,24 @@ public class Chatting extends AppCompatActivity {
     Sessionmanager sessionManager;
     int UId;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
+
+        toolbar = (Toolbar)findViewById(R.id.toolbar_chatting);
+        if(getIntent().getStringExtra("sendto_name")!=null){
+            sendto_name = getIntent().getStringExtra("sendto_name");
+            Log.e("name",sendto_name);
+        }
+
+
+        toolbar.setTitle(sendto_name);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
         type = (EditText) findViewById(R.id.et_type);
@@ -88,18 +105,21 @@ public class Chatting extends AppCompatActivity {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
             username = user.get(Sessionmanager.KEY_NAME);
         }
-       // Bundle extras=getIntent().getExtras();
+        // Bundle extras=getIntent().getExtras();
         if(getIntent().getStringExtra("Key")!=null)
         {
             sendto = Integer.parseInt(getIntent().getStringExtra("Key"));
 
         }
+
+
+
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 msgdata = type.getText().toString();
                 Log.e("msgdata", msgdata);
-                if(msgdata==null){
+                if(msgdata.equalsIgnoreCase("")){
                     Toast.makeText(Chatting.this,"Enter Message",Toast.LENGTH_LONG).show();
                 }else {
                     new send_web().execute();
@@ -110,7 +130,7 @@ public class Chatting extends AppCompatActivity {
         });
 
         new FetchMessageDetails().execute();
-        }
+    }
 
 
     @Override
@@ -139,8 +159,7 @@ public class Chatting extends AppCompatActivity {
             // Extract data included in the Intent
            // String message = intent.getStringExtra("message");
             if(singleChat != null) {
-                singleChat.notifyDataSetChanged();
-                lv.setAdapter(singleChat);
+                new FetchMessageDetails().execute();
             }
 
             //do other stuff here
@@ -205,9 +224,10 @@ public class Chatting extends AppCompatActivity {
         @Override
         protected void onPostExecute(Object o) {
             Log.e("responce", "" + msg);
-
-            Toast.makeText(getApplicationContext(), "message sent Successfully", Toast.LENGTH_SHORT).show();
-            new FetchMessageDetails().execute();
+            if(msg.equals("1")) {
+                Toast.makeText(getApplicationContext(), "message sent Successfully", Toast.LENGTH_SHORT).show();
+                new FetchMessageDetails().execute();
+            }
         }
 
     }
@@ -218,14 +238,7 @@ public class Chatting extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd1 = new ProgressDialog(Chatting.this);
-            Log.e("in pre1", "entered");
-            pd1.setMessage("Please wait");
-            Log.e("in pre2", "entered");
-            pd1.show();
-            Log.e("in pre3", "entered");
-            pd1.setCancelable(true);
-            Log.e("in pre4", "puru");
+
         }
 
 
@@ -310,7 +323,7 @@ public class Chatting extends AppCompatActivity {
 
         try {
             //pb.setVisibility(View.GONE);
-            pd1.cancel();
+           // pd1.cancel();
 
             if(status ==0)
             {
@@ -415,13 +428,10 @@ public class Chatting extends AppCompatActivity {
                 e.printStackTrace();
             }
             if (s == 1) {
-                Toast.makeText(Chatting.this, "Task is assigned Successfully", Toast.LENGTH_SHORT).show();
-
-
-
+                Toast.makeText(Chatting.this, "Message Delivered", Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(Chatting.this, "Problem in assigning Task.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(Chatting.this, "Message Not Delivered", Toast.LENGTH_SHORT).show();
             }
         }
     }

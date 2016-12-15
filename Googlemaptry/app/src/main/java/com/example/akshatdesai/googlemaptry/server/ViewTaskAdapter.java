@@ -18,7 +18,7 @@ import com.example.akshatdesai.googlemaptry.R;
 
 public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewholder1> {
 
-    int id[],cstatus[],flag =0;
+    int id[],cstatus[],flag[];
     String title[],desc[],startdate[],enddate[],assignedto[];
     Context context;
 
@@ -33,7 +33,8 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
         this.assignedto = assignedto;
         this.cstatus = cstatus;
         context = c;
-
+        flag = new int[id.length];
+        flag = new int[id.length];
         Log.w("id length","" +this.id.length);
     }
 
@@ -104,17 +105,19 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
         {
             holder.status.setText("Not Started");
             holder.ViewInMap.setVisibility(View.GONE);
+            flag[position] = 0;
         }
         else if(cstatus[position] == 1)
         {
             holder.status.setText("Completed");
             holder.ViewInMap.setVisibility(View.VISIBLE);
+            flag[position] =0;
         }
         else if(cstatus[position] == 0)
         {
             holder.status.setText("Running");
             holder.ViewInMap.setVisibility(View.VISIBLE);
-            flag =1;
+            flag[position] =1;
         }
 
         holder.ViewInMap.setOnClickListener(new View.OnClickListener() {
@@ -123,7 +126,7 @@ public class ViewTaskAdapter extends RecyclerView.Adapter<ViewTaskAdapter.Viewho
                 int i = id[position];
                 Intent intent = new Intent(context,Tracking.class);
                 intent.putExtra("taskid",i);
-                intent.putExtra("dotrack",flag);
+                intent.putExtra("dotrack",flag[position]);
                 context.startActivity(intent);
             }
         });

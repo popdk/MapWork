@@ -23,7 +23,6 @@ public class EmployeeListAdapter extends ArrayAdapter {
     public EmployeeListAdapter( Activity activity,String empName[]) {
         super(activity, R.layout.fragment_employee_list,empName);
         this.activity = activity;
-        this.empName = empName;
         //this.empId = empId;
 
     }

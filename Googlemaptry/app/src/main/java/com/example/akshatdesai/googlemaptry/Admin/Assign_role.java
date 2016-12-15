@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Registration;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
@@ -48,11 +49,13 @@ public class Assign_role extends AppCompatActivity {
     String[] Names;
     Sessionmanager sessionmanager;
     Toolbar mtoolbar;
+    EnablePermission ep;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_role);
         mtoolbar = (Toolbar) findViewById(R.id.toolbar3);
+        ep = new EnablePermission();
         setSupportActionBar(mtoolbar);
 
         Toast.makeText(Assign_role.this, "in home activity", Toast.LENGTH_SHORT);
@@ -64,7 +67,11 @@ public class Assign_role extends AppCompatActivity {
             public void onClick(View view) {
                 tosend = "";
                 Log.e("onclick", "dgvdfg");
-                new manager().execute();
+                if(ep.isInternetConnected(Assign_role.this)) {
+                    new manager().execute();
+                }else{
+                    Toast.makeText(Assign_role.this,"No internrt connection",Toast.LENGTH_LONG);
+                }
 
 
             }

@@ -81,7 +81,11 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     static Snackbar snackbar;
     static   boolean connection;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
+    EnablePermission ep = new EnablePermission();
 
+    public DefineRoute() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -513,7 +517,11 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
 
                         String path = makeURL(Lati1, Lang1, Lati2, Lang2);
-                        new connectAsyncTask(path, false).execute();
+                        if(EnablePermission.isInternetConnected(DefineRoute.this)) {
+                            new connectAsyncTask(path, false).execute();
+                        }else {
+                            Toast.makeText(DefineRoute.this,"No Internet Connection",Toast.LENGTH_LONG);
+                        }
                         i = 0;
                     }
 
@@ -711,7 +719,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
 
 
-    private class connectAsyncTask extends AsyncTask<Void, Void, String> {
+    public class connectAsyncTask extends AsyncTask<Void, Void, String> {
         private ProgressDialog progressDialog;
         String url;
         boolean steps;

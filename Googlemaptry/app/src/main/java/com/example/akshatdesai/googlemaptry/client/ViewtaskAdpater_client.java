@@ -2,10 +2,12 @@ package com.example.akshatdesai.googlemaptry.client;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.icu.text.DateFormat;
 import android.icu.text.SimpleDateFormat;
 import android.os.AsyncTask;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 import com.example.akshatdesai.googlemaptry.server.DefineRoute;
@@ -41,13 +45,14 @@ import java.util.Date;
  */
 
 public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater_client.Viewholder1> {
-    int id[];
+    int id[],stat[];
     String title[], desc[], startdate[], enddate[], assignedby[],source[],destination[],stopage[];
     Context context;
     Intent callactivity;
+    EnablePermission ep = new EnablePermission();
    // static  int flag = 0;
 
-    public ViewtaskAdpater_client(int id[], String title[], String desc[], String startdate[], String enddate[], String assignedby[],String source[],String destination[], String stopage[] , Context context) {
+    public ViewtaskAdpater_client(int id[], String title[], String desc[], String startdate[], String enddate[], String assignedby[],String source[],String destination[], String stopage[] ,int stat[], Context context) {
         this.id = id;
         this.title = title;
         this.desc = desc;
@@ -57,6 +62,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
         this.source = source;
         this.destination = destination;
         this.stopage = stopage;
+        this.stat = stat;
         this.context = context;
 
         Log.e("id length", "" +id.length +"  "  + this.id.length);
@@ -65,7 +71,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
     public static class Viewholder1 extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView title, enddate, description, startdate, assignedby;
         Button ViewInMap;
-        ToggleButton progress;
+        Button progress;
         LinearLayout display,linearLayout;
 
 
@@ -78,7 +84,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
             assignedby = (TextView) v.findViewById(R.id.assignedto);
             ViewInMap = (Button) v.findViewById(R.id.viewinmap);
             display = (LinearLayout) v.findViewById(R.id.activity_view_task_details);
-            progress = (ToggleButton) v.findViewById(R.id.toggleButton);
+            progress = (Button) v.findViewById(R.id.toggleButton);
             linearLayout = (LinearLayout) v.findViewById(R.id.activity_view_task_details);
             display = (LinearLayout) v.findViewById(R.id.show_hide);
             display.setVisibility(View.GONE);
@@ -151,10 +157,53 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
         });
 
 
+        if(stat[position] == 0)
+        {
+            holder.progress.setText("Running");
+        }
+        else if(stat[position] == 1)
+        {
+            holder.progress.setText("Completed");
+        }
+        else {
+            holder.progress.setText("Scheduled");
+        }
+
         holder.progress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-              String status = (String) holder.progress.getText();
+             // String status = (String) holder.progress.getText();
+
+                AlertDialog.Builder ab = new AlertDialog.Builder(context);
+                ab.setTitle("Are you sure");
+                ab.setMessage("Task Complete");
+                ab.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        holder.progress.setText("Completed");
+                        if(ep.isInternetConnected(context)) {
+                            new TaskCompleated(context, id[position]).execute();
+                        }else{
+                            Toast.makeText(context,"No internrt connection",Toast.LENGTH_LONG);
+                        }
+                        holder.progress.setEnabled(false);
+
+                        Intent intent = new Intent(context,LocationUpdateService.class);
+                        context.stopService(intent);
+                    }
+
+                });
+                        ab.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                               // holder.progress.setText("Running");
+                            }
+                        });
+
+             AlertDialog dialog =   ab.create();
+                dialog.show();
+/*
                 if(status.equalsIgnoreCase("completed"))
                 {
                     new TaskCompleated(context,id[position]).execute();
@@ -164,7 +213,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
                     Intent intent = new Intent(context,LocationUpdateService.class);
                     context.stopService(intent);
 
-                }
+                }*/
             }
         });
 

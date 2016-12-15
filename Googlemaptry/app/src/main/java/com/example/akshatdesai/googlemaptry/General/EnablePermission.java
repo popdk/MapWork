@@ -148,4 +148,30 @@ public  class EnablePermission {
         }
         return false;
     }
+
+
+
+    public static String makeURL (double sourcelat, double sourcelog, double destlat, double destlog ){
+        StringBuilder urlString = new StringBuilder();
+        urlString.append("https://maps.googleapis.com/maps/api/directions/json");
+        urlString.append("?origin=");// from
+        urlString.append(Double.toString(sourcelat));
+        urlString.append(",");
+        urlString
+                .append(Double.toString( sourcelog));
+        urlString.append("&destination=");// to
+        urlString
+                .append(Double.toString( destlat));
+        urlString.append(",");
+        urlString.append(Double.toString( destlog));
+       // callmenow(urlString);
+
+        //urlString.append("&waypoints="+URLEncoder.encode(String.valueOf(stp), "UTF-8")+"|"+ ) ; //Godhra|Halol);
+        //  urlString.append("alternatives=true");
+        urlString.append("&region=in");
+        urlString.append("&sensor=false&mode=driving|walking&alternatives=true");
+        urlString.append("&language=en|gu|hi");
+        urlString.append("&key=AIzaSyCjvYgsqwRJCaySPonM8xAmdKohDwUYy5M");
+        return urlString.toString();
+    }
 }

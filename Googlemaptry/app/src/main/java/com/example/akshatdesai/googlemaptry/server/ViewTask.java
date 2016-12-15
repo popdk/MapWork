@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
@@ -63,8 +64,11 @@ public class ViewTask extends AppCompatActivity {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
             mid= Integer.parseInt(user.get(Sessionmanager.KEY_mid));
         }
-
-        new Web().execute();
+        if(EnablePermission.isInternetConnected(ViewTask.this)) {
+            new Web().execute();
+        }else {
+            Toast.makeText(ViewTask.this,"No Internet Connection",Toast.LENGTH_LONG);
+        }
     }
 
 

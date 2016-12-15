@@ -12,6 +12,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-feature android:name="android.hardware.location.gps" />
 
     <application
         android:name="android.support.multidex.MultiDexApplication"
@@ -39,7 +40,7 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@drawable/ic_menu_camera" />
+            android:resource="@mipmap/ic_launcher" />
         <!--
              Set color used with incoming notification messages. This is used when no color is set for the incoming
              notification message. See README(https://goo.gl/6BKBk7) for more.
@@ -50,6 +51,7 @@
         AndroidManifest.xml
         <activity
             android:name=".General.Login_new"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_maps">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -63,22 +65,29 @@
 
         <activity
             android:name=".General.AlarmManger1"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_tracking"></activity>
-        <activity android:name=".server.ViewTask" />
-        <activity android:name=".client.Chatting">
+        <activity android:name=".server.ViewTask"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".client.Chatting"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_3" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".Admin.Assign_role" />
-        <activity android:name=".server.ManagerNavigation" />
-        <activity android:name=".server.DefineRoute" />
+        <activity android:name=".Admin.Assign_role"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".server.ManagerNavigation"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".server.DefineRoute"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
 
         <!-- [END gcm_receiver] -->
 
-        <receiver android:name=".AlarmRecevier" />
+        <receiver android:name=".AlarmRecevier"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
         <!-- [START gcm_listener] -->
         <service android:name=".Notification.MyGcmListenerService">
             <intent-filter>
@@ -102,10 +111,14 @@
             android:name=".client.Viewtask_client"
             android:label="@string/title_activity_manager_navigation"></activity>
         -->
-        <activity android:name=".server.Tracking" />
-        <activity android:name=".client.CurrentLocation" />
-        <activity android:name=".General.Registration" />
-        <activity android:name=".client.Client_Home">
+        <activity android:name=".server.Tracking"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".client.CurrentLocation"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".General.Registration"
+            android:configChanges="keyboardHidden|orientation|screenSize"/>
+        <activity android:name=".client.Client_Home"
+            android:configChanges="keyboardHidden|orientation|screenSize">
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_1" />
 

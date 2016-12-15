@@ -55,6 +55,7 @@ public class Registration extends AppCompatActivity {
     ProgressDialog pd;
     RadioGroup rg;
     JSONObject temp;
+    EnablePermission eb;
 
 
     @Override
@@ -73,7 +74,7 @@ public class Registration extends AppCompatActivity {
         rg = (RadioGroup)findViewById(R.id.rg_mf);
         male = (RadioButton) findViewById(R.id.rb_male);
         female = (RadioButton) findViewById(R.id.rb_female);
-
+        eb = new EnablePermission();
         if(savedInstanceState == null)
         {
             Intent i = new Intent(this, RegistrationIntentService.class);
@@ -99,13 +100,16 @@ public class Registration extends AppCompatActivity {
                 }else{
                     gender = "female";
                 }
+                        if(eb.isInternetConnected(Registration.this)) {
+                            if (name.equals("") || mail.equals("") || pass.equals("") || address.equals("") || phone.equals("") || gender.equals("")) {
+                                Toast.makeText(Registration.this, "Enter Sufficient Details", Toast.LENGTH_LONG).show();
+                            } else {
 
-                if (name == null || mail == null || pass == null||address==null||phone==null||gender==null){
-                    Toast.makeText(Registration.this,"Enter Sufficient Details",Toast.LENGTH_LONG).show();
-                }else {
-
-                    new Register_Web().execute();
-                }
+                                new Register_Web().execute();
+                            }
+                        }else {
+                            Toast.makeText(Registration.this, "No Internet Connection", Toast.LENGTH_LONG).show();
+                        }
             }
         });
         cancel.setOnClickListener(new View.OnClickListener() {

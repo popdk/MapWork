@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Googlemaptry</string>
+    <string name="app_name">Tracking System</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_main">Map</string>
     <string name="title_activity_tracking">Map</string>

@@ -16,6 +16,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
@@ -45,6 +47,7 @@ public class ViewTask extends Fragment {
     private RecyclerView taskView;
     Sessionmanager sessionManager;
     int UId,mid;
+    EnablePermission ep = new EnablePermission();
 
 
     public ViewTask() {
@@ -82,7 +85,11 @@ public class ViewTask extends Fragment {
             mid= Integer.parseInt(user.get(Sessionmanager.KEY_mid));
         }
 
-        new Web().execute();
+        if(ep.isInternetConnected(getActivity())) {
+            new Web().execute();
+        }else{
+            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+        }
         return view;
     }
 

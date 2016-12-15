@@ -24,7 +24,7 @@ public class SingleChat extends ArrayAdapter {
     String[] messages,sendto,sendby,time;
     TextView l1,l2,r1,r2;
     Sessionmanager sessionmanager;
-    int UId;
+    static int UId;
     public SingleChat(Context context, String[] messages, String[] sendto, String[] sendby, String[] time) {
         super(context, R.layout.chatting_recyclerview_layout,messages);
 
@@ -33,6 +33,13 @@ public class SingleChat extends ArrayAdapter {
         this.sendto = sendto;
         this.sendby = sendby;
         this.time =time;
+        sessionmanager = new Sessionmanager(context);
+
+        HashMap<String, String> user = sessionmanager.getuserdetails();
+        // name
+        if (sessionmanager.isLoggedIn()) {
+            UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
+        }
     }
 
 
@@ -48,13 +55,9 @@ public class SingleChat extends ArrayAdapter {
         l2 = (TextView)view.findViewById(R.id.tv_l2);
         r1 = (TextView)view.findViewById(R.id.tv_r1);
         r2 = (TextView)view.findViewById(R.id.tv_r2);
-        sessionmanager = new Sessionmanager(context);
 
-        HashMap<String, String> user = sessionmanager.getuserdetails();
-        // name
-        if (sessionmanager.isLoggedIn()) {
-            UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
-        }
+
+
 
         Long l = Long.valueOf(sendto[position]);
         Log.e("long",""+l);

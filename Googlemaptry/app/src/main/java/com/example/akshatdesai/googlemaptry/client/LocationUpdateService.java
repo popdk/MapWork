@@ -17,7 +17,10 @@ import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.google.android.gms.location.LocationRequest;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,12 +32,15 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
+
 public class LocationUpdateService extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private LocationManager mLocationManager = null;
     private static final int LOCATION_INTERVAL = 1000 * 60;
     private static final float LOCATION_DISTANCE = 10f;
     private static int taskid;
+
    // static int val =0;
 
     private class LocationListener implements android.location.LocationListener {
@@ -50,7 +56,11 @@ public class LocationUpdateService extends Service {
             Log.e(TAG, "onLocationChanged: " + location);
           //  Toast.makeText(LocationUpdateService.this,""+location,Toast.LENGTH_LONG).show();
             mLastLocation.set(location);
-            new Web(location,taskid).execute();
+            if(EnablePermission.isInternetConnected(getApplicationContext())) {
+                new Web(location, taskid).execute();
+            }else{
+                Toast.makeText(getApplicationContext(),"No internet connection",Toast.LENGTH_LONG).show();
+            }
         }
 
         @Override
@@ -71,7 +81,7 @@ public class LocationUpdateService extends Service {
 
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
+           // new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
@@ -95,19 +105,27 @@ public class LocationUpdateService extends Service {
     public void onCreate() {
         Log.e(TAG, "onCreate");
         initializeLocationManager();
-        try {
+        /*try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
+
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
+        }*/
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[0]);
+
+            
+
+            LocationRequest mLocationRequest = new LocationRequest();
+            mLocationRequest.setInterval(10000);
+            mLocationRequest.setFastestInterval(5000);
+            mLocationRequest.setPriority(PRIORITY_HIGH_ACCURACY);
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
@@ -220,6 +238,7 @@ public class LocationUpdateService extends Service {
         Log.e(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+
         }
     }
 }

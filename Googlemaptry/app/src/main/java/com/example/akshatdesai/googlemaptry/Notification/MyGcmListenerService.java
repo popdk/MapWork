@@ -45,7 +45,6 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
 
 
-
         addNotification(myCustomKey,message.getNotification().getBody());
         Log.d(TAG, "From: " + message.getFrom());
         Log.d(TAG, "Notification Message Body: " + message.getNotification().getBody());
@@ -55,6 +54,7 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
             Intent intent = new Intent("ReceiveMessage");//put data if you want in putextras
             this.sendBroadcast(intent);
+            Log.e("Broadcast","Broadcast done");
         }
 
 

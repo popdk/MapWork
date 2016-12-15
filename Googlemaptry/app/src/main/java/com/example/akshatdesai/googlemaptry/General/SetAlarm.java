@@ -40,7 +40,7 @@ public  class SetAlarm {
    static JSONArray array;
     static int status;
    static ProgressDialog pd;
-
+    static EnablePermission ep = new EnablePermission();
     public static void  SetAlarm1(Context context, Calendar calendar, int reqCode, int taskid) {
 
         // Log.d("SetAlarm Texts", "Date : " + dateName + " Note: " + dateNote);
@@ -56,7 +56,11 @@ public  class SetAlarm {
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
                 pendingIntent);
-        new TaskStatus(context,taskid).execute();
+        if(ep.isInternetConnected(context)) {
+            new TaskStatus(context, taskid).execute();
+        }else {
+            Toast.makeText(context,"No Internet Connection",Toast.LENGTH_LONG);
+        }
     }
 
 

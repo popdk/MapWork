@@ -2,18 +2,19 @@
     xmlns:map="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/coordinatorlayout"
-    tools:context="com.example.akshatdesai.googlemaptry.server.DefineRoute" android:layout_height="match_parent"
+    tools:context="com.example.akshatdesai.googlemaptry.server.DefineRoute"
+    android:layout_height="match_parent"
     android:layout_width="match_parent">
 
 
 
 
-
+<!--
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollView"
-        android:padding="5dp">
+        android:padding="5dp">-->
 
 
 
@@ -91,16 +92,20 @@
             style="@style/CustomStyleButton"/>
     </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
     <fragment
         android:id="@+id/map"
         android:name="com.google.android.gms.maps.SupportMapFragment"
         android:layout_width="match_parent"
-        android:layout_height="440dp"
+        android:layout_height="match_parent"
     />
+        </LinearLayout>
     </LinearLayout>
 
-</ScrollView>
+<!--</ScrollView>-->
 </android.support.design.widget.CoordinatorLayout>
 
 

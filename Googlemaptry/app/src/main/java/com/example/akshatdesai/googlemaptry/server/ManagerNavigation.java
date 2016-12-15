@@ -1,7 +1,9 @@
 package com.example.akshatdesai.googlemaptry.server;
 
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -27,7 +29,7 @@ public class ManagerNavigation extends AppCompatActivity
     Fragment fragment = null;
     String title;
     DrawerLayout drawer;
-    Toolbar toolbar;
+    public static Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle toggle;
     Sessionmanager sessionmanager;
    /* ProgressBar pb;
@@ -77,14 +79,17 @@ public class ManagerNavigation extends AppCompatActivity
         return new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+           finishAffinity();
         }
+
+
     }
 
     protected void onPostCreate(Bundle savedInstanceState) {

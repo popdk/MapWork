@@ -18,6 +18,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
@@ -39,6 +41,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import static com.example.akshatdesai.googlemaptry.server.ManagerNavigation.toolbar;
+
 
 public class AddEmployee extends Fragment {
 
@@ -53,7 +57,7 @@ public class AddEmployee extends Fragment {
     public Integer[] empIds;
     public String[] empString;
     Sessionmanager sessionManager;
-
+    EnablePermission ep = new EnablePermission();
 
     public AddEmployee() {
         // Required empty public constructor
@@ -63,6 +67,7 @@ public class AddEmployee extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -87,11 +92,15 @@ public class AddEmployee extends Fragment {
                 pd.setMessage("Please wait");
                 pd.show();
                 pd.setCancelable(true);
-                new employee().execute();
+                if(ep.isInternetConnected(getActivity())) {
+                    new employee().execute();
+                }else{
+                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                }
             }
         });
 
-                return view;
+        return view;
     }
 
     public class employee extends AsyncTask {
@@ -154,11 +163,12 @@ public class AddEmployee extends Fragment {
 
             List<CharSequence> list = new ArrayList<CharSequence>();
 
-            for (int i = 1; i < status1; i++) {
+            for (int i = 0; i < status1; i++) {
 
                 list.add(empNames[i]);  // Add the item in the list
 
             }
+            Log.e("Names"," "+list);
             final CharSequence[] dialogList = list.toArray(new CharSequence[list.size()]);
             final AlertDialog.Builder builderDialog = new AlertDialog.Builder(getContext());
             builderDialog.setCancelable(false);
@@ -175,7 +185,7 @@ public class AddEmployee extends Fragment {
 
             if (!empString[0].equals(" ")) {
 
-                for (int i = 1, j = 0; i < status1; i++) {
+                for (int i = 0, j = 0; i < status1; i++) {
                     if (empString[0].contains("E" + empIds[i] + "E")) {
                         is_checked[j++] = true;
                     } else {
@@ -218,7 +228,7 @@ public class AddEmployee extends Fragment {
                         if (checked) {
                             if (stringBuilder.length() > 0)
                                 stringBuilder.append(",");
-                            for (int j = 1; j < status1; j++) {
+                            for (int j = 0; j < status1; j++) {
                                 if (empNames[j] == list.getItemAtPosition(i)) {
                                     stringBuilder.append(empIds[j]);
                                 }
@@ -283,7 +293,7 @@ public class AddEmployee extends Fragment {
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.container_body, fragment);
                 fragmentTransaction.commit();
-
+                toolbar.setTitle("Assign Task");
             }
         }
 

@@ -55,6 +55,7 @@ boolean res;
     Sessionmanager sessionManager;
     TextInputLayout inputLayoutName, inputLayoutPassword;
 
+
    // Sessionmanager sessionManager;
 
     @Override
@@ -125,11 +126,16 @@ boolean res;
                         Intent i = new Intent(Login_new.this, Assign_role.class);
                         startActivity(i);
                     } else {*/
-                    if(mail == null || pass==null){
-                        Toast.makeText(Login_new.this,"Enter Email and Password",Toast.LENGTH_LONG).show();
-                    }
-                        new Check_web().execute();
+                    if (mail.equals("") || pass.equals("")) {
+                        Toast.makeText(Login_new.this, "Enter Email and Password", Toast.LENGTH_LONG).show();
+                    } else {
+                        if (EnablePermission.isInternetConnected(Login_new.this)) {
+                            new Check_web().execute();
+                        } else {
+                            Toast.makeText(Login_new.this, "No internrt connection", Toast.LENGTH_LONG).show();
+                        }
 
+                    }
                 }
             });
 
@@ -138,6 +144,7 @@ boolean res;
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public  void btnCancle(View view)
     {
         finishAffinity();

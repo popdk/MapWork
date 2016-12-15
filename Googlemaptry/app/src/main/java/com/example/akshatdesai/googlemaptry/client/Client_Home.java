@@ -1,7 +1,10 @@
 package com.example.akshatdesai.googlemaptry.client;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
@@ -37,11 +40,14 @@ public class Client_Home extends AppCompatActivity {
         EnablePermission.checklocationservice(Client_Home.this);
         showPermissionDialog(this);
 
+
+
         pager = (ViewPager) findViewById(R.id.pager);
         setupViewPager(pager);
         slidingTabLayout = (TabLayout) findViewById(R.id.tabs);
         slidingTabLayout.setupWithViewPager(pager);
         sessionmanager = new Sessionmanager(getApplicationContext());
+
 
     }
 
@@ -97,10 +103,18 @@ public class Client_Home extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+
         if(!EnablePermission.isInternetConnected(Client_Home.this))
         {
             Toast.makeText(Client_Home.this,"Please Connect to internet",Toast.LENGTH_LONG).show();
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+    @Override
+    public void onBackPressed() {
+        finishAffinity();
     }
 }
 

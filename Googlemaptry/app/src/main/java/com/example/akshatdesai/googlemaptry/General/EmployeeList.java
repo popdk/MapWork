@@ -10,8 +10,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 import com.example.akshatdesai.googlemaptry.client.*;
@@ -44,8 +46,8 @@ public class EmployeeList extends Fragment {
     String response;
     Sessionmanager sessionManager;
     //Context context;
-    int UId;
-
+    static int UId;
+    EnablePermission ep = new EnablePermission();
     /*public EmployeeList(Context c) {
         context=c;
         // Required empty public constructor
@@ -83,8 +85,11 @@ public class EmployeeList extends Fragment {
     }
     public void onResume() {
                 super.onResume();
-
-                new Web().execute();
+                if(ep.isInternetConnected(getActivity())) {
+                    new Web().execute();
+                }else{
+                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                }
             }
 
             public class Web extends AsyncTask {
@@ -180,6 +185,7 @@ public class EmployeeList extends Fragment {
                                     Intent i=new Intent(getActivity(), Chatting.class);
                                     Log.e("sendto",""+empIds[position]);
                                     i.putExtra("Key",empIds[position]);
+                                    i.putExtra("sendto_name",empNames[position]);
                                     startActivity(i);
                                 }
                             });

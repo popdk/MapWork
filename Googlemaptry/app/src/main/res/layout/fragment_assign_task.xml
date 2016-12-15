@@ -145,7 +145,7 @@ android:orientation="vertical">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:hint="Enter end date"
+                    android:hint="Enter ending date"
                     >
                     <EditText
                         android:id="@+id/task_ending_date"
@@ -168,7 +168,7 @@ android:orientation="vertical">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:hint="Enter end time"
+                    android:hint="Enter ending time"
                     >
                     <EditText
                         android:id="@+id/task_ending_time"
@@ -213,7 +213,7 @@ android:orientation="vertical">
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:hint="Enter destination"
+                    android:hint="Enter destination location"
                     >
                     <EditText
                         android:id="@+id/destination"
@@ -350,7 +350,7 @@ android:orientation="vertical">
                     style="@style/CustomStyleButton"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="Cancel"
+                    android:text="Reset"
                     android:layout_marginLeft="5dp"
                     android:layout_weight="1" />
             </LinearLayout>

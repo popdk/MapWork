@@ -53,13 +53,12 @@
                 android:id="@+id/assignedto"
                 android:layout_weight="1.75"/>
 
-            <ToggleButton
+            <Button
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:id="@+id/toggleButton"
                 android:layout_weight="1.75"
-                android:textOn="Completed"
-                android:textOff="Running"
+
                 style="@style/CustomStyleButton"
                 />
         </LinearLayout>

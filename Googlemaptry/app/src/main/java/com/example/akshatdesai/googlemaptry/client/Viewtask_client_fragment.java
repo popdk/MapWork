@@ -17,6 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
@@ -53,8 +55,9 @@ public class Viewtask_client_fragment extends Fragment {
     ProgressDialog pd1;
     String msg, name[], sdate[], edate[], assignedto[], assignedby[], desc[],source[],destination[],stopage[],specials_date[];
     Sessionmanager sessionmanager;
-    static int status, id[], length1, cstatus[],specialt_id[];
+    static int status, id[], length1, cstatus[],specialt_id[],stat[];
     JSONArray array;
+    EnablePermission ep = new EnablePermission();
   //  Context context = getContext();
 
 
@@ -124,7 +127,11 @@ public class Viewtask_client_fragment extends Fragment {
         // name
         UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
         mid = Integer.parseInt(user.get(Sessionmanager.KEY_mid));
-        new ViewTask_Web().execute();
+        if(ep.isInternetConnected(getActivity())) {
+            new ViewTask_Web().execute();
+        }else{
+            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+        }
         return  view;
 
     }
@@ -201,6 +208,7 @@ public class ViewTask_Web extends AsyncTask {
                 stopage = new String[length1];
                 specialt_id = new int[length1];
                 specials_date = new String[length1];
+                stat = new int[length1];
                 int m =0;
 
                 if (status == 1)
@@ -217,6 +225,7 @@ public class ViewTask_Web extends AsyncTask {
                         source[i] = temp1.getString("source");
                         destination[i] = temp1.getString("destination");
                         stopage[i] = temp1.getString("stopage");
+                        stat[i] = temp1.getInt("stat");
 
                         Log.d("T_STATUS",""+temp1.getInt("t_status"));
                         if(temp1.getInt("t_status") == 0)
@@ -259,7 +268,7 @@ public class ViewTask_Web extends AsyncTask {
             }
             else {
 
-                ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,source,destination,stopage,getContext());
+                ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,source,destination,stopage,stat,getContext());
                 taskView.setAdapter(adapter);
 
                 Log.d("IDEA",""+specialt_id[0]);
