@@ -40,7 +40,7 @@ public  class SetAlarm {
    static JSONArray array;
     static int status;
    static ProgressDialog pd;
-    static EnablePermission ep = new EnablePermission();
+
     public static void  SetAlarm1(Context context, Calendar calendar, int reqCode, int taskid) {
 
         // Log.d("SetAlarm Texts", "Date : " + dateName + " Note: " + dateNote);
@@ -49,22 +49,22 @@ public  class SetAlarm {
 
         Intent myIntent = new Intent(context, AlarmRecevier.class);
         myIntent.putExtra("taskid",""+taskid);
-        Log.e("ALLLLarm","1");
+
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context,
                 reqCode, myIntent, 0);
-        Log.e("ALLLLarm","2");
+
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
+        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
-        if(ep.isInternetConnected(context)) {
+        if(EnablePermission.isInternetConnected(context)) {
             new TaskStatus(context, taskid).execute();
         }else {
-            Toast.makeText(context,"No Internet Connection",Toast.LENGTH_LONG);
+            Toast.makeText(context,"No Internet Connection",Toast.LENGTH_LONG).show();
         }
     }
 
 
-    static class TaskStatus extends AsyncTask {
+    private static class TaskStatus extends AsyncTask {
         int taskid;
         Context context;
         TaskStatus(Context context,  int taskid)
@@ -126,18 +126,12 @@ public  class SetAlarm {
                         Log.e("SETALARM","Taskid"+ taskid + "Updated");
                     }
 
-                    Log.e("responce", "" + msg);
+                    Log.e("ALARMRESPONCE", "" + msg);
                 }
 
 
-            } catch (UnsupportedEncodingException e1) {
+            } catch ( JSONException | IOException e1) {
                 e1.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
 
             return null;
@@ -148,7 +142,7 @@ public  class SetAlarm {
             super.onPostExecute(o);
             pd.cancel();
             if (msg.equals("0")) {
-                Toast.makeText(context, "Problem in registration.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, "Problem in Alarm Set", Toast.LENGTH_SHORT).show();
             }
         }
     }

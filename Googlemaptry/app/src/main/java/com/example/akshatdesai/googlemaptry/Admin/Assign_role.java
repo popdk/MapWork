@@ -1,5 +1,6 @@
 package com.example.akshatdesai.googlemaptry.Admin;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
+import com.example.akshatdesai.googlemaptry.General.Login_new;
 import com.example.akshatdesai.googlemaptry.General.Registration;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
@@ -42,20 +44,21 @@ public class Assign_role extends AppCompatActivity {
     Button manager,logout;
     JSONArray array;
     JSONObject temp;
-    int status;
+    static int status,status12;
     int status1;
-    Integer[] Ids;
+    Integer Ids[],m_id[];
     String msg, tosend;
     String[] Names;
     Sessionmanager sessionmanager;
     Toolbar mtoolbar;
-    EnablePermission ep;
+    ProgressDialog pd1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_assign_role);
         mtoolbar = (Toolbar) findViewById(R.id.toolbar3);
-        ep = new EnablePermission();
+
         setSupportActionBar(mtoolbar);
 
         Toast.makeText(Assign_role.this, "in home activity", Toast.LENGTH_SHORT);
@@ -66,11 +69,11 @@ public class Assign_role extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 tosend = "";
-                Log.e("onclick", "dgvdfg");
-                if(ep.isInternetConnected(Assign_role.this)) {
+
+                if(EnablePermission.isInternetConnected(Assign_role.this)) {
                     new manager().execute();
                 }else{
-                    Toast.makeText(Assign_role.this,"No internrt connection",Toast.LENGTH_LONG);
+                    Toast.makeText(Assign_role.this,"No internet connection",Toast.LENGTH_LONG).show();
                 }
 
 
@@ -93,10 +96,8 @@ public class Assign_role extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if(id == R.id.action_logout){
-            sessionmanager.LogOut1();
+         if(id == R.id.action_logout){
+            sessionmanager.LogOut1(Assign_role.this);
            /* Intent in = new Intent(getApplicationContext(), Login_new.class);
             startActivity(in);*/
         }
@@ -107,14 +108,29 @@ public class Assign_role extends AppCompatActivity {
 
 
     public class manager extends AsyncTask {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pd1 = new ProgressDialog(Assign_role.this);
+
+            pd1.setMessage("Please wait");
+
+            pd1.show();
+
+            pd1.setCancelable(false);
+        }
+
         @Override
         protected Object doInBackground(Object[] params) {
-            try {Log.e("onclick","dgvdfg");
+            try {
 //                Log.e("AP", "" + manager);
                 //String param = "OId=" + URLEncoder.encode(MainActivity.id + "", "UTF-8");
 
                 URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/assign.php");
-                Log.e("onclick","dgvdfg");
+
                // URLConnection con = url.openConnection();
 
                 HttpURLConnection httpURLConnection = null;
@@ -148,20 +164,20 @@ public class Assign_role extends AppCompatActivity {
                 array = new JSONArray(msg);
                 temp = array.getJSONObject(0);
 
-                Log.e("temp", "" + temp);
-                status = temp.getInt("status");
-                status1 = array.length() + 1;
-                Names = new String[status1];
 
+                status = temp.getInt("status");
+                status1 = array.length();
+                Names = new String[status1];
+                m_id = new Integer[status1];
                 Ids = new Integer[status1];
-                Names[0] = "";
-                Ids[0] = -1;
+
                 if (status == 1) {
-                    for (int j = 1; j < status1; j++) {
-                        temp = array.getJSONObject(j - 1);
+                    for (int j = 0; j < status1; j++) {
+                        temp = array.getJSONObject(j);
 
                         Names[j] = temp.getString("name");
                         Ids[j] = temp.getInt("id");
+                        m_id[j] = temp.getInt("m_id");
                     }
                 }
             } catch (MalformedURLException e) {
@@ -179,9 +195,10 @@ public class Assign_role extends AppCompatActivity {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
+            pd1.cancel();
             List<CharSequence> list = new ArrayList<CharSequence>();
 
-            for (int i = 1; i < status1; i++) {
+            for (int i = 0; i < status1; i++) {
 
                 list.add(Names[i]);  // Add the item in the list
 
@@ -193,16 +210,16 @@ public class Assign_role extends AppCompatActivity {
             int count = dialogList.length;
             boolean[] is_checked = new boolean[count];
 //            Log.e("YYYY", "" + ProjectList.pn3);
-           /* for (int i = 1, j = 0; i < status1; i++) {
-                if (!empIds[i].equals(MainActivity.UId)) {
-                    if (ProjectList.pn3.contains("E" + empIds[i] + "E")) {
-                        is_checked[j++] = true;
-                    } else {
-                        j++;
-                    }
+           for (int i = 0; i < status1; i++) {
+
+               Log.e("MID",""+m_id[i]);
+                if (m_id[i] == 1) {
+
+                        is_checked[i] = true;
+
                 }
             }// set is_checked boolean false;
-           */ // Creating multiple selection by using setMutliChoiceItem method
+            // Creating multiple selection by using setMutliChoiceItem method
             builderDialog.setMultiChoiceItems(dialogList, is_checked, new DialogInterface.OnMultiChoiceClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton, boolean isChecked) {
                 }
@@ -218,7 +235,7 @@ public class Assign_role extends AppCompatActivity {
                         if (checked) {
                             if (stringBuilder.length() > 0)
                                 stringBuilder.append(",");
-                            for (int j = 1; j < status1; j++) {
+                            for (int j = 0; j < status1; j++) {
                                 if (Names[j] == list.getItemAtPosition(i)) {
                                     stringBuilder.append(Ids[j]);
                                 }
@@ -255,7 +272,7 @@ public class Assign_role extends AppCompatActivity {
             try {
                 String param = "tosend=" + URLEncoder.encode(String.valueOf(tosend), "UTF-8");
                 Log.e("url",""+param);
-                URL url = new URL("http://tracking.freevar.com/Tracking/position.php?" + param);
+                URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/position.php?" + param);
                 Log.e("url",""+url);
                 URLConnection con = url.openConnection();
                 HttpURLConnection httpURLConnection = (HttpURLConnection) con;
@@ -266,7 +283,7 @@ public class Assign_role extends AppCompatActivity {
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 int rescode = httpURLConnection.getResponseCode();
 
-                Log.e("responce", "" +rescode);
+
                 if (rescode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                     String inputLine;
@@ -283,10 +300,10 @@ public class Assign_role extends AppCompatActivity {
                 array = new JSONArray(msg);
                 temp = array.getJSONObject(0);
 
-                Log.e("temp", "" + temp);
-                status = temp.getInt("status");
-                Log.e("temp", "" + status);
-                //Log.e("responce", "" + msg);
+
+                status12 = temp.getInt("status");
+
+
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             } catch (ProtocolException e1) {
@@ -303,13 +320,13 @@ public class Assign_role extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object o) {
-            Log.e("responce", "" + msg);
 
-            Toast.makeText(getApplicationContext(), "Record Inserted Successfully", Toast.LENGTH_LONG).show();
-            //     Intent i = new Intent(getApplicationContext(), MainActivity.class);
-            //   startActivity(i);
-            // finish();
-
+            if(status12 == 1) {
+                Toast.makeText(getApplicationContext(), "Record Inserted Successfully", Toast.LENGTH_LONG).show();
+            }
+            else {
+                Toast.makeText(Assign_role.this, "Please Try Again", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }

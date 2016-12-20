@@ -47,7 +47,6 @@ public class EmployeeList extends Fragment {
     Sessionmanager sessionManager;
     //Context context;
     static int UId;
-    EnablePermission ep = new EnablePermission();
     /*public EmployeeList(Context c) {
         context=c;
         // Required empty public constructor
@@ -85,10 +84,10 @@ public class EmployeeList extends Fragment {
     }
     public void onResume() {
                 super.onResume();
-                if(ep.isInternetConnected(getActivity())) {
+                if(EnablePermission.isInternetConnected(getActivity())) {
                     new Web().execute();
                 }else{
-                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
                 }
             }
 
@@ -98,8 +97,8 @@ public class EmployeeList extends Fragment {
                 protected Object doInBackground(Object[] params) {
                     try {
                         msg = "";
-                       // String param = "Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
-                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/chattinglist.php?");
+                        String param = "id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8");
+                        URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/chattinglist.php?"+param);
                         URLConnection con = url.openConnection();
                         HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                         httpURLConnection.setRequestMethod("POST");
@@ -107,7 +106,7 @@ public class EmployeeList extends Fragment {
                         httpURLConnection.setDoInput(true);
                         httpURLConnection.setRequestProperty("Accept", "application/json");
                         httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
+                        Log.e("ChattingListUrl", "" + url);
                         int rescode = httpURLConnection.getResponseCode();
 //                  Log.e("I", "" + rescode);
 
@@ -125,8 +124,9 @@ public class EmployeeList extends Fragment {
 
                             msg = response;
 
+                            Log.e("ChattingListResponce", "" + msg);
+                          
 
-                    Log.e("response", "" + msg);
                         }
 
                         array = new JSONArray(msg);

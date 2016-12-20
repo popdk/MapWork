@@ -120,7 +120,7 @@ public class LocationUpdateService extends Service {
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[0]);
 
-            
+
 
             LocationRequest mLocationRequest = new LocationRequest();
             mLocationRequest.setInterval(10000);
@@ -238,7 +238,7 @@ public class LocationUpdateService extends Service {
         Log.e(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-
+            //LocationRequest lr = (LocationRequest) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
 }

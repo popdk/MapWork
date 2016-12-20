@@ -46,7 +46,7 @@ public class Client_Home extends AppCompatActivity {
         setupViewPager(pager);
         slidingTabLayout = (TabLayout) findViewById(R.id.tabs);
         slidingTabLayout.setupWithViewPager(pager);
-        sessionmanager = new Sessionmanager(getApplicationContext());
+        sessionmanager = new Sessionmanager(Client_Home.this);
 
 
     }
@@ -89,10 +89,8 @@ public class Client_Home extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if(id == R.id.action_logout){
-            sessionmanager.LogOut1();
+         if(id == R.id.action_logout){
+            sessionmanager.LogOut1(Client_Home.this);
            /* Intent in = new Intent(getApplicationContext(), Login_new.class);
             startActivity(in);*/
         }

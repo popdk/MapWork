@@ -36,6 +36,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 
@@ -142,13 +143,13 @@ public class ViewTask_Web extends AsyncTask {
     protected void onPreExecute() {
         super.onPreExecute();
         pd1 = new ProgressDialog(getContext());
-        Log.e("in pre1", "entered");
+
         pd1.setMessage("Please wait");
-        Log.e("in pre2", "entered");
+
         pd1.show();
-        Log.e("in pre3", "entered");
+
         pd1.setCancelable(true);
-        Log.e("in pre4", "puru");
+
     }
 
     @Override
@@ -271,7 +272,7 @@ public class ViewTask_Web extends AsyncTask {
                 ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,source,destination,stopage,stat,getContext());
                 taskView.setAdapter(adapter);
 
-                Log.d("IDEA",""+specialt_id[0]);
+                Log.e("SETTING ALARM FORTASKID",""+specialt_id[0]);
                 if(specialt_id[0] != 0) {
                     for (int k = 0; k < specialt_id.length; k++) {
                         setracking(specialt_id[k], specials_date[k]);
@@ -311,7 +312,9 @@ public class ViewTask_Web extends AsyncTask {
         calendar.set(Calendar.MINUTE, Integer.parseInt(time[1]));
         calendar.set(Calendar.SECOND,15);
 
-        SetAlarm1(getActivity(),calendar,770,id);
+        long millis = System.currentTimeMillis();
+
+        SetAlarm1(getActivity(),calendar,(int)millis,id);
 
 
     }

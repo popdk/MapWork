@@ -1,9 +1,27 @@
 package com.example.akshatdesai.googlemaptry.General;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
+import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.example.akshatdesai.googlemaptry.client.ViewtaskAdpater_client;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
 import java.util.HashMap;
 
 /**
@@ -14,6 +32,7 @@ public class Sessionmanager {
 
 
     public static final String KEY_NAME = "UserName";
+    static int UID=0;
 
     public static final String KEY_MAIL = "Email";
     public static final String KEY_ID = "UserId";
@@ -24,10 +43,11 @@ public class Sessionmanager {
 
     public static final String PREF_NAME = "FAM";
     public static final String IS_LOGIN = "IsLoggedIn";
+    ProgressDialog pd1;
 
     SharedPreferences preferences;
     SharedPreferences.Editor editor;
-    Context context;
+    Context context,c;
 
     int PRIVATE_MODE =0;
 
@@ -76,11 +96,15 @@ public class Sessionmanager {
 
     }
 
-    public void LogOut1()
+    public void LogOut1(Context context)
     {
+
+        c = context;
+        Log.e("Logout1","Clicked");
+        new LogOut().execute();
         editor.clear();
         editor.commit();
-        Intent i = new Intent(context, Login_new.class);
+        Intent i = new Intent(c, Login_new.class);
         i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(i);
@@ -102,5 +126,102 @@ public class Sessionmanager {
         return preferences.getBoolean(IS_LOGIN, false);
     }
 
+    public class LogOut extends AsyncTask {
+
+
+        HashMap<String,String> hm;
+        String result ="";
+        String respond = "";
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Log.e("AsyncTask","Clicked");
+            pd1 = new ProgressDialog(c);
+            pd1.setMessage("Please wait");
+            pd1.setCancelable(false);
+            pd1.show();
+
+            
+          hm  =  getuserdetails();
+          
+
+
+        }
+
+        @Override
+        protected Object doInBackground(Object[] objects) {
+
+            try {
+
+                String param = "id=" + URLEncoder.encode(hm.get(KEY_ID) + "", "UTF-8");
+
+                HttpURLConnection httpURLConnection;
+                URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/logout.php?" + param);
+             
+                httpURLConnection = (HttpURLConnection) url.openConnection();
+
+
+                httpURLConnection.setRequestMethod("POST");
+
+                httpURLConnection.setDoOutput(true);
+
+                httpURLConnection.setDoInput(true);
+
+                httpURLConnection.setRequestProperty("Accept", "application/json");
+                httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+
+                int i = httpURLConnection.getResponseCode();
+                Log.e("RCode", "" + i);
+                if (i == HttpURLConnection.HTTP_OK) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                    String inputLine;
+                    StringBuffer responce = new StringBuffer();
+
+                    while ((inputLine = in.readLine()) != null) {
+                        responce.append(inputLine);
+                    }
+                    Log.e("responce", "" + responce);
+                    in.close();
+                     respond = responce.toString().trim();
+
+
+                 
+
+                   
+                }
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Object o) {
+
+            try {
+                //pb.setVisibility(View.GONE);
+                pd1.cancel();
+                
+                if(respond.equals("1"))
+                {
+
+                    Toast.makeText(context, "Logout Successfully", Toast.LENGTH_SHORT).show();
+
+                }
+                else {
+                    Toast.makeText(context, "Please Logout Again", Toast.LENGTH_SHORT).show();
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+
+    }
 
 }

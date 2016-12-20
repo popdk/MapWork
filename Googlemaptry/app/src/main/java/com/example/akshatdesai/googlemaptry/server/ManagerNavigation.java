@@ -13,6 +13,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -125,10 +126,9 @@ public class ManagerNavigation extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        } else if (id == R.id.action_logout) {
-            sessionmanager.LogOut1();
+         if (id == R.id.action_logout) {
+            Log.e("Button","Clicked");
+            sessionmanager.LogOut1(ManagerNavigation.this);
            /*Intent in = new Intent(getApplicationContext(), Login_new.class);
             startActivity(in);*/
         }

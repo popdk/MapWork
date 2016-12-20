@@ -4,249 +4,246 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    >
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/scrollView"
-        android:padding="5dp">
-
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-
-
-
-
-    <LinearLayout
+    <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ll"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+        android:padding="5dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Registration"
-            android:layout_gravity="center"
-            android:textSize="35sp"
-            android:textColor="#2C3E50"
-            />
-    </LinearLayout>
-
-
-    <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:weightSum="4"
-    android:orientation="horizontal"
-    android:id="@+id/ll1"
-    android:layout_below="@+id/ll">
-
-    <android.support.design.widget.TextInputLayout
-        android:id="@+id/input_layout_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:hint="Enter Name"
-        >
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/et_name"
-        android:layout_alignParentTop="true"
-        android:layout_weight="2.5" />
-    </android.support.design.widget.TextInputLayout>
-</LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll1"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:id="@+id/ll2">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_mail"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:hint="Enter Email"
-            >
-        <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10" android:layout_weight="2.5"
-        android:id="@+id/et_mail"
-       />
-        </android.support.design.widget.TextInputLayout>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll2"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:id="@+id/ll3"
-
-        >
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_password"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:hint="Enter Password"
-            >
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPassword"
-        android:layout_weight="2.5"
-        android:ems="10"
-        android:id="@+id/et_pass"
-
-       />
-        </android.support.design.widget.TextInputLayout>
-</LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll3"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:id="@+id/ll4">
-
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_address"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:hint="Enter Address"
-            >
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_weight="2.5"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:ems="10"
-        android:id="@+id/et_address"
-
-         />
-        </android.support.design.widget.TextInputLayout>
-</LinearLayout>
+            android:orientation="vertical">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll4"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        android:id="@+id/ll5">
+            <LinearLayout
+                android:id="@+id/ll"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <android.support.design.widget.TextInputLayout
-            android:id="@+id/input_layout_phone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:hint="Enter Phone no"
-            >
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
-        android:layout_weight="2.5"
-        android:ems="10"
-        android:id="@+id/et_phone"
-
-       />
-        </android.support.design.widget.TextInputLayout>
-</LinearLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Registration"
+                    android:textColor="#2C3E50"
+                    android:textSize="35sp" />
+            </LinearLayout>
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll5"
-        android:layout_marginTop="15dp"
-        android:orientation="horizontal"
+            <LinearLayout
+                android:id="@+id/ll1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll"
+                android:orientation="horizontal"
+                android:weightSum="4">
 
-        android:weightSum="4"
-        android:id="@+id/ll6">
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Name"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_weight="2.5"
+                        android:ems="10"
+                        android:inputType="textPersonName" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll1"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_mail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Email"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_mail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:ems="10"
+                        android:inputType="textPersonName" />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll2"
+                android:orientation="horizontal"
+                android:weightSum="4"
+
+                >
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Password"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_pass"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:ems="10"
+                        android:inputType="textPassword"
+
+                        />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll3"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_address"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Address"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:ems="10"
+                        android:inputType="textPersonName"
+
+                        />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
 
-    <TextView
-        android:text="Gender"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/tv_gender"
-        android:layout_weight="1.5"
-        android:textSize="20sp"/>
+            <LinearLayout
+                android:id="@+id/ll5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll4"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <android.support.design.widget.TextInputLayout
+                    android:id="@+id/input_layout_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Enter Phone no"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2.5"
+                        android:ems="10"
+                        android:inputType="phone"
+
+                        />
+                </android.support.design.widget.TextInputLayout>
+            </LinearLayout>
 
 
-    <RadioGroup
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:id="@+id/rg_mf"
-        android:layout_weight="0"/>
+            <LinearLayout
+                android:id="@+id/ll6"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll5"
+                android:layout_marginTop="15dp"
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rb_male"
-        android:layout_weight="1.25"
-        android:text="Male" />
+                android:orientation="horizontal"
+                android:weightSum="4">
 
-    <RadioButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rb_female"
-        android:layout_weight="1.25"
-        android:text="Female"
-      />
 
-</LinearLayout>
+                <TextView
+                    android:id="@+id/tv_gender"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1.5"
+                    android:text="Gender"
+                    android:textSize="20sp" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ll6"
-        android:orientation="horizontal"
-        android:layout_marginTop="30dp"
-        android:weightSum="4"
-        android:id="@+id/ll7">
 
-        <Button
-            android:text="Submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/btn_submit"
-            android:layout_weight="2"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-            style="@style/CustomStyleButton"
-            />
-    <Button
-        android:text="cancel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/btn_cncl"
-        android:layout_weight="2"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        style="@style/CustomStyleButton"
-        />
+                <RadioGroup
+                    android:id="@+id/rg_mf"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2.50"
+                    android:orientation="horizontal">
 
-</LinearLayout>
-</LinearLayout>
-</ScrollView>
+                    <RadioButton
+                        android:id="@+id/rb_male"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.25"
+                        android:text="Male" />
+
+                    <RadioButton
+                        android:id="@+id/rb_female"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1.25"
+                        android:text="Female" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll7"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ll6"
+                android:layout_marginTop="30dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <Button
+                    android:id="@+id/btn_submit"
+                    style="@style/CustomStyleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="2"
+                    android:text="Submit" />
+
+                <Button
+                    android:id="@+id/btn_cncl"
+                    style="@style/CustomStyleButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:layout_weight="2"
+                    android:text="cancel" />
+
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

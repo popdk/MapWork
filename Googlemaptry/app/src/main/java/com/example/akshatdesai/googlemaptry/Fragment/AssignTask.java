@@ -73,7 +73,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     private   TimePickerDialog timePickerDialog2;
     private SimpleDateFormat dateFormatter;
     public static String distance,duration;
-    public static int UId;
+    public static int UId,status3;
     public static int employeeId;
     String tName = "";
     String tDesc = "";
@@ -152,7 +152,22 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         employeeList1 = new ArrayList<Integer>();
         dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         employees.setOnItemSelectedListener(this);
-        if(ep.isInternetConnected(getActivity())) {
+        if(EnablePermission.isInternetConnected(getActivity())) {
+
+            sessionManager = new Sessionmanager(getActivity());
+
+            HashMap<String, String> user = sessionManager.getuserdetails();
+            // name
+            if (sessionManager.isLoggedIn()) {
+                UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
+
+            }
+            else {
+                Intent i = new Intent(getContext(), Login_new.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getContext().startActivity(i);
+            }
             new GetEmployees().execute();
         }else{
             Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
@@ -223,20 +238,6 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         }, newCalendar.get(Calendar.HOUR_OF_DAY), newCalendar.get(Calendar.MINUTE), false);
 
 
-        sessionManager = new Sessionmanager(getContext());
-
-        HashMap<String, String> user = sessionManager.getuserdetails();
-        // name
-        if (sessionManager.isLoggedIn()) {
-            UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
-
-        }
-        else {
-            Intent i = new Intent(getContext(), Login_new.class);
-            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            getContext().startActivity(i);
-        }
 
         add.setOnClickListener(new View.OnClickListener() {
 
@@ -784,7 +785,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                     got = responce.toString();
 
                     object = new JSONObject(got);
-
+                    status3 = object.getInt("status");
 
                     // got=got.trim();
                     Log.e("responce",got);
@@ -812,7 +813,13 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
             super.onPostExecute(o);
             pd.cancel();
             try {
-                s = Integer.parseInt(object.getString("success"));
+
+                if(status3 != 0) {
+                    s = Integer.parseInt(object.getString("success"));
+                }
+                else{
+                    Toast.makeText(getActivity(), "Message Not Delivered", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -823,7 +830,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
 
             } else {
-                Toast.makeText(getContext(), "Problem in assigning Task.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Message Not Delivered", Toast.LENGTH_SHORT).show();
             }
         }
     }

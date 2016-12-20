@@ -49,7 +49,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
     String title[], desc[], startdate[], enddate[], assignedby[],source[],destination[],stopage[];
     Context context;
     Intent callactivity;
-    EnablePermission ep = new EnablePermission();
+
    // static  int flag = 0;
 
     public ViewtaskAdpater_client(int id[], String title[], String desc[], String startdate[], String enddate[], String assignedby[],String source[],String destination[], String stopage[] ,int stat[], Context context) {
@@ -164,9 +164,11 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
         else if(stat[position] == 1)
         {
             holder.progress.setText("Completed");
+            holder.progress.setEnabled(false);
         }
         else {
             holder.progress.setText("Scheduled");
+            holder.progress.setEnabled(false);
         }
 
         holder.progress.setOnClickListener(new View.OnClickListener() {
@@ -182,15 +184,16 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
                     public void onClick(DialogInterface dialogInterface, int i) {
 
                         holder.progress.setText("Completed");
-                        if(ep.isInternetConnected(context)) {
+                        if(EnablePermission.isInternetConnected(context)) {
                             new TaskCompleated(context, id[position]).execute();
-                        }else{
-                            Toast.makeText(context,"No internrt connection",Toast.LENGTH_LONG);
-                        }
-                        holder.progress.setEnabled(false);
+                            holder.progress.setEnabled(false);
 
-                        Intent intent = new Intent(context,LocationUpdateService.class);
-                        context.stopService(intent);
+                            Intent intent = new Intent(context,LocationUpdateService.class);
+                            context.stopService(intent);
+                        }else{
+                            Toast.makeText(context,"No internet connection",Toast.LENGTH_LONG).show();
+                        }
+
                     }
 
                 });
@@ -225,7 +228,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
     }
 
 
-    static class TaskCompleated extends AsyncTask {
+    private static class TaskCompleated extends AsyncTask {
         int taskid , status;
         Context context;
         String msg;

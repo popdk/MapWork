@@ -47,7 +47,7 @@ public class Registration extends AppCompatActivity {
     TextView tv_name, tv_mail, tv_pass, tv_phone, tv_address;
     EditText et_name, et_mail, et_pass, et_phone, et_address;
     Button submit, cancel;
-    String name, message, mail, pass, address, phone, gender, response,msg;
+    String name, message, mail, pass, address, phone, gender, response,msg="";
     RadioButton male, female;
     HttpURLConnection httpURLConnection;
     JSONArray array;
@@ -88,20 +88,23 @@ public class Registration extends AppCompatActivity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                name = et_name.getText().toString();
-                mail = et_mail.getText().toString();
-                pass = et_pass.getText().toString();
-                address = et_address.getText().toString();
-                phone = et_phone.getText().toString();
+                name = et_name.getText().toString().trim();
+                mail = et_mail.getText().toString().trim();
+                pass = et_pass.getText().toString().trim();
+                address = et_address.getText().toString().trim();
+                phone = et_phone.getText().toString().trim();
                 abc = rg.getCheckedRadioButtonId();
+
+                Log.e("abc",""+abc);
+
                 if(abc == male.getId())
                 {
                     gender = "male";
                 }else{
                     gender = "female";
                 }
-                        if(eb.isInternetConnected(Registration.this)) {
-                            if (name.equals("") || mail.equals("") || pass.equals("") || address.equals("") || phone.equals("") || gender.equals("")) {
+                        if(EnablePermission.isInternetConnected(Registration.this)) {
+                            if (name.equals("") || mail.equals("") ||abc == -1 ||pass.equals("") || address.equals("") || phone.equals("") || gender.equals("")) {
                                 Toast.makeText(Registration.this, "Enter Sufficient Details", Toast.LENGTH_LONG).show();
                             } else {
 
@@ -169,11 +172,14 @@ public class Registration extends AppCompatActivity {
 
 
             } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
+              //  e1.printStackTrace();
+                Log.e("Unsupported",e1.getMessage().toString());
             } catch (MalformedURLException e) {
-                e.printStackTrace();
+                Log.e("MalformedURLException",e.getMessage().toString());
+              //  e.printStackTrace();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.e("IOException",e.getMessage().toString());
+               // e.printStackTrace();
             }
 
             return null;

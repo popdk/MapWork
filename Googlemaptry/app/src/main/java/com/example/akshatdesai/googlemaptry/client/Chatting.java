@@ -11,6 +11,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,8 +39,10 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 
+import static android.R.attr.color;
 import static android.R.attr.id;
 import static android.R.attr.name;
+import static android.R.color.white;
 import static com.example.akshatdesai.googlemaptry.server.ManagerNavigation.toolbar;
 
 /**
@@ -61,12 +64,14 @@ public class Chatting extends AppCompatActivity {
     String[] messagearray, sendbyarray, sendtoarray, timearray;
     private JSONArray array;
     private JSONObject temp;
-    private int status;
+    private static int status,status1;
     //RecyclerViewAdapter recyclerViewAdapter;
     private ProgressDialog pd1;
     public ListView lv;
+    Toolbar toolbar;
     Sessionmanager sessionManager;
     int UId;
+
 
 
     @Override
@@ -74,18 +79,29 @@ public class Chatting extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar_chatting);
+
         if(getIntent().getStringExtra("sendto_name")!=null){
             sendto_name = getIntent().getStringExtra("sendto_name");
+            sendto_name = sendto_name.toUpperCase();
             Log.e("name",sendto_name);
         }
 
+        toolbar = (Toolbar)findViewById(R.id.toolbar_chatting);
 
         toolbar.setTitle(sendto_name);
+        toolbar.setTitleTextColor(getResources().getColor(white));
 
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+        }
+
+
+
+
+
+
 
 
         type = (EditText) findViewById(R.id.et_type);
@@ -137,7 +153,7 @@ public class Chatting extends AppCompatActivity {
     public void onResume() {
         super.onResume();
 
-            getApplicationContext().registerReceiver(mMessageReceiver, new IntentFilter("ReceiveMessage"));
+        getApplicationContext().registerReceiver(mMessageReceiver, new IntentFilter("ReceiveMessage"));
 
     }
 
@@ -146,9 +162,9 @@ public class Chatting extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
-            getApplicationContext().unregisterReceiver(mMessageReceiver);
+        getApplicationContext().unregisterReceiver(mMessageReceiver);
 
-        }
+    }
 
 
     //This is the handler that will manager to process the broadcast intent
@@ -157,7 +173,7 @@ public class Chatting extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             // Extract data included in the Intent
-           // String message = intent.getStringExtra("message");
+            // String message = intent.getStringExtra("message");
             if(singleChat != null) {
                 new FetchMessageDetails().execute();
             }
@@ -232,6 +248,15 @@ public class Chatting extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // close this activity and return to preview activity (if there is any)
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     public class FetchMessageDetails extends AsyncTask {
 
 
@@ -272,9 +297,9 @@ public class Chatting extends AppCompatActivity {
                     }
                     Log.e("responce1", "" + responce);
                     in.close();
-                String response ="responce2" +responce.toString();
-                String[] res = response.split("\\[");
-                response = "[" +res[1];
+                    String response ="responce2" +responce.toString();
+                    String[] res = response.split("\\[");
+                    response = "[" +res[1];
 
                     msg = response.toString();
                     Log.e("responce3", "" + msg);
@@ -318,34 +343,34 @@ public class Chatting extends AppCompatActivity {
 
 
 
-    @Override
-    protected void onPostExecute(Object o) {
+        @Override
+        protected void onPostExecute(Object o) {
 
-        try {
-            //pb.setVisibility(View.GONE);
-           // pd1.cancel();
+            try {
+                //pb.setVisibility(View.GONE);
+                // pd1.cancel();
 
-            if(status ==0)
-            {
-                Toast.makeText(getApplicationContext(),"No data found",Toast.LENGTH_LONG);
+                if(status ==0)
+                {
+                    Toast.makeText(getApplicationContext(),"No data found",Toast.LENGTH_LONG);
+                }
+                else {
+
+                    Log.e("activity", "" + getParent());
+                    // Log.e("length",""+desc.length);
+                    Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG);
+                    singleChat = new SingleChat(Chatting.this, messagearray, sendbyarray, sendtoarray, timearray);
+                    // singleChat.notifyDataSetChanged();
+                    lv.setAdapter(singleChat);
+
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
-            else {
-
-                Log.e("activity", "" + getParent());
-                // Log.e("length",""+desc.length);
-                Toast.makeText(getApplicationContext(), "success", Toast.LENGTH_LONG);
-                 singleChat = new SingleChat(Chatting.this, messagearray, sendbyarray, sendtoarray, timearray);
-               // singleChat.notifyDataSetChanged();
-                lv.setAdapter(singleChat);
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+
+
     }
-
-
-}
 
     public class SendMessage extends AsyncTask {
 
@@ -353,10 +378,8 @@ public class Chatting extends AppCompatActivity {
         ProgressDialog pd;
         @Override
         protected void onPreExecute() {
-            pd = new ProgressDialog(Chatting.this);
-            pd.setMessage("Adding Task.. please wait");
-            pd.show();
-            pd.setCancelable(false);
+
+
         }
 
         @Override
@@ -392,13 +415,17 @@ public class Chatting extends AppCompatActivity {
                     }
 
                     in.close();
-                    got = responce.toString();
 
-                    object = new JSONObject(got);
 
+
+                    msg = responce.toString();
+
+                    array = new JSONArray(msg);
+                    JSONObject temp = array.getJSONObject(0);
+                    status1 = temp.getInt("status");
 
                     // got=got.trim();
-                    Log.e("responce",got);
+
                 }
 
 
@@ -418,12 +445,20 @@ public class Chatting extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Object o) {
-
-            int s =0;
             super.onPostExecute(o);
-            pd.cancel();
+            int s =0;
+
+
+
+
+
             try {
-                s = Integer.parseInt(object.getString("success"));
+                if(status1 != 0) {
+                    s = Integer.parseInt(object.getString("success"));
+                }
+                else {
+                    Toast.makeText(Chatting.this, "Message Not Delivered", Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
