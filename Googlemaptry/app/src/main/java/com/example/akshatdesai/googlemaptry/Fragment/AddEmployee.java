@@ -3,6 +3,7 @@ package com.example.akshatdesai.googlemaptry.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.example.akshatdesai.googlemaptry.server.ManagerNavigation;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -57,7 +59,7 @@ public class AddEmployee extends Fragment {
     public Integer[] empIds;
     public String[] empString;
     Sessionmanager sessionManager;
-    EnablePermission ep = new EnablePermission();
+    ProgressDialog pd5;
 
     public AddEmployee() {
         // Required empty public constructor
@@ -92,10 +94,10 @@ public class AddEmployee extends Fragment {
                 pd.setMessage("Please wait");
                 pd.show();
                 pd.setCancelable(true);
-                if(ep.isInternetConnected(getActivity())) {
+                if(EnablePermission.isInternetConnected(getActivity())) {
                     new employee().execute();
                 }else{
-                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -127,7 +129,7 @@ public class AddEmployee extends Fragment {
                     in.close();
                     msg = responce.toString();
                 }
-                Log.e("MSM",msg);
+                Log.e("ON ADD EmPLOYEECLICK",msg);
                 array = new JSONArray(msg);
                 temp = array.getJSONObject(0);
                 status = temp.getInt("Status");
@@ -242,10 +244,11 @@ public class AddEmployee extends Fragment {
                         for (int i = 0; i < temp.length; i++) {
                             tosend += "E" + temp[i] + "E";
                         }
+
                     }
-                    new temp().execute();
                     /*Intent i=new Intent(getContext(),AssignTask.class);
                     startActivity(i);*/
+                    new temp().execute();
 
                 }
             });
@@ -262,12 +265,25 @@ public class AddEmployee extends Fragment {
         }
 
         public class temp extends AsyncTask {
+
+            String result="";
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                pd5 = new ProgressDialog(getContext());
+                pd5.setMessage("Please wait");
+                pd5.setCancelable(false);
+                pd5.show();
+
+            }
+
             @Override
             protected Object doInBackground(Object[] params) {
                 try {
                     String param ="Manager_Id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8")+
                             "&Employees=" + URLEncoder.encode(String.valueOf(tosend), "UTF-8") ;
                     URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/AddEmployee.php?" + param);
+                    Log.e("AFTER ADD EMPLOYEE",""+url);
                     URLConnection con = url.openConnection();
                     HttpURLConnection httpURLConnection = (HttpURLConnection) con;
                     httpURLConnection.setRequestMethod("POST");
@@ -276,6 +292,25 @@ public class AddEmployee extends Fragment {
                     httpURLConnection.setRequestProperty("Accept", "application/json");
                     httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                     int rescode = httpURLConnection.getResponseCode();
+                    if (rescode == HttpURLConnection.HTTP_OK) {
+                        BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
+                        String inputLine;
+                        StringBuffer responce = new StringBuffer();
+                        while ((inputLine = in.readLine()) != null) {
+                            responce.append(inputLine);
+                        }
+                        in.close();
+                        result = responce.toString();
+                        result = result.trim();
+                    }
+                    Log.e("SELECTEDEMPLOYEERESULT",result);
+
+
+
+
+
+
+
                 } catch (MalformedURLException e) {
                     e.printStackTrace();
                 } catch (IOException e) {
@@ -287,13 +322,25 @@ public class AddEmployee extends Fragment {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                Toast.makeText(getContext(), "Employees Added Successfully", Toast.LENGTH_SHORT).show();
-                Fragment fragment=new AssignTask();
+                pd5.cancel();
+                if(result.equals("1")) {
+                    Toast.makeText(getContext(), "Employee List has been updated", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(getActivity(), ManagerNavigation.class);
+                    startActivity(intent);
+                }
+                else
+                {
+                    Toast.makeText(getContext(), "List has not been updated", Toast.LENGTH_SHORT).show();
+                }
+
+
+
+                /* Fragment fragment=new AssignTask();
                 FragmentManager fragmentManager = getFragmentManager();
                 FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                 fragmentTransaction.replace(R.id.container_body, fragment);
                 fragmentTransaction.commit();
-                toolbar.setTitle("Assign Task");
+                toolbar.setTitle("Assign Task");*/
             }
         }
 
@@ -311,6 +358,13 @@ public class AddEmployee extends Fragment {
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+
+    }
+
+    @Override
     public void onAttach(Context context) {
         super.onAttach(context);
     }
@@ -318,6 +372,10 @@ public class AddEmployee extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
+
+
+
     }
 
     /**

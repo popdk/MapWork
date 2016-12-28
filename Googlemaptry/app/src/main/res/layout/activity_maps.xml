@@ -80,15 +80,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/de"
+        android:weightSum="1"
 
         >
 
         <Button
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text="Submit"
             android:id="@+id/btn_submit"
             android:onClick="showresult"
+            android:layout_weight=".5"
+            style="@style/CustomStyleButton"/>
+
+        <Button
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Change View"
+            android:id="@+id/theme"
+            android:layout_weight=".5"
             style="@style/CustomStyleButton"/>
     </LinearLayout>
 

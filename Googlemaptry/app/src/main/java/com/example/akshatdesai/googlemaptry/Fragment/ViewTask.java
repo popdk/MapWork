@@ -1,11 +1,13 @@
 package com.example.akshatdesai.googlemaptry.Fragment;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -14,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
@@ -47,7 +50,10 @@ public class ViewTask extends Fragment {
     private RecyclerView taskView;
     Sessionmanager sessionManager;
     int UId,mid;
-    EnablePermission ep = new EnablePermission();
+    TextView nodata;
+    private SwipeRefreshLayout swipeContainer;
+    ViewTaskAdapter adapter;
+
 
 
     public ViewTask() {
@@ -65,12 +71,38 @@ public class ViewTask extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.fragment_view_task, container, false);
-        pb = (ProgressBar) view.findViewById(R.id.progressBar_managerviewtask);
-        toolbar = (Toolbar)view.findViewById(R.id.toolbar);
+        nodata = (TextView) view.findViewById(R.id.no_datafound1);
+       // pb = (ProgressBar) view.findViewById(R.id.progressBar_managerviewtask);
+        //toolbar = (Toolbar)view.findViewById(R.id.toolbar);
         taskView = (RecyclerView) view.findViewById(R.id.rv_manager);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         taskView.setLayoutManager(layoutManager);
+
+        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.activity_manager_view_task);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                if(EnablePermission.isInternetConnected(getActivity())) {
+                    new Web().execute();
+                   // notifyDataSetChanged();
+                   // adapter.refresh();
+                }else{
+                    Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
+                }
+
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
 
 
 
@@ -85,10 +117,10 @@ public class ViewTask extends Fragment {
             mid= Integer.parseInt(user.get(Sessionmanager.KEY_mid));
         }
 
-        if(ep.isInternetConnected(getActivity())) {
+        if(EnablePermission.isInternetConnected(getActivity())) {
             new Web().execute();
         }else{
-            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
         }
         return view;
     }
@@ -104,12 +136,17 @@ public class ViewTask extends Fragment {
         private ViewTask viewTask;
         int status,id[],length1,cstatus[];
         JSONArray array;
+        ProgressDialog pd;
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pb.setVisibility(View.VISIBLE);
+            pd = new ProgressDialog(getActivity());
+            pd.setMessage("Please Wait");
+            pd.setCancelable(false);
+            pd.show();
+
         }
 
         @Override
@@ -205,11 +242,14 @@ public class ViewTask extends Fragment {
         protected void onPostExecute(Object o) {
 
             try {
-                pb.setVisibility(View.GONE);
+                pd.cancel();
 
                 if(status == 1) {
-                    ViewTaskAdapter adapter = new ViewTaskAdapter(getContext(),id, name, desc, sdate, edate, assignedto, cstatus);
+                     adapter = new ViewTaskAdapter(getContext(),id, name, desc, sdate, edate, assignedto, cstatus);
                     taskView.setAdapter(adapter);
+                }
+                else {
+                    nodata.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

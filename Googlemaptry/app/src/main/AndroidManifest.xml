@@ -12,6 +12,11 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.RESTART_PACKAGES"/>
+
 
     <uses-feature android:name="android.hardware.location.gps" />
 
@@ -48,12 +53,13 @@
         -->
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
-            android:resource="@color/colorAccent" />
-        AndroidManifest.xml
+            android:resource="@color/colorPrimary" />
+
         <activity
-            android:name=".General.Login_new"
+            android:name=".General.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_maps">
+            android:label="@string/title_activity_maps"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -64,16 +70,21 @@
         <service android:name=".GPSTracker" />
         <service android:name=".client.LocationUpdateService" />
 
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"/>
+
         <activity
             android:name=".General.AlarmManger1"
             android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_tracking" />
+            android:label="@string/title_activity_tracking"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".server.ViewTask"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".client.Chatting"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_3" />
 
@@ -82,13 +93,26 @@
         </activity>
         <activity
             android:name=".Admin.Assign_role"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".server.ManagerNavigation"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".server.DefineRoute"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
+
+
+        <receiver android:name=".General.UninstallIntentReceiver">
+            <intent-filter android:priority="0">
+                <action android:name="android.intent.action.QUERY_PACKAGE_RESTART" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED"/>
+                <action android:name="android.intent.action.PACKAGE_FULLY_REMOVED"/>
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
 
         <!-- [END gcm_receiver] -->
 
@@ -109,9 +133,7 @@
             </intent-filter>
         </service>
         <!-- [END instanceId_listener] -->
-        <service
-            android:name=".Notification.RegistrationIntentService"
-            android:exported="false" />
+
 
         <!--
             <activity
@@ -120,23 +142,34 @@
         -->
         <activity
             android:name=".server.Tracking"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".client.CurrentLocation"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".General.Registration"
-            android:configChanges="keyboardHidden|orientation|screenSize" />
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
             android:name=".client.Client_Home"
-            android:configChanges="keyboardHidden|orientation|screenSize">
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_1" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreciseLocation"></activity>
+        <activity android:name=".PreciseLocation" />
+        <activity android:name=".General.Login_new"
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_maps"
+            android:windowSoftInputMode="stateAlwaysHidden"/>
+
+
+
     </application>
 
 </manifest>

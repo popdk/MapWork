@@ -26,6 +26,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
 
 import static android.content.Context.ALARM_SERVICE;
 import static com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDListenerService.refreshedToken;
@@ -57,7 +58,13 @@ public  class SetAlarm {
         alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
                 pendingIntent);
         if(EnablePermission.isInternetConnected(context)) {
-            new TaskStatus(context, taskid).execute();
+            try {
+                new TaskStatus(context, taskid).execute().get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         }else {
             Toast.makeText(context,"No Internet Connection",Toast.LENGTH_LONG).show();
         }
@@ -77,9 +84,10 @@ public  class SetAlarm {
             super.onPreExecute();
 
             pd = new ProgressDialog(context);
-            pd.setMessage("Please wait..");
-            pd.show();
+            pd.setMessage("Please wait.....................");
             pd.setCancelable(false);
+            pd.show();
+
 
         }
 
@@ -104,7 +112,7 @@ public  class SetAlarm {
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
                 int rescode = httpURLConnection.getResponseCode();
 
-                Log.e("responce", "" + rescode);
+
                 if (rescode == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                     String inputLine;
@@ -113,7 +121,7 @@ public  class SetAlarm {
                     while ((inputLine = in.readLine()) != null) {
                         responce.append(inputLine);
                     }
-                    Log.e("responce", "" + responce);
+                    Log.e("TaskStatusUpdaterespon", "" + responce);
                     in.close();
                     msg = responce.toString();
 
@@ -125,6 +133,8 @@ public  class SetAlarm {
                     {
                         Log.e("SETALARM","Taskid"+ taskid + "Updated");
                     }
+
+                    pd.cancel();
 
                     Log.e("ALARMRESPONCE", "" + msg);
                 }
@@ -140,9 +150,13 @@ public  class SetAlarm {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
-            pd.cancel();
+
             if (msg.equals("0")) {
                 Toast.makeText(context, "Problem in Alarm Set", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                Toast.makeText(context, "Alarm Set", Toast.LENGTH_SHORT).show();
             }
         }
     }

@@ -7,6 +7,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +18,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
+import com.example.akshatdesai.googlemaptry.General.Login_new;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
@@ -45,6 +49,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutionException;
 
 import static com.example.akshatdesai.googlemaptry.server.DefineRoute.connection;
 import static com.example.akshatdesai.googlemaptry.server.DefineRoute.snackbar;
@@ -61,7 +66,10 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     int id, dotrack;
     Polyline line;
     Marker marker;
+
     CoordinatorLayout coordinatorLayout;
+    ProgressDialog pd1;
+    Handler mHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +81,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         dotrack = i.getIntExtra("dotrack", 0);
 
         Log.e("TaskId", "" + id);
+        Log.e("Flag","" +dotrack);
 
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordinatorlayout);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,29 +89,31 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         mapFragment.getMapAsync(this);
         if(EnablePermission.isInternetConnected(Tracking.this)) {
             if (dotrack == 1) {
-                t = new Timer();
-//Set the schedule function and rate
-                t.scheduleAtFixedRate(new TimerTask() {
+                        t = new Timer();
 
-                                          @Override
-                                          public void run() {
-                                              //Called each time when 1000 milliseconds (1 second) (the period parameter)
-                                              new Track().execute();
-                                          }
+                        t.scheduleAtFixedRate(new TimerTask() {
 
-                                      },
-//Set how long before to start calling the TimerTask (in milliseconds)
-                        0,
-//Set the amount of time between each execution (in milliseconds)
-                        60000);
+                                                  @Override
+                                                  public void run() {
+
+                                                      runOnUiThread(new Runnable(){
+
+                                                          @Override
+                                                          public void run() {
+                                                              new Track().execute();
+                                                          }});
+                                                  }
+                        }, 0, 60000);
+
             } else {
                 new Track().execute();
             }
         }else {
-            Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG);
+            Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG).show();
         }
 
     }
+
 
 
     @Override
@@ -116,21 +127,6 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                     .make(coordinatorLayout, "Please Enable Internet", Snackbar.LENGTH_INDEFINITE);
             snackbar.show();
         } else {
-           /* t = new Timer();
-//Set the schedule function and rate
-            t.scheduleAtFixedRate(new TimerTask() {
-
-                                      @Override
-                                      public void run() {
-                                          //Called each time when 1000 milliseconds (1 second) (the period parameter)
-                                          new Track().execute();
-                                      }
-
-                                  },
-//Set how long before to start calling the TimerTask (in milliseconds)
-                    0,
-//Set the amount of time between each execution (in milliseconds)
-                    60000);*/
 
         }
 
@@ -161,6 +157,16 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         JSONObject object;
         int status;
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            pd1 = new ProgressDialog(Tracking.this);
+            pd1.setMessage("Please wait");
+            pd1.setCancelable(false);
+            pd1.show();
+
+        }
 
         @Override
         protected Object doInBackground(Object[] objects) {
@@ -182,7 +188,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                 httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
                 int i = httpURLConnection.getResponseCode();
-                Log.e(TAG, "" + i);
+                Log.e(TAG,""+ url);
                 if (i == HttpURLConnection.HTTP_OK) {
                     BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                     String inputLine;
@@ -226,6 +232,11 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                     getterSetter.setTime(time);
 
                 }
+                else
+                {
+                    Log.e("IN Else","");
+                    getterSetter = null;
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (JSONException e) {
@@ -238,6 +249,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         @Override
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
+            pd1.cancel();
             if (getterSetter != null) {
                 if (getterSetter.getLatitude().length != 0) {
 
@@ -254,14 +266,59 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                     }
                     LatLng latLng = new LatLng(lat[0], lang[0]);
                     googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f));
+                    int NoOfTimes = lat.length/10;
+                    NoOfTimes += 1;
+                    String path="";
+                    List<String> urlList= new ArrayList<String>();
+                    int flag= 0;
+                    for(int i= 0;i<NoOfTimes;i++) {
 
-
-                    String path = makeURL(lat, lang);
+                        if(i == NoOfTimes-1)
+                        {
+                            if(flag ==0) {
+                                path = makeURL(lat, lang);
+                                urlList.add(path);
+                            }
+                            else {
+                                int k = lat.length;
+                                k= k%10;
+                                if(k != 0) {
+                                    double lat1[] = new double[k];
+                                    double lang1[] = new double[k];
+                                    System.arraycopy(lat, Integer.parseInt(i + "0"), lat1, 0, k);
+                                    System.arraycopy(lang, Integer.parseInt(i + "0"), lang1, 0, k);
+                                    path = makeURL(lat1, lang1);
+                                    Log.e("PATH", path);
+                                    urlList.add(path);
+                                }
+                            }
+                        }
+                        else {
+                            flag=1;
+                            double lat1[] = new double[10];
+                            double lang1[] = new double[10];
+                             System.arraycopy(lat, Integer.parseInt(i + "0"), lat1, 0, 10);
+                            System.arraycopy(lang, Integer.parseInt(i + "0"), lang1, 0, 10);
+                            path = makeURL(lat1, lang1);
+                            Log.e("PATH", path);
+                            urlList.add(path);
+                        }
+                    }
                     if(EnablePermission.isInternetConnected(Tracking.this)) {
-                        new connectAsyncTask(path).execute();
+
+                      for(int m =0;m<urlList.size();m++)
+                      {
+                          try {
+                              new connectAsyncTask(urlList.get(m)).execute().get();
+                          } catch (InterruptedException e) {
+                              e.printStackTrace();
+                          } catch (ExecutionException e) {
+                              e.printStackTrace();
+                          }
+                      }
 
                     }else {
-                        Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG);
+                        Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG).show();
                     }
 
                 }
@@ -299,7 +356,9 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                 .append(Double.toString(lat[length1 - 1]));
         urlString.append(",");
         urlString.append(Double.toString(lang[length1 - 1]));
-        callmenow(lat, lang, urlString);
+
+
+            callmenow(lat, lang, urlString);
 
         //urlString.append("&waypoints="+URLEncoder.encode(String.valueOf(stp), "UTF-8")+"|"+ ) ; //Godhra|Halol);
         //  urlString.append("alternatives=true");
@@ -315,15 +374,19 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
 
         urlString.append("&waypoints=");
+        Log.e("TotalWayPoints",""+lat.length);
 
         String s = "";
-        for (int i = 1; i < lat.length - 1; i++) {
-            s = s + Double.toString(lat[i]) + "," + Double.toString(lang[i]);
+        if(lat.length <11) {
+            for (int i = 1; i < lat.length - 1; i++) {
+                s = s + Double.toString(lat[i]) + "," + Double.toString(lang[i]);
 
-            if(i !=lat.length -2) {
-                s = s + "|";
+                if (i != lat.length - 2) {
+                    s = s + "|";
+                }
             }
         }
+
         urlString.append(s);
 
         Log.e("TRACKINGLINE", "" + urlString);
@@ -400,8 +463,10 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
                     .color(Color.parseColor("#05b1fb"))//Google maps blue color
                     .geodesic(true)
             );
-            marker = googleMap.addMarker(new MarkerOptions().position(list.get(0)).title("Source Point"));
-            marker = googleMap.addMarker(new MarkerOptions().position(list.get(list.size() - 1)).title("Destination Point"));
+            double lati[] = getterSetter.getLatitude();
+            double longi[] = getterSetter.getLongitude();
+              marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(lati[0],longi[0])).title("Source Point"));
+            marker = googleMap.addMarker(new MarkerOptions().position(new LatLng(lati[(lati.length -1)],longi[(longi.length-1)])).title("Destination Point"));
            /* mMap.addMarker(new MarkerOptions().position(list.get(0)).title("Source Point") );
             mMap.addMarker(new MarkerOptions().position(list.get(list.size()-1)).title("Destination Point") );*/
             googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(list.get(0), 10.0f));

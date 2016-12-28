@@ -81,7 +81,7 @@ public class LocationUpdateService extends Service {
 
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
-           // new LocationListener(LocationManager.NETWORK_PROVIDER)
+            new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
@@ -105,7 +105,7 @@ public class LocationUpdateService extends Service {
     public void onCreate() {
         Log.e(TAG, "onCreate");
         initializeLocationManager();
-        /*try {
+        try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
@@ -114,7 +114,7 @@ public class LocationUpdateService extends Service {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }*/
+        }
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
@@ -129,6 +129,7 @@ public class LocationUpdateService extends Service {
         } catch (java.lang.SecurityException ex) {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
+            Toast.makeText(this, "gps provider does not exist", Toast.LENGTH_SHORT).show();
             Log.d(TAG, "gps provider does not exist " + ex.getMessage());
         }
     }
@@ -238,7 +239,7 @@ public class LocationUpdateService extends Service {
         Log.e(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
-            //LocationRequest lr = (LocationRequest) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
+           // LocationRequest lr = (LocationRequest) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
 }

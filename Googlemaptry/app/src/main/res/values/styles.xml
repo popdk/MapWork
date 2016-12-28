@@ -72,7 +72,7 @@
 
     <style name="GalaxyZooThemeToolbarDarkOverflow" parent="Theme.AppCompat.NoActionBar">
     <item name="actionMenuTextColor">@color/white</item>
-        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:background">#2C3E50</item>
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 </resources>

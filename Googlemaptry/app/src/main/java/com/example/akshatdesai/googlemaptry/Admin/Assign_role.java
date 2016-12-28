@@ -97,7 +97,7 @@ public class Assign_role extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
          if(id == R.id.action_logout){
-            sessionmanager.LogOut1(Assign_role.this);
+            sessionmanager.LogOut1(Assign_role.this,true);
            /* Intent in = new Intent(getApplicationContext(), Login_new.class);
             startActivity(in);*/
         }

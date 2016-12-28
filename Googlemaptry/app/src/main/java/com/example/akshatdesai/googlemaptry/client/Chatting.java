@@ -43,6 +43,7 @@ import static android.R.attr.color;
 import static android.R.attr.id;
 import static android.R.attr.name;
 import static android.R.color.white;
+import static com.example.akshatdesai.googlemaptry.Notification.MyGcmListenerService.notificationManager;
 import static com.example.akshatdesai.googlemaptry.server.ManagerNavigation.toolbar;
 
 /**
@@ -60,11 +61,11 @@ public class Chatting extends AppCompatActivity {
     Button send;
     int position;
     int sendto;
-    static String msgdata, msg,sendto_name,got,username;
+    static String msgdata, msg,sendto_name,got,username,name1;
     String[] messagearray, sendbyarray, sendtoarray, timearray;
     private JSONArray array;
     private JSONObject temp;
-    private static int status,status1;
+    private static int status;
     //RecyclerViewAdapter recyclerViewAdapter;
     private ProgressDialog pd1;
     public ListView lv;
@@ -78,18 +79,33 @@ public class Chatting extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chatting);
-
+        toolbar = (Toolbar)findViewById(R.id.toolbar_chatting);
 
         if(getIntent().getStringExtra("sendto_name")!=null){
             sendto_name = getIntent().getStringExtra("sendto_name");
+            sendto = Integer.parseInt(getIntent().getStringExtra("Key"));
             sendto_name = sendto_name.toUpperCase();
             Log.e("name",sendto_name);
         }
+        else {
+            sendto = Integer.parseInt(getIntent().getStringExtra("Key"));
+            sendto_name  = getIntent().getStringExtra("sendername");
+            // toolbar.setTitle(name1);
+            Log.e("KEY",""+sendto);
+        }
 
-        toolbar = (Toolbar)findViewById(R.id.toolbar_chatting);
+
+
+
+        /*if(getIntent().getStringExtra("Key")!=null)
+        {*/
+
+
+       // }
 
         toolbar.setTitle(sendto_name);
-        toolbar.setTitleTextColor(getResources().getColor(white));
+
+        //toolbar.setTitleTextColor(getResources().getColor(white));
 
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
@@ -122,11 +138,7 @@ public class Chatting extends AppCompatActivity {
             username = user.get(Sessionmanager.KEY_NAME);
         }
         // Bundle extras=getIntent().getExtras();
-        if(getIntent().getStringExtra("Key")!=null)
-        {
-            sendto = Integer.parseInt(getIntent().getStringExtra("Key"));
 
-        }
 
 
 
@@ -148,6 +160,12 @@ public class Chatting extends AppCompatActivity {
         new FetchMessageDetails().execute();
     }
 
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 
     @Override
     public void onResume() {
@@ -174,8 +192,10 @@ public class Chatting extends AppCompatActivity {
 
             // Extract data included in the Intent
             // String message = intent.getStringExtra("message");
+            //getIntent().getExtras("NotificationManager");
             if(singleChat != null) {
                 new FetchMessageDetails().execute();
+                notificationManager.cancel(0);
             }
 
             //do other stuff here
@@ -376,6 +396,8 @@ public class Chatting extends AppCompatActivity {
 
         JSONObject object;
         ProgressDialog pd;
+       // String deliverMessageResult;
+        int status1 =4;
         @Override
         protected void onPreExecute() {
 
@@ -419,12 +441,22 @@ public class Chatting extends AppCompatActivity {
 
 
                     msg = responce.toString();
+                    Log.e("DeliveryReport" ,msg);
 
-                    array = new JSONArray(msg);
+                    /*array = new JSONArray(msg);
                     JSONObject temp = array.getJSONObject(0);
-                    status1 = temp.getInt("status");
+                    if(temp.has("status")) {
+                        status1 = temp.getInt("status");
+                    }
+                    else {
+                        status1= 1;
+                    }
+                    Log.e("STatus1",""+status1);*/
+                   // Log.e("SentMessageResult",""+deliverMessageResult);
 
                     // got=got.trim();
+
+                    //Json Exception is thrown
 
                 }
 
@@ -437,8 +469,6 @@ public class Chatting extends AppCompatActivity {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
             return null;
         }
@@ -449,25 +479,27 @@ public class Chatting extends AppCompatActivity {
             int s =0;
 
 
-
-
-
+           // Log.e("SentMessageResult",deliverMessageResult);
+           // Log.e("Status1",""+status1);
+/*
             try {
-                if(status1 != 0) {
-                    s = Integer.parseInt(object.getString("success"));
-                }
-                else {
-                    Toast.makeText(Chatting.this, "Message Not Delivered", Toast.LENGTH_SHORT).show();
-                }
+               // if(status1 == 1) {
+                    s = object.getInt("success");
+                //}
+                //else {
+                  //  Toast.makeText(Chatting.this, "Message Not Delivered", Toast.LENGTH_SHORT).show();
+                //}
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            Log.e("S",""+s);
             if (s == 1) {
                 Toast.makeText(Chatting.this, "Message Delivered", Toast.LENGTH_SHORT).show();
 
             } else {
                 Toast.makeText(Chatting.this, "Message Not Delivered", Toast.LENGTH_SHORT).show();
-            }
+            }*/
         }
     }
 

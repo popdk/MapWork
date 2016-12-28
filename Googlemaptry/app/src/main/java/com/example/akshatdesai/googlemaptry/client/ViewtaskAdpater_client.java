@@ -85,20 +85,20 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
             ViewInMap = (Button) v.findViewById(R.id.viewinmap);
             display = (LinearLayout) v.findViewById(R.id.activity_view_task_details);
             progress = (Button) v.findViewById(R.id.toggleButton);
-            linearLayout = (LinearLayout) v.findViewById(R.id.activity_view_task_details);
-            display = (LinearLayout) v.findViewById(R.id.show_hide);
-            display.setVisibility(View.GONE);
+           // linearLayout = (LinearLayout) v.findViewById(R.id.activity_view_task_details);
+            linearLayout = (LinearLayout) v.findViewById(R.id.show_hide);
+            linearLayout.setVisibility(View.GONE);
 
-            linearLayout.setOnClickListener(new View.OnClickListener() {
+            display.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(display.getVisibility() == view.VISIBLE)
+                    if(linearLayout.getVisibility() == view.VISIBLE)
                     {
-                        display.setVisibility(View.GONE);
+                        linearLayout.setVisibility(View.GONE);
                     }
                     else
                     {
-                        display.setVisibility(View.VISIBLE);
+                        linearLayout.setVisibility(View.VISIBLE);
                     }
 
                 }
@@ -109,6 +109,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
 
         @Override
         public void onClick(View view) {
+            //ViewtaskAdpater_client().clea
 
         }
     }
@@ -298,13 +299,7 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
                 }
 
 
-            } catch (UnsupportedEncodingException e1) {
-                e1.printStackTrace();
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
 
@@ -320,3 +315,62 @@ public class ViewtaskAdpater_client extends RecyclerView.Adapter<ViewtaskAdpater
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -13,6 +13,7 @@ import com.example.akshatdesai.googlemaptry.client.Client_Home;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.io.Serializable;
 import java.util.Map;
 
 //import com.example.android.assetmanagement.Activity.MainActivity;
@@ -21,7 +22,8 @@ public class MyGcmListenerService extends FirebaseMessagingService {
 
     private static final String TAG = "MyGcmListenerService";
     Intent notificationIntent;
-    String name;
+     static String name;
+   public static NotificationManager notificationManager;
     /**
      * Called when message is received.
      *
@@ -31,7 +33,7 @@ public class MyGcmListenerService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage message){
 
-        Log.e("ABC","aabbc");
+        Log.e("NOTIFICATION","NOTIFICATION RECEIVED");
 
         Map<String, String> data = message.getData();
         String myCustomKey = data.get("Key");
@@ -53,6 +55,7 @@ public class MyGcmListenerService extends FirebaseMessagingService {
         if(!myCustomKey.equalsIgnoreCase("task")) {
 
             Intent intent = new Intent("ReceiveMessage");//put data if you want in putextras
+           // intent.putExtra("NotificationManager", (Serializable) notificationManager);
             this.sendBroadcast(intent);
             Log.e("Broadcast","Broadcast done");
         }
@@ -119,15 +122,16 @@ public class MyGcmListenerService extends FirebaseMessagingService {
             Log.e("TYPE",type);
             notificationIntent  = new Intent(this, Chatting.class);
             notificationIntent.putExtra("Key",type);
+            notificationIntent.putExtra("sendername",name);
         }
 
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
-
-        // Add as notification
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
         builder.setAutoCancel(true);
+        // Add as notification
+        notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.notify(0, builder.build());
+
     }
 }

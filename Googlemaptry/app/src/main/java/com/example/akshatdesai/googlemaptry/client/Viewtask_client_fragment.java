@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,9 +16,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
+import com.example.akshatdesai.googlemaptry.Fragment.ViewTask;
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
@@ -58,7 +61,8 @@ public class Viewtask_client_fragment extends Fragment {
     Sessionmanager sessionmanager;
     static int status, id[], length1, cstatus[],specialt_id[],stat[];
     JSONArray array;
-    EnablePermission ep = new EnablePermission();
+    TextView nodata;
+    private SwipeRefreshLayout swipeContainer;
   //  Context context = getContext();
 
 
@@ -116,11 +120,37 @@ public class Viewtask_client_fragment extends Fragment {
        // setSupportActionBar(mtoolbar);
         sessionManager = new Sessionmanager(getContext());
 
+
+
+        swipeContainer = (SwipeRefreshLayout)view.findViewById(R.id.activity_manager_view_task);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                if(EnablePermission.isInternetConnected(getActivity())) {
+                    new ViewTask_Web().execute();
+                }else{
+                    Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
+                }
+
+                swipeContainer.setRefreshing(false);
+            }
+        });
+
+        swipeContainer.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
+
         // toolbar = (Toolbar) findViewById(R.id.toolbar);
         taskView = (RecyclerView)view.findViewById(R.id.rv_manager);
         final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         taskView.setLayoutManager(layoutManager);
+        nodata = (TextView) view.findViewById(R.id.no_datafound);
 
 
         sessionManager = new Sessionmanager(getContext());
@@ -128,10 +158,10 @@ public class Viewtask_client_fragment extends Fragment {
         // name
         UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
         mid = Integer.parseInt(user.get(Sessionmanager.KEY_mid));
-        if(ep.isInternetConnected(getActivity())) {
+        if(EnablePermission.isInternetConnected(getActivity())) {
             new ViewTask_Web().execute();
         }else{
-            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
         }
         return  view;
 
@@ -161,7 +191,7 @@ public class ViewTask_Web extends AsyncTask {
 
             HttpURLConnection httpURLConnection;
             URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/viewtask_client.php?" + param);
-            Log.e("hiii...",""+url);
+            Log.e("ViewTaskClientUrl",""+url);
             httpURLConnection = (HttpURLConnection) url.openConnection();
 
 
@@ -175,7 +205,7 @@ public class ViewTask_Web extends AsyncTask {
             httpURLConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
 
             int i = httpURLConnection.getResponseCode();
-            Log.e("RCode", "" + i);
+
             if (i == HttpURLConnection.HTTP_OK) {
                 BufferedReader in = new BufferedReader(new InputStreamReader(httpURLConnection.getInputStream()));
                 String inputLine;
@@ -184,13 +214,13 @@ public class ViewTask_Web extends AsyncTask {
                 while ((inputLine = in.readLine()) != null) {
                     responce.append(inputLine);
                 }
-                Log.e("responce", "" + responce);
+
                 in.close();
                 String response ="responce" +responce.toString();
                 String[] res = response.split("\\[");
                 response = "[" +res[1];
                 msg = response.toString();
-                Log.e("responce", "" + msg);
+                Log.e("ViewTaskClientResponce", "" + msg);
 
                 array = new JSONArray(msg);
                 JSONObject temp = array.getJSONObject(0);
@@ -266,10 +296,13 @@ public class ViewTask_Web extends AsyncTask {
             if(status == 0)
             {
                 Toast.makeText(getContext(), "No Data  Found", Toast.LENGTH_SHORT).show();
+                nodata.setVisibility(View.VISIBLE);
+                taskView.setVisibility(View.GONE);
             }
             else {
 
                 ViewtaskAdpater_client adapter = new ViewtaskAdpater_client(id, name, desc, sdate, edate, assignedby,source,destination,stopage,stat,getContext());
+
                 taskView.setAdapter(adapter);
 
                 Log.e("SETTING ALARM FORTASKID",""+specialt_id[0]);

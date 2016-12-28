@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
@@ -28,8 +29,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
-import com.example.akshatdesai.googlemaptry.Notification.QuickstartPreferences;
-import com.example.akshatdesai.googlemaptry.Notification.RegistrationIntentService;
 import com.example.akshatdesai.googlemaptry.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -40,6 +39,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
@@ -66,7 +66,7 @@ import java.util.List;
 public class DefineRoute extends FragmentActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private GoogleMap mMap;
-    Button btn;
+    Button btn, theme;
     EditText source, destination;
     String source1,destination1,fsource,fdestination,stp,stp1,stp2;
     LatLng start, end;
@@ -81,7 +81,7 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     static Snackbar snackbar;
     static   boolean connection;
     private BroadcastReceiver mRegistrationBroadcastReceiver;
-    EnablePermission ep = new EnablePermission();
+    static boolean b =false;
 
     public DefineRoute() {
 
@@ -101,6 +101,22 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
         btn = (Button) findViewById(R.id.btn_submit);
         source = (EditText) findViewById(R.id.et_source);
         destination = (EditText) findViewById(R.id.et_destination);
+        theme = (Button) findViewById(R.id.theme);
+        theme.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(b) {
+                    mMap.setMapStyle(
+                            MapStyleOptions.loadRawResourceStyle(
+                                    DefineRoute.this, R.raw.style_json));
+                    b = false;
+                }
+                else
+                    mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(
+                            DefineRoute.this, R.raw.default1));
+                b = true;
+            }
+        });
 
         Bundle extras=getIntent().getExtras();
         if(extras!=null)
@@ -126,83 +142,8 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
 
             EnablePermission.checklocationservice(DefineRoute.this);
 
-            /*Intent in = getIntent();
-            source.setText(in.getStringExtra("Source"));
-            destination.setText(in.getStringExtra("destination"));
-            String s = source.getText().toString();
-            s1 = destination.getText().toString();
-            new fetchLatLongFromService(s).execute();
-
-
-            new fetchLatLongFromService(s1).execute();*/
-
-            /*Intent i = new Intent(this, RegistrationIntentService.class);
-            startService(i);*/
-
-            mRegistrationBroadcastReceiver = new BroadcastReceiver() {
-                @Override
-                public void onReceive(Context context, Intent intent) {
-                    // mRegistrationProgressBar.setVisibility(ProgressBar.GONE);
-                    SharedPreferences sharedPreferences =
-                            PreferenceManager.getDefaultSharedPreferences(context);
-                    boolean sentToken = sharedPreferences
-                            .getBoolean(QuickstartPreferences.SENT_TOKEN_TO_SERVER, false);
-                    if (sentToken) {
-                        // mInformationTextView.setText(getString(R.string.gcm_send_message));
-                        Log.e("tokensent",""+sentToken);
-                    } else {
-                        //  mInformationTextView.setText(getString(R.string.token_error_message));
-                        Log.e("Nottokensent",""+sentToken);
-                    }
-                }
-            };
-
-
-            // Toast.makeText(DefineRoute.this,"After First",Toast.LENGTH_SHORT).show();
-            //start = point;
-
-
-                /*end =point;
-                Log.e("Slatitude",""+((double) start.latitude));
-                Log.e("Slongitude",""+((double) start.longitude));
-                Log.e("Elatitude",""+((double) end.latitude));
-                Log.e("Elongitude",""+((double) end.longitude));
-                String path = makeURL(((double) start.latitude),((double)start.longitude),((double)end.latitude),((double)end.longitude));*/
-            // new connectAsyncTask(path,true).execute();
-
-
         }
 
-
-
-        /*btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String uri = String.format(Locale.ENGLISH, "http://maps.google.com/maps?saddr=%f,%f(%s)&daddr=%f,%f(%s)saddr=%f,%f(%s)&daddr=%f,%f (%s)",
-                        23.0804, 72.5241, "Where the party is at", 32.2133397, -98.2194769,"Between station LJ",  32.2133397, -98.2194769,  "Between station Lj", 23.0124, 72.5968,"Home sweet home");
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                intent.setClassName("com.google.android.apps.maps", "com.google.android.maps.DefineRoute");
-                try
-                {
-                    startActivity(intent);
-                }
-                catch(ActivityNotFoundException ex)
-                {
-                    try
-                    {
-                        Intent unrestrictedIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                        startActivity(unrestrictedIntent);
-                    }
-                    catch(ActivityNotFoundException innerEx)
-                    {
-                        Toast.makeText(DefineRoute.this, "Please install a maps application", Toast.LENGTH_LONG).show();
-                    }
-                }
-               // startActivity(intent);
-
-                //Intent i = new Intent(this,Mai)
-            }
-        });*/
     }
 
     public void showresult(View view) {
@@ -317,6 +258,21 @@ public class DefineRoute extends FragmentActivity implements OnMapReadyCallback,
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+     /*   try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = mMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e("MapsActivityRaw", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("MapsActivityRaw", "Can't find style.", e);
+        }*/
+
         buildGoogleApiClient();
         mGoogleApiClient.connect();
 

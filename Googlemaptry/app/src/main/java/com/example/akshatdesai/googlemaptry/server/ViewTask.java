@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.General.EnablePermission;
@@ -37,6 +38,7 @@ public class ViewTask extends AppCompatActivity {
     ProgressBar pb;
     Activity context;
     private RecyclerView taskView;
+    TextView nodata;
     Sessionmanager sessionManager;
     int UId,mid;
 
@@ -45,6 +47,7 @@ public class ViewTask extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_task);
 
+        nodata = (TextView) findViewById(R.id.no_datafound1);
             pb = (ProgressBar) findViewById(R.id.progressBar_managerviewtask);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         taskView = (RecyclerView) findViewById(R.id.rv_manager);
@@ -138,7 +141,7 @@ public class ViewTask extends AppCompatActivity {
 
 
                     msg = responce.toString();
-                    Log.e("responce", "" + msg);
+                    Log.e("ManagerViewTaskResponce", "" + msg);
 
                     array =  new JSONArray(msg);
                     JSONObject temp = array.getJSONObject(0);
@@ -195,6 +198,9 @@ public class ViewTask extends AppCompatActivity {
                 if(status == 1) {
                     ViewTaskAdapter adapter = new ViewTaskAdapter(ViewTask.this,id, name, desc, sdate, edate, assignedto, cstatus);
                     taskView.setAdapter(adapter);
+                }
+                else {
+                    nodata.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

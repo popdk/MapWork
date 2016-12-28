@@ -39,15 +39,16 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 import static com.example.akshatdesai.googlemaptry.General.Sessionmanager.KEY_mid;
+import static com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDListenerService.refreshedToken;
 
 public class Login_new extends AppCompatActivity {
     TextView tv_mail, tv_pass, register;
     EditText et_mail, et_pass;
-    String name, message, mail, pass, address, phone, gender, response, name1, pass1, mail1, m_id1;
+    String name, message, mail, pass, address, phone, gender, response, name1, pass1, mail1, m_id1,imgname;
     Button submit, cancel;
     HttpURLConnection httpURLConnection;
     JSONArray array;
-    Toolbar toolbar;
+
 
     static int status=0, id1, i;
     ProgressDialog pd1;
@@ -78,6 +79,12 @@ public class Login_new extends AppCompatActivity {
         }
 
 
+
+
+
+
+
+
         if (res) {
             HashMap<String, String> hm = sessionManager.getuserdetails();
             i = Integer.parseInt(hm.get(KEY_mid));
@@ -94,6 +101,8 @@ public class Login_new extends AppCompatActivity {
             }
             finish();
         } else {
+
+
 
             inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_mail);
             inputLayoutPassword = (TextInputLayout) findViewById(R.id.input_layout_password);
@@ -114,10 +123,14 @@ public class Login_new extends AppCompatActivity {
             submit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                  /*  Intent i = new Intent(Login_new.this, RegistrationIntentService.class);
+                    startService(i);*/
+
                     mail = et_mail.getText().toString();
                     pass = et_pass.getText().toString();
                     Log.e("mail id", mail);
                     Log.e("password", pass);
+                    Log.e("NEW TOKEN",new Sessionmanager(Login_new.this).getRegistrationToken());
                     /*if (mail.equals("admin") && pass.equals("admin")) {
                         Intent i = new Intent(Login_new.this, Assign_role.class);
                         startActivity(i);
@@ -128,7 +141,7 @@ public class Login_new extends AppCompatActivity {
                         if (EnablePermission.isInternetConnected(Login_new.this)) {
                             new Check_web().execute();
                         } else {
-                            Toast.makeText(Login_new.this, "No internrt connection", Toast.LENGTH_LONG).show();
+                            Toast.makeText(Login_new.this, "No internet connection", Toast.LENGTH_LONG).show();
                         }
 
                     }
@@ -137,11 +150,14 @@ public class Login_new extends AppCompatActivity {
 
 
         }
+
     }
 
 
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
     public void btnCancle(View view) {
+//        Log.e("TOKEN",new DeleteTokenService().getTokenFromPrefs());
+
         finishAffinity();
     }
 
@@ -158,13 +174,11 @@ public class Login_new extends AppCompatActivity {
         protected void onPreExecute() {
             super.onPreExecute();
             pd1 = new ProgressDialog(Login_new.this);
-            Log.e("in pre1", "entered");
             pd1.setMessage("Please wait");
-            Log.e("in pre2", "entered");
+            pd1.setCancelable(false);
             pd1.show();
-            Log.e("in pre3", "entered");
-            pd1.setCancelable(true);
-            Log.e("in pre4", "puru");
+
+
         }
 
         @Override
@@ -172,7 +186,9 @@ public class Login_new extends AppCompatActivity {
             try {
 
 
-                String param = "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") + "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8");
+                String param = "Email=" + URLEncoder.encode(String.valueOf(mail), "UTF-8") +
+                        "&" + "Password=" + URLEncoder.encode(String.valueOf(pass), "UTF-8")+
+                        "&" + "token=" + new Sessionmanager(Login_new.this).getRegistrationToken();
 
                 Log.e("params", param);
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/login.php?" + param);
@@ -219,6 +235,7 @@ public class Login_new extends AppCompatActivity {
                     pass1 = temp.getString("password");
                     mail1 = temp.getString("mail");
                     m_id1 = temp.getString("m_id");
+                    imgname = temp.getString("imgname");
 
                 }
             } catch (MalformedURLException e) {
@@ -245,7 +262,7 @@ public class Login_new extends AppCompatActivity {
             } else if (status == 1) {
                 pd1.cancel();
                 Toast.makeText(Login_new.this, "Successful", Toast.LENGTH_SHORT).show();
-                sessionManager.CreateLoginSession(id1, name1, mail1, pass1, m_id1);
+                sessionManager.CreateLoginSession(id1, name1, mail1, pass1, m_id1,imgname);
                 if (m_id1.equals("0")) {
                     Intent i = new Intent(Login_new.this, Client_Home.class);
                     startActivity(i);
@@ -261,6 +278,12 @@ public class Login_new extends AppCompatActivity {
 
 
             }
+            else {
+                pd1.cancel();
+                Toast.makeText(Login_new.this, "Already Logged In", Toast.LENGTH_SHORT).show();
+            }
+            
+            
         }
 
     }

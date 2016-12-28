@@ -12,8 +12,8 @@
         android:id="@+id/toolbar_chatting"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        android:titleTextColor="#ffffff"
+        android:background="@color/colorPrimary"
+
         android:theme="@style/GalaxyZooThemeToolbarDarkOverflow"
         app:popupTheme="@style/Theme.AppCompat.NoActionBar"/>
 
@@ -78,7 +78,7 @@
 
     <Button
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="0.25"
             android:id="@+id/button2"
             style="@style/CustomStyleButton"

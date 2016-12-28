@@ -145,6 +145,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         at_stoppage2.setVisibility(View.GONE);
         floatingPlus = (ImageView) view.findViewById(R.id.imageView);
         employees = (Spinner) view.findViewById(R.id.spinner);
+
         add = (Button) view.findViewById(R.id.assign_task_btn_submit);
         cancel = (Button) view.findViewById(R.id.assign_task_btn_cancel);
         defineRoute = (Button) view.findViewById(R.id.define_route_button);
@@ -253,22 +254,12 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                     String[] y1 = sDate.split(" ");
                     String[] w1 = y1[0].split("/");
                     sTime = at_startingtime.getText().toString();
-                   /* String z1=y1[1];
-                        String sTime=format.format(Date.parse(z1) );
-                    Log.e("Stime:", sTime);*/
                     sDate = w1[2] + "-" + w1[1] + "-" + w1[0] + " " + sTime + ":00";
                     Log.e("Sdate", "" + sDate);
 
-                    // eDate = at_endingdate.getText().toString();
-                  /* eDate=format.format(Date.parse(at_endingdate.getText().toString()));*/
-                   /* Log.e("Edate", "" + eDate);*/
-                    /*String eTime= new SimpleDateFormat("HH:mm:ss").format(at_endingdate);*/
                     eDate = at_endingdate.getText().toString();
                     String[] y2 = eDate.split(" ");
                     String[] w2 = y2[0].split("/");
-                       /* String z2=y2[1];
-                    *//*eTime=format.format(Date.parse(z2) );
-                    Log.e("etime:", eTime);*/
                     eTime = at_endingtime.getText().toString();
                     eDate = w2[2] + "-" + w2[1] + "-" + w2[0] + " " + eTime + ":00";
                     Log.e("Edate", "" + eDate);
@@ -283,16 +274,44 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
                     String[] separate = sDate.split(" ");
                     String sDateComparator = separate[0].replaceAll("-", "");
-                    //Log.e("sDateComparator", sDateComparator);
+                    Log.e("sDateComparator", sDateComparator);
                     String sTimeComparator = separate[1].replaceAll(":", "");
-                    // Log.e("sTimeComparator", sTimeComparator);
+                     Log.e("sTimeComparator", sTimeComparator);
                     String[] separate1 = eDate.split(" ");
                     String eDateComparator = separate1[0].replaceAll("-", "");
-                    // Log.e("eDateComparator", eDateComparator);
+                     Log.e("eDateComparator", eDateComparator);
                     String eTimeComparator = separate1[1].replaceAll(":", "");
-                    //Log.e("eTimeComparator", eTimeComparator);
+                    Log.e("eTimeComparator", eTimeComparator);
+                    Calendar c = Calendar.getInstance();
+                    SimpleDateFormat df = new SimpleDateFormat("yyyyMMdd");
+                    SimpleDateFormat df1 = new SimpleDateFormat("HHmm");
+                    String todaydate = df.format(c.getTime());
+                    String todaytime = df1.format(c.getTime());
+                     todaytime = todaytime.concat("00");
+                    Log.e("TodayTime",todaytime);
+                    int approval = 0;
 
-                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("") || sTime.equals("") || eTime.equals("") || source.equals("") || destination.equals("") || speed.equals("")) {
+
+                    if(Integer.parseInt(sDateComparator) < Integer.parseInt(todaydate))
+                    {
+                        Toast.makeText(getActivity(), "Task can't assigned in past", Toast.LENGTH_SHORT).show();
+                        approval =0;
+                    }
+
+                    else
+                    {
+                        approval =1;
+                    }
+
+
+
+
+
+
+
+
+
+                    if (tName.equals("") || tDesc.equals("") || sDate.equals("") || eDate.equals("") || sTime.equals("") || eTime.equals("") || source.equals("") || destination.equals("") || speed.equals("") || employeeId == 0 || approval ==0) {
                         Toast.makeText(getContext(), "Insufficient details..Enter all the details", Toast.LENGTH_SHORT).show();
                     } else if (at_startingdate.length() != at_endingdate.length()) {
                         Toast.makeText(getContext(), "Select valid End date..", Toast.LENGTH_SHORT).show();
@@ -310,24 +329,24 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                         } else {
 
                             String val = url(source, destination);
-                            if (ep.isInternetConnected(getActivity())) {
+                            if (EnablePermission.isInternetConnected(getActivity())) {
 
                                 new distancetimecalculator(val).execute();
                                 new AddTask().execute();
                                 new SendMessage().execute();
 
                             } else {
-                                Toast.makeText(getActivity(), "No internrt connection", Toast.LENGTH_LONG);
+                                Toast.makeText(getActivity(), "No internet connection", Toast.LENGTH_LONG).show();
                             }
                         }
                     } else {
                         String val = url(source,destination);
-                        if(ep.isInternetConnected(getActivity())) {
+                        if(EnablePermission.isInternetConnected(getActivity())) {
                             new distancetimecalculator(val).execute();
                             new AddTask().execute();
                             new SendMessage().execute();
                         }else{
-                            Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG);
+                            Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
                         }
                     }
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -523,8 +542,9 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
             super.onPreExecute();
             pd = new ProgressDialog(getContext());
             pd.setMessage("Fetching employee list.. please wait");
+            pd.setCancelable(false);
             pd.show();
-            pd.setCancelable(true);
+
 
 
         }
@@ -557,7 +577,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
                     msg = response.toString();
                 }
-                Log.e("MSG", msg);
+                Log.e("FetchemplistResponce", msg);
                 array = new JSONArray(msg);
                 temp = array.getJSONObject(0);
                 status = temp.getInt("Status");
@@ -574,11 +594,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                         //employeeList.add(empNames[j]);
                     }
                 }
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (MalformedURLException | JSONException | ProtocolException e) {
                 e.printStackTrace();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -607,6 +623,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     private void populateSpinner() {
         List<String> lables = new ArrayList<String>();
 
+        lables.add("No Item Selected");
         for (int i = 0; i < employeeList.size(); i++) {
             lables.add(employeeList.get(i));
         }
@@ -624,12 +641,21 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     }
 
    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        employeeId = employeeList1.get(i);
+    public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+       if(position == 0)
+       {
+           employeeId=0;
+       }
+       else {
+           employeeId = employeeList1.get(position-1);
+       }
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {
+
+        Toast.makeText(getActivity(), "No Employee Selected Yet", Toast.LENGTH_SHORT).show();
 
     }
 
@@ -696,7 +722,7 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                     in.close();
                     got = responce.toString();
                     got=got.trim();
-                    Log.e("responce",got);
+                    Log.e("AddTaskresponce",got);
                 }
 
 
@@ -783,12 +809,13 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
                     in.close();
                     got = responce.toString();
+                    array = new JSONArray(got);
 
-                    object = new JSONObject(got);
+                    object = array.getJSONObject(0);
                     status3 = object.getInt("status");
 
                     // got=got.trim();
-                    Log.e("responce",got);
+                    Log.e("SendMessageresponce",got);
                 }
 
 
@@ -809,8 +836,9 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
         @Override
         protected void onPostExecute(Object o) {
 
-            int s =0;
+
             super.onPostExecute(o);
+            int s =0;
             pd.cancel();
             try {
 

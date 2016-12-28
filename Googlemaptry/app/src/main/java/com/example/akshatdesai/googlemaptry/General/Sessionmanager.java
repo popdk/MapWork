@@ -24,6 +24,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 
+import static android.content.Context.MODE_PRIVATE;
+
+
 /**
  * Created by Admin on 21-Nov-16.
  */
@@ -32,6 +35,7 @@ public class Sessionmanager {
 
 
     public static final String KEY_NAME = "UserName";
+    public static final String MY_PREFS_NAME = "MyPrefsFile";
     static int UID=0;
 
     public static final String KEY_MAIL = "Email";
@@ -43,6 +47,7 @@ public class Sessionmanager {
 
     public static final String PREF_NAME = "FAM";
     public static final String IS_LOGIN = "IsLoggedIn";
+    public static final String IMGNAME = "imagename";
     ProgressDialog pd1;
 
     SharedPreferences preferences;
@@ -58,7 +63,7 @@ public class Sessionmanager {
         editor = preferences.edit();
     }
 
-    public void CreateLoginSession(Integer userid,String name,String mail,String Password, String m_id)
+    public void CreateLoginSession(Integer userid,String name,String mail,String Password, String m_id,String imgname)
     {
         editor.putBoolean(IS_LOGIN,true);
         editor.putString(KEY_ID,userid.toString());
@@ -66,12 +71,47 @@ public class Sessionmanager {
         editor.putString(KEY_MAIL,mail);
         editor.putString(KEY_PASS,Password);
         editor.putString(KEY_mid,m_id);
+        editor.putString(IMGNAME,imgname);
 
         //editor.putString()
         // editor.putString(Wrong_Attempt,WrongAttempt);
 
         editor.commit();
     }
+
+
+
+    public void setRegistrationToken(String token) {
+        // Add custom implementation, as needed.
+        Log.e("TOKEN","IN SET TOKEN");
+        SharedPreferences.Editor editor = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE).edit();
+        editor.putString("Token", token);
+        //editor.putInt("idName", 12);
+        editor.apply();
+
+    }
+
+    public String getRegistrationToken()
+    {
+        Log.e("TOKEN","IN GET TOKEN");
+        SharedPreferences prefs = context.getSharedPreferences(MY_PREFS_NAME, MODE_PRIVATE);
+        /* if (restoredText != null) {
+            String name = prefs.getString("name", "No name defined");//"No name defined" is the default value.
+            int idName = prefs.getInt("idName", 0); //0 is the default value.
+        }*/
+        return prefs.getString("Token", null);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public boolean checklogin()
     {
@@ -92,11 +132,18 @@ public class Sessionmanager {
         user.put(KEY_NAME,preferences.getString(KEY_NAME,null));
         user.put(KEY_PASS,preferences.getString(KEY_PASS,null));
         user.put(KEY_mid,preferences.getString(KEY_mid,null));
+        user.put(IMGNAME,preferences.getString(IMGNAME,null));
         return user;
 
     }
 
-    public void LogOut1(Context context)
+
+
+
+
+
+
+    public void LogOut1(Context context,boolean b)
     {
 
         c = context;
@@ -104,10 +151,13 @@ public class Sessionmanager {
         new LogOut().execute();
         editor.clear();
         editor.commit();
-        Intent i = new Intent(c, Login_new.class);
-        i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(i);
+
+        if(b) {
+            Intent i = new Intent(c, Login_new.class);
+            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(i);
+        }
 
     }
 
@@ -141,9 +191,9 @@ public class Sessionmanager {
             pd1.setCancelable(false);
             pd1.show();
 
-            
+
           hm  =  getuserdetails();
-          
+
 
 
         }
@@ -157,7 +207,7 @@ public class Sessionmanager {
 
                 HttpURLConnection httpURLConnection;
                 URL url = new URL("http://"+ WebServiceConstant.ip+"/Tracking/logout.php?" + param);
-             
+
                 httpURLConnection = (HttpURLConnection) url.openConnection();
 
 
@@ -185,9 +235,9 @@ public class Sessionmanager {
                      respond = responce.toString().trim();
 
 
-                 
 
-                   
+
+
                 }
 
 
@@ -205,7 +255,7 @@ public class Sessionmanager {
             try {
                 //pb.setVisibility(View.GONE);
                 pd1.cancel();
-                
+
                 if(respond.equals("1"))
                 {
 

@@ -18,19 +18,6 @@ public class AlarmRecevier extends BroadcastReceiver {
     String temp;
     @Override
     public void onReceive(Context context, Intent intent) {
-       /* Toast.makeText(context,"Alarm is Set",Toast.LENGTH_LONG).show();
-
-        Toast.makeText(context,"Alarm is Set1",Toast.LENGTH_LONG).show();
-
-        Toast.makeText(context,"Alarm is Set2",Toast.LENGTH_LONG).show();
-
-        Toast.makeText(context,"Alarm is Set3",Toast.LENGTH_LONG).show();*/
-
-
-
-
-
-        Log.e("ALARM:", "HAAAAA");
 
         if(intent.getExtras() != null) {
              temp = intent.getExtras().getString("taskid");
