@@ -8,8 +8,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,7 +19,6 @@ import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Login_new;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
-import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
 import com.example.akshatdesai.googlemaptry.server.GetterSetter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -69,7 +66,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
 
     CoordinatorLayout coordinatorLayout;
     ProgressDialog pd1;
-    Handler mHandler;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,30 +84,7 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map1);
         mapFragment.getMapAsync(this);
-        if(EnablePermission.isInternetConnected(Tracking.this)) {
-            if (dotrack == 1) {
-                        t = new Timer();
 
-                        t.scheduleAtFixedRate(new TimerTask() {
-
-                                                  @Override
-                                                  public void run() {
-
-                                                      runOnUiThread(new Runnable(){
-
-                                                          @Override
-                                                          public void run() {
-                                                              new Track().execute();
-                                                          }});
-                                                  }
-                        }, 0, 60000);
-
-            } else {
-                new Track().execute();
-            }
-        }else {
-            Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG).show();
-        }
 
     }
 
@@ -120,15 +94,33 @@ public class Tracking extends AppCompatActivity implements OnMapReadyCallback {
     public void onResume() {
         //will be executed onResume
         super.onResume();
-        connection = EnablePermission.isInternetConnected(Tracking.this);
+       // connection = EnablePermission.isInternetConnected(Tracking.this);
+        if(EnablePermission.isInternetConnected(Tracking.this)) {
+            if (dotrack == 1) {
+                t = new Timer();
 
-        if (!connection) {
-            snackbar = Snackbar
-                    .make(coordinatorLayout, "Please Enable Internet", Snackbar.LENGTH_INDEFINITE);
-            snackbar.show();
-        } else {
+                t.scheduleAtFixedRate(new TimerTask() {
 
+                    @Override
+                    public void run() {
+
+                        runOnUiThread(new Runnable(){
+
+                            @Override
+                            public void run() {
+                                new Track().execute();
+                            }});
+                    }
+                }, 0, 60000);
+
+            } else {
+                new Track().execute();
+            }
+        }else {
+            Toast.makeText(Tracking.this,"No Internet Connection",Toast.LENGTH_LONG).show();
         }
+
+
 
     }
 

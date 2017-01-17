@@ -21,7 +21,7 @@ import com.example.akshatdesai.googlemaptry.Admin.Assign_role;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 import com.example.akshatdesai.googlemaptry.client.Client_Home;
-import com.example.akshatdesai.googlemaptry.client.CurrentLocation;
+
 
 import com.example.akshatdesai.googlemaptry.server.ManagerNavigation;
 
@@ -128,9 +128,9 @@ public class Login_new extends AppCompatActivity {
 
                     mail = et_mail.getText().toString();
                     pass = et_pass.getText().toString();
-                    Log.e("mail id", mail);
-                    Log.e("password", pass);
-                    Log.e("NEW TOKEN",new Sessionmanager(Login_new.this).getRegistrationToken());
+                    Log.e("mail id",""+ mail);
+                    Log.e("password", ""+ pass);
+                    Log.e("NEW TOKEN",""+new Sessionmanager(Login_new.this).getRegistrationToken());
                     /*if (mail.equals("admin") && pass.equals("admin")) {
                         Intent i = new Intent(Login_new.this, Assign_role.class);
                         startActivity(i);

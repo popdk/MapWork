@@ -39,8 +39,8 @@ public  class SetAlarm {
 
    static String msg;
    static JSONArray array;
-    static int status;
-   static ProgressDialog pd;
+    private static int status;
+   private static ProgressDialog pd;
 
     public static void  SetAlarm1(Context context, Calendar calendar, int reqCode, int taskid) {
 
@@ -55,14 +55,12 @@ public  class SetAlarm {
                 reqCode, myIntent, 0);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+        alarmManager.set(AlarmManager.RTC, calendar.getTimeInMillis(),
                 pendingIntent);
         if(EnablePermission.isInternetConnected(context)) {
             try {
                 new TaskStatus(context, taskid).execute().get();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
+            } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }
         }else {

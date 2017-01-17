@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -23,7 +22,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.akshatdesai.googlemaptry.R;
@@ -31,8 +29,6 @@ import com.example.akshatdesai.googlemaptry.WebServiceConstant;
 import com.theartofdev.edmodo.cropper.CropImage;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -56,33 +52,21 @@ import static com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDList
 
 public class Registration extends AppCompatActivity {
 
-    TextView tv_name, tv_mail, tv_pass, tv_phone, tv_address;
+
     EditText et_name, et_mail, et_pass, et_phone, et_address;
     ImageView iv;
     Button browse,submit, cancel;
     String name, message, mail, pass, address, phone, gender, response="",msg="";
     RadioButton male, female;
     boolean flagForEmail, flagForMobileNo;
-    HttpURLConnection httpURLConnection;
-    JSONArray array;
     int status, i,abc;
     ProgressDialog pd;
     RadioGroup rg;
-    JSONObject temp;
-    Bitmap bitmap;
     String image;
-    public static Bitmap bmImg;
-    Uri fileUri = null;
-    String selectedImagePath;
-    private static final int CAMERA_CAPTURE_IMAGE_REQUEST_CODE = 100;
-    public static final int MEDIA_TYPE_IMAGE = 1;
-    protected static final int CAMERA_REQUEST = 0;
-    protected static final int GALLERY_PICTURE = 1;
-    private static int RESULT_LOAD_IMAGE = 1;
-    Uri filePath;
     File imageFile = null;
     String imagepath;
     private Uri mCropImageUri;
+    Bitmap bitmap;
 
 
     @Override
@@ -234,10 +218,38 @@ public class Registration extends AppCompatActivity {
             imagepath = imageFile.getPath();
             iv.setImageURI(Uri.fromFile(imageFile));
             iv.setVisibility(View.VISIBLE);
-            Bitmap bitmap= BitmapFactory.decodeFile(imagepath);
+            final BitmapFactory.Options biOptions = new BitmapFactory.Options();
+            biOptions.inJustDecodeBounds = true;
+            bitmap = BitmapFactory.decodeFile(imagepath,biOptions);
+            biOptions.inSampleSize = calculateInSampleSize(biOptions,100,100);
+            biOptions.inJustDecodeBounds = false;
+            bitmap= BitmapFactory.decodeFile(imagepath,biOptions);
             image = getStringImage(bitmap);
             //new().execute();
         }
+    }
+
+    public static int calculateInSampleSize(
+            BitmapFactory.Options options, int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            final int halfHeight = height / 2;
+            final int halfWidth = width / 2;
+
+            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
+            // height and width larger than the requested height and width.
+            while ((halfHeight / inSampleSize) >= reqHeight
+                    && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
+            }
+        }
+
+        return inSampleSize;
     }
 
     private void startCropImageActivity(Uri imageUri) {
@@ -348,7 +360,9 @@ public class Registration extends AppCompatActivity {
                 params.put("Address", address);
                 params.put("Gender", gender);
                 params.put("token", refreshedToken);
+                if(image != null){
                 params.put("imgPath", image);
+                }
                 OutputStream os = conn.getOutputStream();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(os, "UTF-8"));

@@ -59,28 +59,31 @@
             android:name=".General.SplashScreen"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_maps"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateAlwaysHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <action android:name="android.intent.action.DELETE" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:scheme="package"  />
+            </intent-filter>
+
         </activity>
 
-        <service android:name=".GPSTracker" />
+
         <service android:name=".client.LocationUpdateService" />
 
-        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"/>
+        <activity android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/Base.Theme.AppCompat"/>
 
-        <activity
-            android:name=".General.AlarmManger1"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:label="@string/title_activity_tracking"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
-            android:name=".server.ViewTask"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden" />
+
+
         <activity
             android:name=".client.Chatting"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -145,10 +148,6 @@
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden" />
         <activity
-            android:name=".client.CurrentLocation"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:windowSoftInputMode="stateAlwaysHidden" />
-        <activity
             android:name=".General.Registration"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:windowSoftInputMode="stateAlwaysHidden" />
@@ -162,7 +161,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".PreciseLocation" />
+
         <activity android:name=".General.Login_new"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_maps"

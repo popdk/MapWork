@@ -35,9 +35,9 @@ import java.util.Date;
 import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
 
 public class LocationUpdateService extends Service {
-    private static final String TAG = "BOOMBOOMTESTGPS";
+    private static final String TAG = "GPS";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000 * 60;
+    private static final int LOCATION_INTERVAL = 1000 * 30;
     private static final float LOCATION_DISTANCE = 10f;
     private static int taskid;
 
@@ -81,7 +81,7 @@ public class LocationUpdateService extends Service {
 
     LocationListener[] mLocationListeners = new LocationListener[]{
             new LocationListener(LocationManager.GPS_PROVIDER),
-            new LocationListener(LocationManager.NETWORK_PROVIDER)
+           // new LocationListener(LocationManager.NETWORK_PROVIDER)
     };
 
     @Override
@@ -105,7 +105,7 @@ public class LocationUpdateService extends Service {
     public void onCreate() {
         Log.e(TAG, "onCreate");
         initializeLocationManager();
-        try {
+      /*  try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,
                     mLocationListeners[1]);
@@ -114,7 +114,7 @@ public class LocationUpdateService extends Service {
             Log.i(TAG, "fail to request location update, ignore", ex);
         } catch (IllegalArgumentException ex) {
             Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-        }
+        }*/
         try {
             mLocationManager.requestLocationUpdates(
                     LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE,

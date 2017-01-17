@@ -1,22 +1,23 @@
-package com.example.akshatdesai.googlemaptry.server;
+package com.example.akshatdesai.googlemaptry.Fragment;
 
-import android.app.Activity;
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
+import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.example.akshatdesai.googlemaptry.General.EnablePermission;
 import com.example.akshatdesai.googlemaptry.General.Sessionmanager;
 import com.example.akshatdesai.googlemaptry.R;
 import com.example.akshatdesai.googlemaptry.WebServiceConstant;
+import com.example.akshatdesai.googlemaptry.server.ViewTaskAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -32,33 +33,35 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Scanner;
 
-public class ViewTask extends AppCompatActivity {
+/**
+ * Created by Akshat Desai on 1/7/2017.
+ */
 
-    Toolbar toolbar;
-    ProgressBar pb;
-    Activity context;
-    private RecyclerView taskView;
-    TextView nodata;
+public class TaskRunning extends Fragment {
+
+    RecyclerView taskView;
+    TextView noTask;
     Sessionmanager sessionManager;
-    int UId,mid;
+    private static int UId,mid;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_view_task);
+    }
 
-        nodata = (TextView) findViewById(R.id.no_datafound1);
-            pb = (ProgressBar) findViewById(R.id.progressBar_managerviewtask);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        taskView = (RecyclerView) findViewById(R.id.rv_manager);
-        final LinearLayoutManager layoutManager = new LinearLayoutManager(ViewTask.this);
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.task_running,container,false);
+
+        taskView = (RecyclerView) view.findViewById(R.id.rv_manager_running_task);
+        final LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         taskView.setLayoutManager(layoutManager);
 
+        noTask = (TextView) view.findViewById(R.id.no_task_running);
 
-
-
-        sessionManager=new Sessionmanager(getApplicationContext());
+        sessionManager=new Sessionmanager(getContext());
 
         HashMap<String, String> user = sessionManager.getuserdetails();
         // name
@@ -67,35 +70,35 @@ public class ViewTask extends AppCompatActivity {
             UId = Integer.parseInt(user.get(Sessionmanager.KEY_ID));
             mid= Integer.parseInt(user.get(Sessionmanager.KEY_mid));
         }
-        if(EnablePermission.isInternetConnected(ViewTask.this)) {
-            new Web().execute();
-        }else {
-            Toast.makeText(ViewTask.this,"No Internet Connection",Toast.LENGTH_LONG);
-        }
+
+
+        new Web().execute();
+
+
+
+
+        return view;
     }
 
-
-
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        //new Web().execute();
-    }
-
-  public class Web extends AsyncTask {
+    public class Web extends AsyncTask {
 
         private String msg,name[],sdate[],edate[],assignedto[],assignedby[],desc[];
         private Scanner scanner;
         private ViewTask viewTask;
-      int status,id[],length1,cstatus[];
-      JSONArray array;
+        int status,id[],length1,cstatus[];
+        JSONArray array;
+        ProgressDialog pd;
+        ViewTaskAdapter adapter;
 
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pb.setVisibility(View.VISIBLE);
+            pd = new ProgressDialog(getActivity());
+            pd.setMessage("Please Wait");
+            pd.setCancelable(false);
+            pd.show();
+
         }
 
         @Override
@@ -106,9 +109,7 @@ public class ViewTask extends AppCompatActivity {
                 Log.w("UID",""+UId);
                 Log.w("MID",""+mid);
 
-                UId = 4;
-                mid = 1;
-                String param = "id=" + URLEncoder.encode(UId + "", "UTF-8")+ "&" + "type="+ URLEncoder.encode(mid + "", "UTF-8");
+                String param = "id=" + URLEncoder.encode(String.valueOf(UId), "UTF-8")+ "&" + "type="+ URLEncoder.encode(String.valueOf(mid), "UTF-8");
                 HttpURLConnection httpURLConnection = null;
                 URL url = new URL("http://" + WebServiceConstant.ip + "/Tracking/viewtask.php?" + param);
 
@@ -141,7 +142,7 @@ public class ViewTask extends AppCompatActivity {
 
 
                     msg = responce.toString();
-                    Log.e("ManagerViewTaskResponce", "" + msg);
+                    Log.e("responce", "" + msg);
 
                     array =  new JSONArray(msg);
                     JSONObject temp = array.getJSONObject(0);
@@ -172,11 +173,11 @@ public class ViewTask extends AppCompatActivity {
                             assignedby[i] = temp1.getString("assignedby");
                             cstatus[i] = temp1.getInt("cstatus");
                         }
-                        Log.w("id",""+id[1]);
+                        Log.w("id",""+id[0]);
                     }
                     else
                     {
-                        Toast.makeText(ViewTask.this,"No Data Found",Toast.LENGTH_LONG).show();
+                        //  Toast.makeText(getActivity(),"No Data Found",Toast.LENGTH_LONG).show();
                     }
                 }
             } catch (MalformedURLException e) {
@@ -188,25 +189,44 @@ public class ViewTask extends AppCompatActivity {
             }
             return null;
         }
-
+        protected  void onProgressUpdate(){}
         @Override
         protected void onPostExecute(Object o) {
 
             try {
-                pb.setVisibility(View.GONE);
+                pd.cancel();
 
                 if(status == 1) {
-                    ViewTaskAdapter adapter = new ViewTaskAdapter(ViewTask.this,id, name, desc, sdate, edate, assignedto, cstatus);
+                    adapter = new ViewTaskAdapter(getContext(),id, name, desc, sdate, edate, assignedto, cstatus,0);
                     taskView.setAdapter(adapter);
                 }
                 else {
-                    nodata.setVisibility(View.VISIBLE);
+                    noTask.setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+    }
+}
 

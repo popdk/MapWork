@@ -287,8 +287,11 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                     SimpleDateFormat df1 = new SimpleDateFormat("HHmm");
                     String todaydate = df.format(c.getTime());
                     String todaytime = df1.format(c.getTime());
-                     todaytime = todaytime.concat("00");
-                    Log.e("TodayTime",todaytime);
+
+                    Log.e("TodayTime",""+todaytime);
+
+                    sTime = sTime.replaceAll(":","");
+                    Log.e("StartingTime",""+sTime);
                     int approval = 0;
 
 
@@ -301,6 +304,11 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                     else
                     {
                         approval =1;
+                    }
+
+                    if(Integer.parseInt(sTime) < Integer.parseInt(todaytime)){
+                        Toast.makeText(getActivity(), "Starting time must be greater than current time", Toast.LENGTH_SHORT).show();
+                        approval =0;
                     }
 
 
@@ -326,7 +334,8 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
                             Toast.makeText(getContext(), "Ending time must be greater than starting time", Toast.LENGTH_LONG).show();
                             at_endingtime.setText("");
                             at_endingtime.callOnClick();
-                        } else {
+                        }
+                        else {
 
                             String val = url(source, destination);
                             if (EnablePermission.isInternetConnected(getActivity())) {
@@ -660,6 +669,8 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     }
 
     public class AddTask extends AsyncTask {
+        ProgressDialog pd;
+
         @Override
         protected void onPreExecute() {
             pd = new ProgressDialog(getContext());
@@ -767,12 +778,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
     public class SendMessage extends AsyncTask {
 
         JSONObject object;
+        ProgressDialog pd;
         @Override
         protected void onPreExecute() {
             pd = new ProgressDialog(getContext());
-            pd.setMessage("Adding Task.. please wait");
-            pd.show();
+            pd.setMessage("Please Wait");
             pd.setCancelable(false);
+            pd.show();
+
         }
 
         @Override
@@ -813,21 +826,14 @@ public class AssignTask extends Fragment implements AdapterView.OnItemSelectedLi
 
                     object = array.getJSONObject(0);
                     status3 = object.getInt("status");
-
-                    // got=got.trim();
+                    Log.e("SendMessageStatus",""+status3);
                     Log.e("SendMessageresponce",got);
                 }
 
 
 
 //                Log.e("from", got);
-            } catch (MalformedURLException e) {
-                e.printStackTrace();
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (JSONException e) {
+            } catch (IOException | JSONException e) {
                 e.printStackTrace();
             }
             return null;

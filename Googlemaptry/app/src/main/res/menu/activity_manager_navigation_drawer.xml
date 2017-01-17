@@ -10,7 +10,10 @@
             android:title="Add Employee" />
         <item
             android:id="@+id/view_task"
-            android:title="View Task" />
+            android:title="View Task" >
+
+
+        </item>
 
         <item
             android:id="@+id/send_message"

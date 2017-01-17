@@ -97,7 +97,7 @@ public class AddEmployee extends Fragment {
                 if(EnablePermission.isInternetConnected(getActivity())) {
                     new employee().execute();
                 }else{
-                    Toast.makeText(getActivity(),"No internrt connection",Toast.LENGTH_LONG).show();
+                    Toast.makeText(getActivity(),"No internet connection",Toast.LENGTH_LONG).show();
                 }
             }
         });

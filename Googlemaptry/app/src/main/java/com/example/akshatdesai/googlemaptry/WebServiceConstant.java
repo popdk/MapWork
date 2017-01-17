@@ -5,5 +5,5 @@ package com.example.akshatdesai.googlemaptry;
  */
 public class WebServiceConstant {
 
-    static public final String ip = "180.211.104.86:8095";
+    static public final String ip = "tracking.freevar.com";
 }

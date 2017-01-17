@@ -67,6 +67,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 import static com.example.akshatdesai.googlemaptry.Notification.MyInstanceIDListenerService.refreshedToken;
 import static com.example.akshatdesai.googlemaptry.R.id.drawer_layout;
 import static com.example.akshatdesai.googlemaptry.R.id.imageView;
@@ -79,7 +81,7 @@ public class ManagerNavigation extends AppCompatActivity
     public static Toolbar toolbar;
     android.support.v7.app.ActionBarDrawerToggle toggle;
     Sessionmanager sessionmanager;
-    ImageView iv1;
+    CircleImageView iv1;
     File imageFile = null;
     String imagepath,image,out,UId;
     int  mid;
@@ -98,10 +100,11 @@ public class ManagerNavigation extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View hView =  navigationView.getHeaderView(0);
-        iv1 = (ImageView) hView.findViewById(R.id.profile_image);
+        iv1 = (CircleImageView) hView.findViewById(R.id.profile_image);
 
 
        // iv1= (ImageView) findViewById(R.id.profile_image);
+
         sm = new Sessionmanager(this);
         HashMap hm =  sm.getuserdetails();
         imagename = (String) hm.get("imagename");

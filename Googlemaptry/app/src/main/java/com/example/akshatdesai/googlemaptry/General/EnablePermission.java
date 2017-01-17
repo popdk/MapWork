@@ -17,6 +17,8 @@ import android.widget.Toast;
 import com.example.akshatdesai.googlemaptry.Manifest;
 import com.example.akshatdesai.googlemaptry.server.DefineRoute;
 
+import java.lang.reflect.Method;
+
 /**
  * Created by Akshat Desai on 11/26/2016.
  */
@@ -129,8 +131,8 @@ public  class EnablePermission {
 
 
 
-    public static boolean isInternetConnected (Context ctx) {
-        ConnectivityManager connectivityMgr = (ConnectivityManager) ctx
+    public static boolean isInternetConnected (Context context) {
+       /* ConnectivityManager connectivityMgr = (ConnectivityManager) ctx
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo wifi = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
         NetworkInfo mobile = connectivityMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
@@ -145,8 +147,25 @@ public  class EnablePermission {
             if (mobile.isConnected()) {
                 return true;
             }
+        }*/
+
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        if (activeNetwork != null) { // connected to the internet
+            if (activeNetwork.getType() == ConnectivityManager.TYPE_WIFI) {
+                // connected to wifi
+                return true;
+              //  Toast.makeText(context, activeNetwork.getTypeName(), Toast.LENGTH_SHORT).show();
+            } else if (activeNetwork.getType() == ConnectivityManager.TYPE_MOBILE) {
+                // connected to the mobile provider's data plan
+               // Toast.makeText(context, activeNetwork.getTypeName(), Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        } else {
+            // not connected to the internet
+            return false;
         }
-        return false;
+        return  false;
     }
 
 
